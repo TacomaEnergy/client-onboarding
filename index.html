@@ -1,0 +1,2095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Customer Onboarding — Tacoma Energy</title>
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --navy-mid: #155A8A;
+    --green: #2ECC71;
+    --green-dark: #1877B8;
+    --gray-light: #F5F7FA;
+    --gray-border: #DDE2E8;
+    --gray-text: #6B7280;
+    --white: #FFFFFF;
+    --red: #E74C3C;
+    --yellow: #F39C12;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--gray-light);
+    color: var(--navy);
+    min-height: 100vh;
+  }
+
+  .form-header {
+    background: #0B3D6B;
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .form-header .logo-mark {
+    width: 44px;
+    height: 44px;
+    background: #5BB8F5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    color: var(--navy);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .form-header h1 {
+    color: var(--white);
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .form-header p {
+    color: #9BAFC4;
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  .form-wrapper {
+    max-width: 860px;
+    margin: 36px auto;
+    padding: 0 20px 60px;
+  }
+
+  .rep-bar {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 10px;
+    padding: 20px 28px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-end;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .rep-bar .field { flex: 1; }
+
+  .section {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .section-header {
+    background: #1877B8;
+    color: var(--white);
+    padding: 13px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-header .dot {
+    width: 8px;
+    height: 8px;
+    background: #5BB8F5;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .section-body {
+    padding: 24px 28px;
+  }
+
+  .row { display: flex; gap: 20px; margin-bottom: 18px; }
+  .row:last-child { margin-bottom: 0; }
+  .col { flex: 1; }
+  .col-2 { flex: 2; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  label .req { color: var(--red); margin-left: 2px; }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    border: 1px solid var(--gray-border);
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--navy);
+    background: var(--white);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #1877B8;
+    box-shadow: 0 0 0 3px rgba(24,119,184,0.15);
+  }
+
+  input.error, select.error { border-color: var(--red); }
+
+  input[type="number"] { -moz-appearance: textfield; }
+
+  .dollar-wrap { position: relative; }
+  .dollar-wrap::before {
+    content: "$";
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-text);
+    font-size: 14px;
+    pointer-events: none;
+  }
+  .dollar-wrap input { padding-left: 22px; }
+
+  .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
+  .checkbox-row { display: flex; align-items: center; gap: 10px; }
+  .checkbox-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--gray-border);
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    accent-color: #1877B8;
+  }
+  .checkbox-row label {
+    margin-bottom: 0;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--navy);
+    cursor: pointer;
+  }
+
+  .radio-group { display: flex; gap: 16px; flex-wrap: wrap; }
+  .radio-row { display: flex; align-items: center; gap: 8px; }
+  .radio-row input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #1877B8;
+    flex-shrink: 0;
+  }
+  .radio-row label {
+    margin-bottom: 0;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--navy);
+    cursor: pointer;
+  }
+
+  .conditional { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--gray-border); }
+  .conditional.visible { display: block; }
+
+  .hint {
+    font-size: 11px;
+    color: var(--gray-text);
+    margin-top: 4px;
+  }
+
+  .terms-box {
+    background: var(--gray-light);
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #374151;
+  }
+
+  .terms-box h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+
+  .terms-box ul { padding-left: 18px; }
+  .terms-box ul li { margin-bottom: 6px; }
+
+  .agree-row {
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: #EBF4FB;
+    border: 1px solid #A9D4F5;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .agree-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    accent-color: #1877B8;
+    cursor: pointer;
+  }
+
+  .agree-row label {
+    margin-bottom: 0;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #0B3D6B;
+    cursor: pointer;
+    line-height: 1.5;
+  }
+
+  .submit-bar {
+    margin-top: 28px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .btn-reset {
+    background: none;
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-text);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .btn-reset:hover { background: var(--gray-light); }
+
+  .btn-submit {
+    background: #1877B8;
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    padding: 13px 36px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-submit:hover { background: #0F5A8E; }
+  .btn-submit:active { transform: scale(0.98); }
+
+  .success-banner {
+    display: none;
+    background: #EBF4FB;
+    border: 1px solid #A9D4F5;
+    border-radius: 10px;
+    padding: 28px 32px;
+    text-align: center;
+    margin-top: 24px;
+  }
+  .success-banner h3 { color: #1877B8; font-size: 20px; margin-bottom: 8px; }
+  .success-banner p { color: #374151; font-size: 14px; }
+
+  .error-msg {
+    display: none;
+    color: var(--red);
+    font-size: 11px;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  #progress-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-text);
+    padding: 4px 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .prog-step:hover { background: #EBF4FB; color: #1877B8; }
+  .prog-step.active { background: #1877B8; color: #fff; }
+  .prog-step.done { color: #1877B8; }
+
+  .btn-draft {
+    background: none;
+    border: 1px solid #1877B8;
+    border-radius: 8px;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1877B8;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: background 0.15s;
+  }
+  .btn-draft:hover { background: #EBF4FB; }
+
+  textarea { resize: vertical; min-height: 70px; }
+
+  .contact-group {
+    background: var(--gray-light);
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+  }
+  .contact-group:last-child { margin-bottom: 0; }
+  .contact-group .contact-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--navy-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 12px;
+  }
+  .contact-group .row { margin-bottom: 0; }
+
+  .contact-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .contact-label-row .contact-label { margin-bottom: 0; }
+  .same-as-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--green-dark);
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .same-as-label input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #1877B8;
+    cursor: pointer;
+  }
+  .same-as-display {
+    font-size: 13px;
+    color: var(--navy);
+    padding: 8px 10px;
+    background: #EBF4FB;
+    border-radius: 6px;
+    border: 1px solid #A9D4F5;
+  }
+
+  .other-service-row { align-items: flex-end; margin-bottom: 10px !important; }
+  .other-service-row:last-child { margin-bottom: 0 !important; }
+  .btn-remove-service {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    line-height: 1;
+  }
+  .btn-remove-service:hover { color: var(--red); background: #fef2f2; }
+  .po-ref-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+  .po-ref-options .checkbox-row input[type="radio"] {
+    width: 15px; height: 15px;
+    accent-color: #1877B8;
+    cursor: pointer;
+  }
+
+  .price-group {
+    background: var(--gray-light);
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+  }
+  .price-group-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--navy-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 14px;
+  }
+
+  .btn-add-service {
+    background: none;
+    border: 1px dashed var(--gray-border);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1877B8;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 10px;
+    transition: background 0.15s;
+  }
+  .btn-add-service:hover { background: var(--gray-light); }
+
+
+
+  .setup-mode-card {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 10px;
+    padding: 18px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .setup-mode-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .setup-mode-header strong {
+    color: var(--navy);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .setup-mode-header span {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--gray-text);
+    line-height: 1.4;
+  }
+  .mode-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .mode-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid var(--gray-border);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--navy);
+    background: #fff;
+    cursor: pointer;
+    user-select: none;
+  }
+  .mode-pill input { accent-color: #1877B8; }
+  .mode-pill.active {
+    background: #EBF4FB;
+    border-color: #A9D4F5;
+    color: #0B3D6B;
+    font-weight: 600;
+  }
+  .prefill-status {
+    display: none;
+    background: #EBF5EB;
+    border: 1px solid #A9DFBF;
+    border-left: 4px solid #1877B8;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #1E5631;
+    line-height: 1.4;
+  }
+  .existing-client-panel {
+    display: none;
+    background: var(--gray-light);
+    border: 1px dashed var(--gray-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 10px;
+  }
+  .existing-client-panel.visible { display: block; }
+  .future-note {
+    font-size: 11px;
+    color: var(--gray-text);
+    line-height: 1.45;
+    margin-top: 6px;
+  }
+
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .pricing-grid:last-child { margin-bottom: 0; }
+  .pricing-cell label {
+    min-height: 30px;
+    display: flex;
+    align-items: flex-end;
+  }
+  .pricing-cell .hint { line-height: 1.35; }
+  .pricing-card-warning {
+    margin-top: 18px;
+    background: #FFF8EC;
+    border: 2px solid #F39C12;
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .pricing-card-warning .pricing-cell input[type="number"] { border-color: #F39C12; }
+  .pricing-warning-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .pricing-warning-title label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #8C5E00;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0;
+  }
+  .pricing-warning-copy {
+    font-size: 12px;
+    color: #7A5200;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  @media (max-width: 800px) {
+    .pricing-grid { grid-template-columns: 1fr; }
+    .pricing-cell label { min-height: auto; }
+  }
+
+  @media (max-width: 600px) {
+    .row { flex-direction: column; gap: 14px; }
+    .rep-bar { flex-direction: column; }
+    .form-header { padding: 20px; }
+    .section-body { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="form-header">
+  <div class="logo-mark"><img src="data:image/png;base64,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" alt="Tacoma Energy" style="width:38px;height:38px;object-fit:contain;object-fit:contain;"></div>
+  <div>
+    <h1>New Customer Onboarding</h1>
+    <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
+  </div>
+</div>
+
+<div class="form-wrapper">
+
+  <div class="prefill-status" id="prefill-status"></div>
+
+  <!-- Rep Info Bar -->
+  <div class="rep-bar">
+    <div class="field">
+      <label>Sales Rep <span class="req">*</span></label>
+      <select id="rep" required>
+        <option value="">Select rep...</option>
+        <option>Admin</option>
+        <option>C. Gaston</option>
+        <option>N. Reynolds</option>
+        <option>A. Palumbo</option>
+        <option>A. Choez</option>
+      </select>
+      <div class="error-msg" id="err-rep">Please select a sales rep.</div>
+    </div>
+    <div class="field">
+      <label>Date <span class="req">*</span></label>
+      <input type="date" id="form-date">
+    </div>
+  </div>
+
+  <div id="draft-indicator" style="display:none; font-size:12px; color:#1877B8; font-weight:600; text-align:right; margin-bottom:8px; padding: 0 4px;"></div>
+
+  <!-- Progress indicator -->
+  <div id="progress-bar" style="background:var(--white);border:1px solid var(--gray-border);border-radius:10px;padding:14px 20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <span style="font-size:12px;font-weight:600;color:var(--gray-text);text-transform:uppercase;letter-spacing:0.05em;">Progress</span>
+      <span id="progress-label" style="font-size:12px;font-weight:600;color:#1877B8;">Section 1 of 8</span>
+    </div>
+    <div style="background:var(--gray-border);border-radius:4px;height:6px;overflow:hidden;">
+      <div id="progress-fill" style="background:#1877B8;height:100%;width:12.5%;border-radius:4px;transition:width 0.3s ease;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:10px;gap:4px;">
+      <div class="prog-step active" data-section="1" onclick="scrollToSection(1)" title="Company Info">Co.</div>
+      <div class="prog-step" data-section="2" onclick="scrollToSection(2)" title="Key Contacts">Contacts</div>
+      <div class="prog-step" data-section="3" onclick="scrollToSection(3)" title="Systems">Systems</div>
+      <div class="prog-step" data-section="4" onclick="scrollToSection(4)" title="Purchase Orders">POs</div>
+      <div class="prog-step" data-section="5" onclick="scrollToSection(5)" title="Pricing">Pricing</div>
+      <div class="prog-step" data-section="6" onclick="scrollToSection(6)" title="Invoicing">Invoice</div>
+      <div class="prog-step" data-section="7" onclick="scrollToSection(7)" title="Payment Terms">Payment</div>
+      <div class="prog-step" data-section="8" onclick="scrollToSection(8)" title="Terms">Terms</div>
+    </div>
+  </div>
+  <div class="section" id="section-1">
+    <div class="section-header"><div class="dot"></div> Company Information</div>
+    <div class="section-body">
+      <div class="row">
+        <div class="col-2">
+          <label>Legal Company / Builder Name <span class="req">*</span></label>
+          <input type="text" id="company-name" placeholder="Full legal name / builder name" required>
+          <div class="error-msg" id="err-company">Required.</div>
+        </div>
+        <div class="col">
+          <label>Division / City</label>
+          <input type="text" id="company-division" placeholder="e.g. Columbus, Dayton, South Houston">
+        </div>
+        <div class="col">
+          <label>State</label>
+          <input type="text" id="company-state" placeholder="OH" maxlength="2">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Project Type</label>
+          <select id="project-type">
+            <option value="">Select...</option>
+            <option>Single Family</option>
+            <option>Multifamily</option>
+            <option>Townhomes</option>
+            <option>Commercial</option>
+            <option>Mixed / Other</option>
+          </select>
+        </div>
+        <div class="col"></div>
+      </div>
+      <div class="price-group" style="margin-bottom:18px;">
+        <div class="price-group-label">Billing Address</div>
+        <div class="row">
+          <div class="col-2">
+            <label>Billing Street Address</label>
+            <input type="text" id="billing-street" placeholder="Street address">
+          </div>
+          <div class="col">
+            <label>Billing City</label>
+            <input type="text" id="billing-city" placeholder="City">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>Billing State</label>
+            <input type="text" id="billing-state" placeholder="State" maxlength="2">
+          </div>
+          <div class="col">
+            <label>Billing ZIP</label>
+            <input type="text" id="billing-zip" placeholder="ZIP">
+          </div>
+          <div class="col"></div>
+        </div>
+      </div>
+      <div class="contact-group">
+        <div class="contact-label">Primary Contact</div>
+        <div class="row">
+          <div class="col">
+            <label>Name &amp; Title <span class="req">*</span></label>
+            <input type="text" id="primary-contact" placeholder="e.g. Jane Smith, Controller" required>
+            <div class="error-msg" id="err-contact">Required.</div>
+          </div>
+        </div>
+        <div class="row" style="margin-top:12px;">
+          <div class="col">
+            <label>Phone</label>
+            <input type="tel" id="phone" placeholder="(555) 000-0000">
+          </div>
+          <div class="col">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="contact@company.com">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Key Contacts -->
+  <div class="section" id="section-2">
+    <div class="section-header"><div class="dot"></div> Key Contacts</div>
+    <div class="section-body">
+
+      <!-- Scheduling -->
+      <div class="contact-group">
+        <div class="contact-label-row">
+          <span class="contact-label">Scheduling Contact <span class="req">*</span></span>
+          <label class="same-as-label">
+            <input type="checkbox" id="sched-same" onchange="applySameAs('sched')">
+            Same as Primary Contact
+          </label>
+        </div>
+        <div id="sched-same-display" class="same-as-display" style="display:none; margin-bottom:8px;"></div>
+        <div id="sched-fields">
+          <div class="row">
+            <div class="col"><label>Name &amp; Title</label><input type="text" id="sched-name" placeholder="e.g. John Doe, Scheduler"></div>
+          </div>
+          <div class="row" style="margin-top:12px;">
+            <div class="col"><label>Phone</label><input type="tel" id="sched-phone" placeholder="(555) 000-0000"></div>
+            <div class="col"><label>Email</label><input type="email" id="sched-email" placeholder="scheduler@company.com"></div>
+          </div>
+        </div>
+        <div class="error-msg" id="err-sched">Please fill in contact details or check Same as Primary.</div>
+      </div>
+
+      <!-- AP -->
+      <div class="contact-group">
+        <div class="contact-label-row">
+          <span class="contact-label">Accounting / AP Contact <span class="req">*</span></span>
+          <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
+            <label class="same-as-label"><input type="checkbox" id="ap-same-primary" onchange="applySameAsMulti('ap','primary')"> Same as Primary Contact</label>
+            <label class="same-as-label" id="ap-same-sched-wrap" style="display:none;"><input type="checkbox" id="ap-same-sched" onchange="applySameAsMulti('ap','sched')"> Same as Scheduling Contact</label>
+          </div>
+        </div>
+        <div id="ap-same-display" class="same-as-display" style="display:none; margin-bottom:8px;"></div>
+        <div id="ap-fields">
+          <div class="row">
+            <div class="col"><label>Name &amp; Title</label><input type="text" id="ap-name" placeholder="e.g. Sarah Lee, AP Manager"></div>
+          </div>
+          <div class="row" style="margin-top:12px;">
+            <div class="col"><label>Phone</label><input type="tel" id="ap-phone" placeholder="(555) 000-0000"></div>
+            <div class="col"><label>Email</label><input type="email" id="ap-email" placeholder="ap@company.com"></div>
+          </div>
+        </div>
+        <div class="error-msg" id="err-ap">Please fill in contact details or select Same as.</div>
+      </div>
+
+      <!-- QA -->
+      <div class="contact-group">
+        <div class="contact-label-row">
+          <span class="contact-label">Compliance / QA Contact <span class="req">*</span></span>
+          <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
+            <label class="same-as-label"><input type="checkbox" id="qa-same-primary" onchange="applySameAsMulti('qa','primary')"> Same as Primary Contact</label>
+            <label class="same-as-label" id="qa-same-sched-wrap" style="display:none;"><input type="checkbox" id="qa-same-sched" onchange="applySameAsMulti('qa','sched')"> Same as Scheduling Contact</label>
+            <label class="same-as-label" id="qa-same-ap-wrap" style="display:none;"><input type="checkbox" id="qa-same-ap" onchange="applySameAsMulti('qa','ap')"> Same as AP Contact</label>
+          </div>
+        </div>
+        <div id="qa-same-display" class="same-as-display" style="display:none; margin-bottom:8px;"></div>
+        <div id="qa-fields">
+          <div class="row">
+            <div class="col"><label>Name &amp; Title</label><input type="text" id="qa-name" placeholder="e.g. Mike Torres, QA Lead"></div>
+          </div>
+          <div class="row" style="margin-top:12px;">
+            <div class="col"><label>Phone</label><input type="tel" id="qa-phone" placeholder="(555) 000-0000"></div>
+            <div class="col"><label>Email</label><input type="email" id="qa-email" placeholder="qa@company.com"></div>
+          </div>
+        </div>
+        <div class="error-msg" id="err-qa">Please fill in contact details or select Same as.</div>
+      </div>
+
+      <div style="margin-top:4px;">
+        <label style="margin-bottom:10px;">Additional Contacts <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-text);font-size:12px;">(optional)</span></label>
+        <div id="additional-contacts-list"></div>
+        <button type="button" class="btn-add-service" onclick="addAdditionalContact()" style="margin-top:8px;">+ Add Contact</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Systems -->
+  <div class="section" id="section-3">
+    <div class="section-header"><div class="dot"></div> Systems &amp; Requirements</div>
+    <div class="section-body">
+      <div class="row">
+        <div class="col">
+          <label>Specific Systems Required? <span class="req">*</span></label>
+          <div class="checkbox-group">
+            <div class="checkbox-row"><input type="checkbox" id="sys-sched" onchange="onSysChange()"><label for="sys-sched">Scheduling System</label></div>
+            <div class="checkbox-row"><input type="checkbox" id="sys-docs" onchange="onSysChange()"><label for="sys-docs">Job Documentation System</label></div>
+            <div class="checkbox-row"><input type="checkbox" id="sys-inv" onchange="onSysChange()"><label for="sys-inv">Invoicing System</label></div>
+            <div class="checkbox-row"><input type="checkbox" id="sys-none" onchange="onSysChange()"><label for="sys-none">None Required</label></div>
+          </div>
+          <div class="error-msg" id="err-systems">Please select at least one option.</div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:16px;" id="system-names-row">
+        <div class="col">
+          <label>System Names / Access Details <span class="req" id="system-names-req" style="display:none;">*</span></label>
+          <input type="text" id="system-names" placeholder="e.g. BuilderTrend, Procore, etc." oninput="toggleFieldURL('system-names-url-row', this)">
+          <div class="error-msg" id="err-system-names">Please enter the system name(s).</div>
+          <div id="system-names-url-row" style="display:none; margin-top:8px;">
+            <input type="url" id="system-url" placeholder="System / portal URL (optional) — https://...">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Required Forms / Templates</label>
+          <input type="text" id="required-forms" placeholder="e.g. VPI forms, aging spreadsheets, request forms..." oninput="toggleFieldURL('required-forms-url-row', this)">
+          <div id="required-forms-url-row" style="display:none; margin-top:8px;">
+            <input type="url" id="required-forms-url" placeholder="Link to forms / templates (optional) — https://...">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: POs -->
+  <div class="section" id="section-4">
+    <div class="section-header"><div class="dot"></div> Purchase Orders</div>
+    <div class="section-body">
+      <div class="row">
+        <div class="col">
+          <label>POs Required for All Jobs? <span class="req">*</span></label>
+          <div class="radio-group">
+            <div class="radio-row"><input type="radio" name="po-required" id="po-yes" value="Yes" onchange="document.getElementById('po-details').classList.toggle('visible', this.value==='Yes')"><label for="po-yes">Yes</label></div>
+            <div class="radio-row"><input type="radio" name="po-required" id="po-no" value="No" onchange="document.getElementById('po-details').classList.toggle('visible', this.value==='Yes')"><label for="po-no">No</label></div>
+          </div>
+          <div class="error-msg" id="err-po-required">Please select Yes or No.</div>
+        </div>
+      </div>
+
+      <div class="conditional" id="po-details">
+        <div class="row">
+          <div class="col">
+            <label>How Many POs Are Released? <span class="req">*</span></label>
+            <input type="text" id="po-count" placeholder="e.g. 1, 2, one per service type...">
+            <div class="error-msg" id="err-po-count">Required.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>What Is Included on Each PO? <span class="req">*</span></label>
+            <textarea id="po-included" placeholder="e.g. PO 1 covers Compliance + TBI (released after TBI). PO 2 covers DW + Final (released after Final)..." style="min-height:90px;"></textarea>
+            <div class="hint" style="margin-top:4px;">Describe what each PO covers and any groupings — this tells us what to expect and when with payments.</div>
+            <div class="error-msg" id="err-po-included">Required.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>When Are POs Released? <span class="req">*</span></label>
+            <textarea id="po-when" placeholder="e.g. Released after each service is completed. Single PO released at end of job and must be paid upfront..." style="min-height:70px;"></textarea>
+            <div class="error-msg" id="err-po-stage">Required.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>Which Jobs Require POs? <span class="req">*</span></label>
+            <div class="radio-group">
+              <div class="radio-row"><input type="radio" name="po-jobs" value="All jobs"><label>All Jobs</label></div>
+              <div class="radio-row"><input type="radio" name="po-jobs" value="Specific"><label>Specific job types</label></div>
+            </div>
+            <div class="error-msg" id="err-po-jobs">Required.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>Specific Job Types (if applicable)</label>
+            <input type="text" id="po-job-types" placeholder="Describe specific job types...">
+          </div>
+        </div>
+        <div class="contact-group">
+          <div class="contact-label">PO Missing / Incorrect — Contact <span class="req">*</span></div>
+          <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:14px;">
+            <label class="same-as-label"><input type="checkbox" id="po-same-primary" onchange="applyPOSameAs('primary')"> Same as Primary Contact</label>
+            <label class="same-as-label"><input type="checkbox" id="po-same-sched" onchange="applyPOSameAs('sched')"> Same as Scheduling Contact</label>
+            <label class="same-as-label"><input type="checkbox" id="po-same-ap" onchange="applyPOSameAs('ap')"> Same as AP Contact</label>
+            <label class="same-as-label"><input type="checkbox" id="po-same-qa" onchange="applyPOSameAs('qa')"> Same as QA Contact</label>
+          </div>
+          <div id="po-missing-same-display" class="same-as-display" style="display:none; margin-bottom:8px;"></div>
+          <div id="po-missing-fields">
+            <div class="row">
+              <div class="col"><label>Name &amp; Title</label><input type="text" id="po-missing-name" placeholder="e.g. Tom Baker, PM"></div>
+            </div>
+            <div class="row" style="margin-top:12px;">
+              <div class="col"><label>Phone</label><input type="tel" id="po-missing-phone" placeholder="(555) 000-0000"></div>
+              <div class="col"><label>Email</label><input type="email" id="po-missing-email" placeholder="pm@company.com"></div>
+            </div>
+          </div>
+          <div class="error-msg" id="err-po-contact">Please select a contact or fill in contact details.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section" id="section-5">
+    <div class="section-header"><div class="dot"></div> Pricing Agreement</div>
+    <div class="section-body">
+
+      <div class="price-group">
+        <div class="price-group-label">Core Services — included in Total Audit Fee</div>
+        <div class="row">
+          <div class="col">
+            <label>Compliance Review</label>
+            <div class="dollar-wrap"><input type="number" id="price-compliance-review" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col">
+            <label>Pre-Batt Inspection</label>
+            <div class="dollar-wrap"><input type="number" id="price-prebatt" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col">
+            <label>Pre-Drywall Inspection</label>
+            <div class="dollar-wrap"><input type="number" id="price-predrywall" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>Final Inspection</label>
+            <div class="dollar-wrap"><input type="number" id="price-final" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col">
+            <label>Air Sealing</label>
+            <div class="dollar-wrap"><input type="number" id="price-airsealing" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col"></div>
+        </div>
+      </div>
+
+      <div class="price-group">
+        <div class="price-group-label">Testing Only — included in Total Audit Fee</div>
+        <div class="row">
+          <div class="col">
+            <label>Blower Door</label>
+            <div class="dollar-wrap"><input type="number" id="price-blowerdoor" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col">
+            <label>Duct Blaster</label>
+            <div class="dollar-wrap"><input type="number" id="price-ductblaster" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col">
+            <label>Mechanical Ventilation</label>
+            <div class="dollar-wrap"><input type="number" id="price-mechvent" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>Testing Combined Price</label>
+            <div class="dollar-wrap"><input type="number" id="price-testing-combined" placeholder="0.00" min="0" step="0.01"></div>
+            <div class="hint">Use combined OR itemized testing pricing, as applicable.</div>
+          </div>
+          <div class="col"></div>
+          <div class="col"></div>
+        </div>
+      </div>
+
+      <div class="price-group">
+        <div class="price-group-label">Manuals</div>
+        <div class="row">
+          <div class="col">
+            <label>Manuals (Manual J, D &amp; S)</label>
+            <div class="dollar-wrap"><input type="number" id="price-manuals-jds" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col">
+            <label>Manuals (Manual J &amp; S)</label>
+            <div class="dollar-wrap"><input type="number" id="price-manuals-js" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col">
+            <label>Manuals — Per Option</label>
+            <div class="dollar-wrap"><input type="number" id="price-manuals-option" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>HVAC Drawing</label>
+            <div class="dollar-wrap"><input type="number" id="price-hvac-drawing" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col-2">
+            <label>Manuals Notes</label>
+            <input type="text" id="manuals-notes" placeholder="Manuals notes (optional — e.g. per model/base house details, scope clarification...)">
+          </div>
+        </div>
+      </div>
+
+      <div class="pricing-card-warning">
+        <div class="pricing-warning-title">
+          <span style="font-size:15px;">⚠️</span>
+          <label>Additional Charges — NOT included in Total Audit Fee</label>
+        </div>
+        <p class="pricing-warning-copy">These are charges/fees, not normal services. Confirm waiver checkboxes and rates clearly.</p>
+
+        <div class="pricing-grid">
+          <div class="pricing-cell">
+            <label>Compliance Revisions — Simple</label>
+            <div class="dollar-wrap"><input type="number" id="price-compliance-revisions-simple" placeholder="0.00" min="0" step="0.01"></div>
+            <div class="hint">Administrative updates such as address, lot, or minor corrections.</div>
+          </div>
+          <div class="pricing-cell">
+            <label>Compliance Revisions — Complex</label>
+            <div class="dollar-wrap"><input type="number" id="price-compliance-revisions-complex" placeholder="0.00" min="0" step="0.01"></div>
+            <div class="hint">Plan changes such as model, elevation, layout, or HVAC/equipment changes.</div>
+          </div>
+          <div class="pricing-cell">
+            <label>Repair / Retest Labor — Hourly Rate</label>
+            <div class="dollar-wrap"><input type="number" id="price-retest" placeholder="250.00" min="0" step="0.01"></div>
+            <div class="checkbox-row" style="margin-top:8px;"><input type="checkbox" id="retest-waived"><label for="retest-waived">Repair / retest fee waived</label></div>
+          </div>
+          <div class="pricing-cell">
+            <label>Trip Charge / Re-inspection Fee</label>
+            <div class="dollar-wrap"><input type="number" id="price-trip" placeholder="125.00" min="0" step="0.01"></div>
+            <div class="checkbox-row" style="margin-top:8px;"><input type="checkbox" id="trip-first-free"><label for="trip-first-free">First trip charge free</label></div>
+            <div class="checkbox-row" style="margin-top:6px;"><input type="checkbox" id="trip-waived"><label for="trip-waived">Trip charge waived</label></div>
+          </div>
+          <div class="pricing-cell">
+            <label>Additional HVAC System Fee</label>
+            <div class="dollar-wrap"><input type="number" id="price-hvac-extra" placeholder="200.00" min="0" step="0.01"></div>
+            <div class="hint">Per HVAC system over 1.</div>
+            <div class="checkbox-row" style="margin-top:8px;"><input type="checkbox" id="hvac-waived"><label for="hvac-waived">Additional HVAC fee waived</label></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="price-group" style="margin-top:18px;">
+        <div class="price-group-label">Specialty Services</div>
+        <div class="row">
+          <div class="col">
+            <label>Duct Sealing</label>
+            <div class="dollar-wrap"><input type="number" id="price-duct-sealing" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col">
+            <label>No Burn</label>
+            <div class="dollar-wrap"><input type="number" id="price-no-burn" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col">
+            <label>Certification Fee</label>
+            <div class="dollar-wrap"><input type="number" id="price-cert-fee" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>Street Cleaning</label>
+            <div class="dollar-wrap"><input type="number" id="price-street-cleaning" placeholder="0.00" min="0" step="0.01"></div>
+          </div>
+          <div class="col"></div>
+          <div class="col"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;">
+        <label style="margin-bottom:10px;">Other / Custom Services</label>
+        <div id="other-services-list">
+          <div class="other-service-row row">
+            <div class="col-2"><input type="text" placeholder="Service description..."></div>
+            <div class="col">
+              <div class="dollar-wrap"><input type="number" placeholder="0.00" min="0" step="0.01"></div>
+            </div>
+            <div style="display:flex;align-items:center;padding-top:2px;">
+              <button type="button" class="btn-remove-service" onclick="removeServiceRow(this)" title="Remove">✕</button>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-add-service" onclick="addServiceRow()">+ Add Another Service</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="section-6">
+    <div class="section-header"><div class="dot"></div> Invoicing Preferences</div>
+    <div class="section-body">
+      <div class="row">
+        <div class="col">
+          <label>Invoice Delivery Method <span class="req">*</span></label>
+          <div class="checkbox-group">
+            <div class="checkbox-row"><input type="checkbox" id="inv-email"><label for="inv-email">Email (per job)</label></div>
+            <div class="checkbox-row"><input type="checkbox" id="inv-portal"><label for="inv-portal">Upload to portal</label></div>
+            <div class="checkbox-row"><input type="checkbox" id="inv-both"><label for="inv-both">Both</label></div>
+          </div>
+          <div class="error-msg" id="err-invoice">Please select at least one delivery method.</div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:16px;">
+        <div class="col">
+          <label>Additional Invoice Information Required?</label>
+          <input type="text" id="inv-additional" placeholder="e.g. cost codes, project numbers, custom fields...">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: Payment Terms -->
+  <div class="section" id="section-7">
+    <div class="section-header"><div class="dot"></div> Payment Terms &amp; Aging</div>
+    <div class="section-body">
+      <div class="row">
+        <div class="col">
+          <label>PO &amp; Payment Terms</label>
+          <input type="text" id="po-payment-terms" placeholder="e.g. Net 30, PO required before work, payment due after inspection...">
+          <div class="hint">Confirm the payment and PO terms for this client.</div>
+        </div>
+      </div>
+      <div class="contact-group">
+        <div class="contact-label">Past Due Invoice Contact <span class="req">*</span></div>
+        <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:14px;">
+          <label class="same-as-label"><input type="checkbox" id="pd-same-primary" onchange="applyPastDueSameAs('primary')"> Same as Primary Contact</label>
+          <label class="same-as-label"><input type="checkbox" id="pd-same-sched" onchange="applyPastDueSameAs('sched')"> Same as Scheduling Contact</label>
+          <label class="same-as-label"><input type="checkbox" id="pd-same-ap" onchange="applyPastDueSameAs('ap')"> Same as AP Contact</label>
+          <label class="same-as-label"><input type="checkbox" id="pd-same-qa" onchange="applyPastDueSameAs('qa')"> Same as QA Contact</label>
+        </div>
+        <div id="pastdue-same-display" class="same-as-display" style="display:none; margin-bottom:8px;"></div>
+        <div id="pastdue-fields">
+          <div class="row">
+            <div class="col"><label>Name &amp; Title</label><input type="text" id="pastdue-name" placeholder="e.g. Chris Brown, Collections"></div>
+          </div>
+          <div class="row" style="margin-top:12px;">
+            <div class="col"><label>Phone</label><input type="tel" id="pastdue-phone" placeholder="(555) 000-0000"></div>
+            <div class="col"><label>Email</label><input type="email" id="pastdue-email" placeholder="ar@company.com"></div>
+          </div>
+        </div>
+        <div class="error-msg" id="err-pastdue">Please select a contact or fill in contact details.</div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Notification Preference <span class="req">*</span></label>
+          <div class="radio-group">
+            <div class="radio-row"><input type="radio" name="notif-pref" value="15 days past due"><label>15 Days Past Due</label></div>
+            <div class="radio-row"><input type="radio" name="notif-pref" value="30 days past due"><label>30 Days Past Due</label></div>
+          </div>
+          <div class="error-msg" id="err-notif">Required.</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Aging Report Frequency <span class="req">*</span></label>
+          <div class="radio-group">
+            <div class="radio-row"><input type="radio" name="aging-freq" value="Monthly"><label>Monthly</label></div>
+            <div class="radio-row"><input type="radio" name="aging-freq" value="Twice monthly"><label>Twice Monthly (1st &amp; 15th)</label></div>
+          </div>
+          <div class="error-msg" id="err-aging">Required.</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Monthly Report Date (if monthly)</label>
+          <input type="text" id="aging-date" placeholder="e.g. 1st, 15th, Last day of month...">
+        </div>
+        <div class="col">
+          <label>Aging Report Email</label>
+          <input type="email" id="aging-email" placeholder="If different from AP contact">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Aging Report Notes</label>
+          <input type="text" id="aging-notes" placeholder="Specific fields required (full address, job number, etc.)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8.5: Special Instructions -->
+  <div class="section" id="section-notes">
+    <div class="section-header"><div class="dot"></div> Special Instructions / Notes</div>
+    <div class="section-body">
+      <p class="hint" style="margin-bottom:14px;">Anything that doesn't fit neatly into the sections above — unique arrangements, exceptions, or context the client should be aware of.</p>
+      <div class="row">
+        <div class="col">
+          <label>Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gray-text);font-size:12px;">(optional)</span></label>
+          <textarea id="special-notes" placeholder="e.g. Client requested invoices be split by subdivision, pricing subject to review after 12 months..." style="min-height:100px;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 9: Terms -->
+  <div class="section" id="section-8">
+    <div class="section-header"><div class="dot"></div> Terms &amp; Conditions</div>
+    <div class="section-body">
+      <div class="terms-box">
+        <h4>Aging &amp; Delinquency Policy</h4>
+        <ul>
+          <li><strong>Payment Obligation:</strong> All invoices are due within agreed payment terms. Accounts exceeding 30 days past due may result in a hold on scheduling and/or services, and withholding of reports or documentation.</li>
+          <li><strong>Aging Categories:</strong> 1–30 days / 31–60 days / 61–90 days / Over 90 days past due.</li>
+          <li><strong>Disputed Charges:</strong> Any disputes must be submitted in writing — including via email — within 15 days of the invoice date. Failure to dispute within this timeframe constitutes acceptance of the charges.</li>
+          <li><strong>Partial Payments:</strong> Acceptance of partial payments does not waive Tacoma Energy's right to collect the remaining balance or pursue remedies for delinquency.</li>
+        </ul>
+      </div>
+
+      <div class="agree-row">
+        <input type="checkbox" id="terms-agree">
+        <label for="terms-agree">
+          I confirm that the information entered above accurately reflects the agreed terms and pricing discussed with this client, and I acknowledge that this document will serve as the binding onboarding agreement upon client approval.
+        </label>
+      </div>
+      <div class="error-msg" id="err-terms" style="margin-top:8px;">You must confirm before submitting.</div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-bar">
+    <button type="button" class="btn-reset" onclick="resetForm()">Clear Form</button>
+    <button type="button" class="btn-draft" onclick="saveDraft()">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="17 21 17 13 7 13 7 21"/><polyline stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="7 3 7 8 15 8"/></svg>
+      Save Draft
+    </button>
+    <button type="button" class="btn-submit" onclick="submitForm()">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      Save Onboarding Summary
+    </button>
+  </div>
+
+  <div class="success-banner" id="success-banner">
+    <h3>✓ Onboarding Summary Ready</h3>
+    <p>The onboarding summary is ready. Please save or submit according to the current internal workflow.</p>
+  </div>
+
+  <div id="draft-banner" style="display:none;background:#EBF4FB;border:1px solid #A9D4F5;border-radius:10px;padding:20px 28px;text-align:center;margin-top:24px;">
+    <h3 style="color:#1877B8;font-size:16px;margin-bottom:6px;">✓ Draft Saved</h3>
+    <p style="color:#374151;font-size:14px;">Your progress has been saved. It will be here when you come back — even if you close this tab.</p>
+  </div>
+
+</div>
+
+<script>
+
+  // Form data plumbing
+  const CLIENT_DIRECTORY = [];
+  let filteredClientRecords = [];
+
+  const PREFILL_FIELDS = {
+    accountId: null,
+    rep: 'rep',
+    date: 'form-date', formDate: 'form-date',
+    companyName: 'company-name', client: 'company-name', builder: 'company-name',
+    companyDivision: 'company-division', division: 'company-division', divisionCity: 'company-division', city: 'company-division',
+    companyState: 'company-state', state: 'company-state',
+    projectType: 'project-type',
+    billingStreet: 'billing-street', billingAddress: 'billing-street',
+    billingCity: 'billing-city',
+    billingState: 'billing-state',
+    billingZip: 'billing-zip', billingZIP: 'billing-zip',
+    poPaymentTerms: 'po-payment-terms', paymentTerms: 'po-payment-terms',
+    priceComplianceReview: 'price-compliance-review', complianceReview: 'price-compliance-review',
+    priceComplianceRevisionsSimple: 'price-compliance-revisions-simple', complianceRevisionsSimple: 'price-compliance-revisions-simple',
+    priceComplianceRevisionsComplex: 'price-compliance-revisions-complex', complianceRevisionsComplex: 'price-compliance-revisions-complex',
+    pricePrebatt: 'price-prebatt', preBatt: 'price-prebatt', prebatt: 'price-prebatt',
+    pricePredrywall: 'price-predrywall', preDrywall: 'price-predrywall', predrywall: 'price-predrywall',
+    priceFinal: 'price-final', final: 'price-final',
+    priceBlowerDoor: 'price-blowerdoor', blowerDoor: 'price-blowerdoor',
+    priceDuctBlaster: 'price-ductblaster', ductBlaster: 'price-ductblaster',
+    priceMechanicalVentilation: 'price-mechvent', mechVent: 'price-mechvent', mechanicalVentilation: 'price-mechvent',
+    priceTestingCombined: 'price-testing-combined', testingCombined: 'price-testing-combined',
+    priceAirSealing: 'price-airsealing', airSealing: 'price-airsealing',
+    priceManualsJDS: 'price-manuals-jds', manualsJDS: 'price-manuals-jds',
+    priceManualsJS: 'price-manuals-js', manualsJS: 'price-manuals-js',
+    priceManualsOption: 'price-manuals-option', manualsOption: 'price-manuals-option',
+    manualsNotes: 'manuals-notes',
+    priceHVACDrawing: 'price-hvac-drawing', hvacDrawing: 'price-hvac-drawing',
+    priceCertificationFee: 'price-cert-fee', certFee: 'price-cert-fee', certificationFee: 'price-cert-fee',
+    priceDuctSealing: 'price-duct-sealing', ductSealing: 'price-duct-sealing',
+    priceNoBurn: 'price-no-burn', noBurn: 'price-no-burn',
+    priceStreetCleaning: 'price-street-cleaning', streetCleaning: 'price-street-cleaning',
+    priceRetest: 'price-retest', retest: 'price-retest',
+    retestWaived: 'retest-waived',
+    priceTrip: 'price-trip', trip: 'price-trip', tripCharge: 'price-trip',
+    tripFirstFree: 'trip-first-free',
+    tripWaived: 'trip-waived',
+    priceHVACExtra: 'price-hvac-extra', hvacExtra: 'price-hvac-extra', additionalHVAC: 'price-hvac-extra',
+    hvacWaived: 'hvac-waived',
+    systemNames: 'system-names', systemURL: 'system-url',
+    requiredForms: 'required-forms', requiredFormsURL: 'required-forms-url',
+    invoiceAdditional: 'inv-additional',
+    agingDate: 'aging-date', agingEmail: 'aging-email', agingNotes: 'aging-notes',
+    specialNotes: 'special-notes'
+  };
+
+  const CHECKBOX_FIELDS = new Set(['retest-waived','trip-first-free','trip-waived','hvac-waived','sys-sched','sys-docs','sys-inv','sys-none','inv-email','inv-portal','inv-both']);
+
+  function toBool(value) {
+    if (typeof value === 'boolean') return value;
+    if (value == null) return false;
+    return ['1','true','yes','y','checked','waived'].includes(String(value).trim().toLowerCase());
+  }
+
+  function setFieldValue(id, value) {
+    if (!id || value == null || value === '') return false;
+    const el = document.getElementById(id);
+    if (!el) return false;
+    if (el.type === 'checkbox') el.checked = toBool(value);
+    else if (el.type === 'radio') el.checked = String(el.value).toLowerCase() === String(value).toLowerCase();
+    else el.value = String(value);
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    return true;
+  }
+
+  function setRadioValue(name, value) {
+    if (value == null || value === '') return false;
+    const match = Array.from(document.querySelectorAll(`input[name="${name}"]`)).find(r => String(r.value).toLowerCase() === String(value).toLowerCase());
+    if (!match) return false;
+    match.checked = true;
+    match.dispatchEvent(new Event('change', { bubbles: true }));
+    return true;
+  }
+
+  function applyPayload(payload, sourceLabel = 'source') {
+    let applied = 0;
+    Object.entries(payload || {}).forEach(([key, value]) => {
+      if (value == null || value === '') return;
+      if (key === 'poRequired') { if (setRadioValue('po-required', value)) applied++; return; }
+      if (key === 'poJobs') { if (setRadioValue('po-jobs', value)) applied++; return; }
+      if (key === 'notifPref') { if (setRadioValue('notif-pref', value)) applied++; return; }
+      if (key === 'agingFreq') { if (setRadioValue('aging-freq', value)) applied++; return; }
+      if (key === 'systemsRequired') {
+        const v = String(value).toLowerCase();
+        setFieldValue('sys-sched', v.includes('sched'));
+        setFieldValue('sys-docs', v.includes('document') || v.includes('docs'));
+        setFieldValue('sys-inv', v.includes('invoic'));
+        setFieldValue('sys-none', v.includes('none'));
+        applied++; return;
+      }
+      if (key === 'invoiceDelivery') {
+        const v = String(value).toLowerCase();
+        setFieldValue('inv-email', v.includes('email'));
+        setFieldValue('inv-portal', v.includes('portal'));
+        setFieldValue('inv-both', v.includes('both'));
+        applied++; return;
+      }
+      const id = PREFILL_FIELDS[key] || (document.getElementById(key) ? key : null);
+      if (setFieldValue(id, value)) applied++;
+    });
+    document.getElementById('po-details')?.classList.toggle('visible', document.querySelector('input[name="po-required"]:checked')?.value === 'Yes');
+    updateDownstreamOptions?.();
+    updateProgress?.();
+    return applied;
+  }
+
+  function applyPrefillFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    if (![...params.keys()].length) return false;
+    const payload = {};
+    params.forEach((value, key) => payload[key] = value);
+    const applied = applyPayload(payload, 'URL');
+    if (applied > 0) {
+      setSetupMode('new');
+      // Prefill occurs silently so the form stays clean for onboarding users.
+      return true;
+    }
+    return false;
+  }
+
+  function showPrefillStatus(message) {
+    const box = document.getElementById('prefill-status');
+    if (!box) return;
+    box.textContent = message;
+    box.style.display = 'block';
+  }
+
+  function setSetupMode(mode) {
+    document.querySelectorAll('input[name="setup-mode"]').forEach(r => r.checked = r.value === mode);
+    document.getElementById('mode-pill-new')?.classList.toggle('active', mode === 'new');
+    document.getElementById('mode-pill-existing')?.classList.toggle('active', mode === 'existing');
+    document.getElementById('existing-client-panel')?.classList.toggle('visible', mode === 'existing');
+  }
+
+  function initClientLookup() {
+    filteredClientRecords = CLIENT_DIRECTORY.slice();
+    renderClientLookup();
+  }
+
+  function renderClientLookup() {
+    const search = document.getElementById('client-search');
+    const select = document.getElementById('client-record-select');
+    if (!search || !select) return;
+    const enabled = CLIENT_DIRECTORY.length > 0;
+    search.disabled = !enabled;
+    select.disabled = !enabled;
+    select.innerHTML = enabled ? '<option value="">Select client...</option>' : '<option value="">Client lookup not available</option>';
+    filteredClientRecords.forEach((record, i) => {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = [record.companyName || record.client || record.builder, record.companyDivision || record.division, record.companyState || record.state, record.accountId].filter(Boolean).join(' — ');
+      select.appendChild(opt);
+    });
+  }
+
+  function filterClientLookup() {
+    const q = (document.getElementById('client-search')?.value || '').toLowerCase();
+    filteredClientRecords = CLIENT_DIRECTORY.filter(record => JSON.stringify(record).toLowerCase().includes(q));
+    renderClientLookup();
+  }
+
+  function loadSelectedClientRecord() {
+    const idx = document.getElementById('client-record-select')?.value;
+    if (idx === '') return;
+    const record = filteredClientRecords[Number(idx)];
+    const applied = applyPayload(record, 'client directory');
+    showPrefillStatus(`Loaded ${applied} field${applied === 1 ? '' : 's'}. Review and update as needed.`);
+  }
+  // Progress tracker
+  const sectionIds = ['section-1','section-2','section-3','section-4','section-5','section-6','section-7','section-notes','section-8'];
+  const sectionLabels = ['Section 1 of 8','Section 2 of 8','Section 3 of 8','Section 4 of 8','Section 5 of 8','Section 6 of 8','Section 7 of 8','Notes','Section 8 of 8'];
+
+  function updateProgress() {
+    const scrollY = window.scrollY + window.innerHeight * 0.4;
+    let current = 0;
+    sectionIds.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el && el.offsetTop <= scrollY) current = i;
+    });
+    const fill = Math.round(((current + 1) / 8) * 100);
+    document.getElementById('progress-fill').style.width = Math.min(fill, 100) + '%';
+    document.getElementById('progress-label').textContent = sectionLabels[current] || 'Section 8 of 8';
+    document.querySelectorAll('.prog-step').forEach((s, i) => {
+      s.classList.toggle('active', i === current);
+      s.classList.toggle('done', i < current);
+    });
+  }
+
+  function scrollToSection(n) {
+    const id = n <= 8 ? 'section-' + n : 'section-notes';
+    const el = document.getElementById(id) || document.getElementById('section-' + n);
+    if (!el) return;
+    const progressBar = document.getElementById('progress-bar');
+    const offset = progressBar ? progressBar.offsetHeight + 12 : 80;
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+
+  // Save Draft — collects all fields into localStorage
+  function saveDraft() {
+    try {
+      const data = {};
+      document.querySelectorAll('input[id], select[id], textarea[id]').forEach(el => {
+        if (el.type !== 'checkbox' && el.type !== 'radio') data[el.id] = el.value;
+      });
+      document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(el => {
+        data['checked_' + (el.id || el.name + '_' + el.value)] = true;
+      });
+      const clientName = document.getElementById('company-name')?.value?.trim() || 'Unknown Client';
+      const draftMeta = { clientName, time: new Date().toLocaleString() };
+      localStorage.setItem('tacoma_onboarding_draft', JSON.stringify(data));
+      localStorage.setItem('tacoma_onboarding_draft_meta', JSON.stringify(draftMeta));
+      document.getElementById('draft-banner').style.display = 'block';
+      document.getElementById('draft-banner').scrollIntoView({ behavior: 'smooth' });
+      updateDraftIndicator();
+      setTimeout(() => { document.getElementById('draft-banner').style.display = 'none'; }, 4000);
+    } catch(e) {
+      alert('Draft could not be saved — your browser may have storage restrictions.');
+    }
+  }
+
+  // Clear draft from storage
+  function clearDraft() {
+    localStorage.removeItem('tacoma_onboarding_draft');
+    localStorage.removeItem('tacoma_onboarding_draft_meta');
+    updateDraftIndicator();
+  }
+
+  // Show/hide draft indicator
+  function updateDraftIndicator() {
+    const meta = localStorage.getItem('tacoma_onboarding_draft_meta');
+    const indicator = document.getElementById('draft-indicator');
+    if (!indicator) return;
+    if (meta) {
+      const { clientName, time } = JSON.parse(meta);
+      indicator.textContent = `Draft saved: ${clientName} — ${time}`;
+      indicator.style.display = 'block';
+    } else {
+      indicator.style.display = 'none';
+    }
+  }
+
+  // Load Draft on page open
+  function loadDraft() {
+    try {
+      const saved = localStorage.getItem('tacoma_onboarding_draft');
+      const meta = localStorage.getItem('tacoma_onboarding_draft_meta');
+      if (!saved) return;
+      const { clientName, time } = meta ? JSON.parse(meta) : { clientName: 'Unknown Client', time: 'earlier' };
+      const load = confirm(`You have a saved draft for "${clientName}" from ${time}.\n\nLoad it?`);
+      if (!load) { clearDraft(); return; }
+      const data = JSON.parse(saved);
+      Object.entries(data).forEach(([id, val]) => {
+        if (id.startsWith('checked_')) {
+          const realId = id.replace('checked_', '');
+          const el = document.getElementById(realId);
+          if (el) { el.checked = true; el.dispatchEvent(new Event('change')); }
+        } else {
+          const el = document.getElementById(id);
+          if (el && el.type !== 'checkbox' && el.type !== 'radio') {
+            el.value = val;
+            el.dispatchEvent(new Event('input'));
+          }
+        }
+      });
+      updateProgress();
+      updateDownstreamOptions();
+    } catch(e) { /* no draft */ }
+  }
+
+  // Simple same-as helpers for key contacts
+  function getContactInfo(prefix) {
+    if (prefix === 'primary') return {
+      name:  document.getElementById('primary-contact')?.value?.trim() || '',
+      phone: document.getElementById('phone')?.value?.trim() || '',
+      email: document.getElementById('email')?.value?.trim() || '',
+    };
+    if (prefix === 'sched' && document.getElementById('sched-same')?.checked) return getContactInfo('primary');
+    if (prefix === 'ap') {
+      if (document.getElementById('ap-same-primary')?.checked) return getContactInfo('primary');
+      if (document.getElementById('ap-same-sched')?.checked)   return getContactInfo('sched');
+    }
+    if (prefix === 'qa') {
+      if (document.getElementById('qa-same-primary')?.checked) return getContactInfo('primary');
+      if (document.getElementById('qa-same-sched')?.checked)   return getContactInfo('sched');
+      if (document.getElementById('qa-same-ap')?.checked)      return getContactInfo('ap');
+    }
+    return {
+      name:  document.getElementById(`${prefix}-name`)?.value?.trim() || '',
+      phone: document.getElementById(`${prefix}-phone`)?.value?.trim() || '',
+      email: document.getElementById(`${prefix}-email`)?.value?.trim() || '',
+    };
+  }
+
+  function showContactDisplay(prefix, info) {
+    const display = document.getElementById(`${prefix}-same-display`);
+    const fields  = document.getElementById(`${prefix}-fields`);
+    if (info && info.name) {
+      display.innerHTML = `<strong>${info.name}</strong> &nbsp;|&nbsp; ${info.phone||'—'} &nbsp;|&nbsp; ${info.email||'—'}`;
+      display.style.display = 'block';
+      fields.style.display  = 'none';
+    } else {
+      display.style.display = 'none';
+      fields.style.display  = 'block';
+    }
+  }
+
+  function applySameAs(prefix) {
+    const checked = document.getElementById(`${prefix}-same`)?.checked;
+    showContactDisplay(prefix, checked ? getContactInfo('primary') : null);
+    updateDownstreamOptions();
+    buildPastDueOptions();
+  }
+
+  function applySameAsMulti(prefix, source) {
+    // Uncheck all other same-as for this prefix
+    ['primary','sched','ap'].forEach(s => {
+      if (s !== source) {
+        const el = document.getElementById(`${prefix}-same-${s}`);
+        if (el) el.checked = false;
+      }
+    });
+    const checked = document.getElementById(`${prefix}-same-${source}`)?.checked;
+    showContactDisplay(prefix, checked ? getContactInfo(source) : null);
+    updateDownstreamOptions();
+    buildPastDueOptions();
+  }
+
+  function updateDownstreamOptions() {
+    const schedName = getContactInfo('sched').name;
+    const apName    = getContactInfo('ap').name;
+    const el = (id) => document.getElementById(id);
+    if (el('ap-same-sched-wrap'))  el('ap-same-sched-wrap').style.display  = schedName ? 'block' : 'none';
+    if (el('qa-same-sched-wrap'))  el('qa-same-sched-wrap').style.display  = schedName ? 'block' : 'none';
+    if (el('qa-same-ap-wrap'))     el('qa-same-ap-wrap').style.display     = apName    ? 'block' : 'none';
+  }
+
+  // Watch sched/ap name fields to update downstream options
+  document.getElementById('sched-name')?.addEventListener('input', updateDownstreamOptions);
+  document.getElementById('ap-name')?.addEventListener('input', updateDownstreamOptions);
+  document.getElementById('primary-contact')?.addEventListener('input', buildPastDueOptions);
+  document.getElementById('phone')?.addEventListener('input', buildPastDueOptions);
+  document.getElementById('email')?.addEventListener('input', buildPastDueOptions);
+
+  // Other services rows
+  function addServiceRow() {
+    const list = document.getElementById('other-services-list');
+    const row = document.createElement('div');
+    row.className = 'other-service-row row';
+    row.innerHTML = `
+      <div class="col-2"><input type="text" placeholder="Service description..."></div>
+      <div class="col"><div class="dollar-wrap"><input type="number" placeholder="0.00" min="0" step="0.01"></div></div>
+      <div style="display:flex;align-items:center;padding-top:2px;">
+        <button type="button" class="btn-remove-service" onclick="removeServiceRow(this)" title="Remove">✕</button>
+      </div>`;
+    list.appendChild(row);
+  }
+
+  function removeServiceRow(btn) {
+    const rows = document.querySelectorAll('.other-service-row');
+    if (rows.length > 1) btn.closest('.other-service-row').remove();
+    else { btn.closest('.other-service-row').querySelectorAll('input').forEach(i => i.value = ''); }
+  }
+
+  // PO details — dynamic included fields based on count selection
+  function updatePODetails() {
+    const val = document.querySelector('input[name="po-count"]:checked')?.value;
+    const section = document.getElementById('po-included-section');
+    const fields = document.getElementById('po-included-fields');
+    if (!val || val === 'One PO for all services') {
+      section.style.display = val ? 'block' : 'none';
+      if (val) fields.innerHTML = `
+        <div class="row"><div class="col">
+          <label>What does the single PO cover?</label>
+          <input type="text" id="po-inc-1" placeholder="e.g. All services — Compliance, TBI, DW, Final...">
+        </div></div>`;
+    } else if (val === 'Two POs') {
+      section.style.display = 'block';
+      fields.innerHTML = `
+        <div class="row" style="margin-bottom:12px;"><div class="col">
+          <label>PO 1 — What's included?</label>
+          <input type="text" id="po-inc-1" placeholder="e.g. Compliance + TBI (paid after TBI completed)">
+        </div></div>
+        <div class="row"><div class="col">
+          <label>PO 2 — What's included?</label>
+          <input type="text" id="po-inc-2" placeholder="e.g. DW + Final (paid after Final completed)">
+        </div></div>`;
+    } else if (val === 'One PO per service type') {
+      section.style.display = 'block';
+      fields.innerHTML = `
+        <div class="row"><div class="col">
+          <label>Describe the breakdown</label>
+          <input type="text" id="po-inc-1" placeholder="e.g. Separate PO for each inspection type — Compliance, TBI, DW, Final">
+        </div></div>`;
+    } else if (val === 'Other') {
+      section.style.display = 'block';
+      fields.innerHTML = `
+        <div class="row"><div class="col">
+          <label>Describe the PO structure</label>
+          <textarea id="po-inc-1" placeholder="Describe how POs are structured and what each covers..."></textarea>
+        </div></div>`;
+    }
+  }
+
+  // PO when — show/hide other text
+  document.getElementById('po-when-other')?.addEventListener('change', function() {
+    const t = document.getElementById('po-when-other-text');
+    if (t) t.style.display = this.checked ? 'block' : 'none';
+  });
+
+  // Additional contacts
+  function addAdditionalContact() {
+    const list = document.getElementById('additional-contacts-list');
+    const idx = list.children.length + 1;
+    const card = document.createElement('div');
+    card.className = 'contact-group';
+    card.style.marginBottom = '12px';
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span class="contact-label">Contact ${idx}</span>
+        <button type="button" class="btn-remove-service" onclick="this.closest('.contact-group').remove();renumberContacts();" title="Remove">✕ Remove</button>
+      </div>
+      <div class="row">
+        <div class="col"><label>Name &amp; Title</label><input type="text" class="ac-name" placeholder="e.g. Dave Kim, Project Manager"></div>
+      </div>
+      <div class="row" style="margin-top:12px;">
+        <div class="col"><label>Phone</label><input type="tel" class="ac-phone" placeholder="(555) 000-0000"></div>
+        <div class="col"><label>Email</label><input type="email" class="ac-email" placeholder="contact@company.com"></div>
+      </div>
+      <div class="row" style="margin-top:12px;">
+        <div class="col"><label>Role / Reason for Contact</label><input type="text" class="ac-note" placeholder="e.g. Receives aging reports, backup scheduling contact..."></div>
+      </div>`;
+    list.appendChild(card);
+  }
+
+  function renumberContacts() {
+    document.querySelectorAll('#additional-contacts-list .contact-group').forEach((card, i) => {
+      const label = card.querySelector('.contact-label');
+      if (label) label.textContent = `Contact ${i + 1}`;
+    });
+  }
+
+  function toggleFieldURL(rowId, input) {
+    const row = document.getElementById(rowId);
+    if (row) row.style.display = input.value.trim() ? 'block' : 'none';
+  }
+
+  // System checkbox logic - None Required mutually exclusive, show/hide system names
+  function onSysChange() {
+    const noneChecked = document.getElementById('sys-none').checked;
+    const anySystem = document.getElementById('sys-sched').checked || document.getElementById('sys-docs').checked || document.getElementById('sys-inv').checked;
+    if (noneChecked && anySystem) {
+      document.getElementById('sys-none').checked = false;
+    }
+    const showNames = document.getElementById('sys-sched').checked || document.getElementById('sys-docs').checked || document.getElementById('sys-inv').checked;
+    document.getElementById('system-names-req').style.display = showNames ? 'inline' : 'none';
+  }
+
+  function applyPastDueSameAs(source) {
+    ['primary','sched','ap','qa'].forEach(s => {
+      if (s !== source) { const el = document.getElementById(`pd-same-${s}`); if (el) el.checked = false; }
+    });
+    const checked = document.getElementById(`pd-same-${source}`)?.checked;
+    const display = document.getElementById('pastdue-same-display');
+    const fields  = document.getElementById('pastdue-fields');
+    if (checked) {
+      const info = getContactInfo(source);
+      display.innerHTML = `<strong>${info.name||'—'}</strong> &nbsp;|&nbsp; ${info.phone||'—'} &nbsp;|&nbsp; ${info.email||'—'}`;
+      display.style.display = 'block';
+      fields.style.display  = 'none';
+    } else {
+      display.style.display = 'none';
+      fields.style.display  = 'block';
+    }
+  }
+
+  function applyPOSameAs(source) {
+    ['primary','sched','ap','qa'].forEach(s => {
+      if (s !== source) { const el = document.getElementById(`po-same-${s}`); if (el) el.checked = false; }
+    });
+    const checked = document.getElementById(`po-same-${source}`)?.checked;
+    const display = document.getElementById('po-missing-same-display');
+    const fields  = document.getElementById('po-missing-fields');
+    if (checked) {
+      const info = getContactInfo(source);
+      display.innerHTML = `<strong>${info.name||'—'}</strong> &nbsp;|&nbsp; ${info.phone||'—'} &nbsp;|&nbsp; ${info.email||'—'}`;
+      display.style.display = 'block';
+      fields.style.display  = 'none';
+    } else {
+      display.style.display = 'none';
+      fields.style.display  = 'block';
+    }
+  }
+
+  // Rebuild past due options when Payment section comes into view
+  // Also rebuild when key contact fields change
+  // Build on page load — handled in init block at bottom of script
+  function showErr(id, show) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = show ? 'block' : 'none';
+  }
+  function markField(id, error) {
+    const el = document.getElementById(id);
+    if (el) error ? el.classList.add('error') : el.classList.remove('error');
+  }
+
+  function validateContact(prefix, errId) {
+    const info = getContactInfo(prefix);
+    const ok = !!info.name;
+    showErr(errId, !ok);
+    return ok;
+  }
+
+  function validate() {
+    let valid = true;
+
+    // Rep
+    const rep = document.getElementById('rep');
+    const repOk = !!rep.value;
+    markField('rep', !repOk); showErr('err-rep', !repOk);
+    if (!repOk) valid = false;
+
+    // Company name
+    const nameOk = !!document.getElementById('company-name').value.trim();
+    markField('company-name', !nameOk); showErr('err-company', !nameOk);
+    if (!nameOk) valid = false;
+
+    // Primary contact name
+    const contactOk = !!document.getElementById('primary-contact').value.trim();
+    markField('primary-contact', !contactOk); showErr('err-contact', !contactOk);
+    if (!contactOk) valid = false;
+
+    // Primary phone
+    const phoneOk = !!document.getElementById('phone').value.trim();
+    markField('phone', !phoneOk);
+    if (!phoneOk) valid = false;
+
+    // Primary email
+    const emailOk = !!document.getElementById('email').value.trim();
+    markField('email', !emailOk);
+    if (!emailOk) valid = false;
+
+    // Billing address
+    const addrOk = !!document.getElementById('billing-address').value.trim();
+    markField('billing-address', !addrOk);
+    if (!addrOk) valid = false;
+
+    // Key contacts - name filled OR same-as checked
+    if (!validateContact('sched', 'err-sched')) valid = false;
+    if (!validateContact('ap', 'err-ap')) valid = false;
+    if (!validateContact('qa', 'err-qa')) valid = false;
+
+    // Systems - at least one checked
+    const sysOk = document.getElementById('sys-sched').checked || document.getElementById('sys-docs').checked || document.getElementById('sys-inv').checked || document.getElementById('sys-none').checked;
+    showErr('err-systems', !sysOk);
+    if (!sysOk) valid = false;
+
+    // System names required if any system checked
+    const anySystem = document.getElementById('sys-sched').checked || document.getElementById('sys-docs').checked || document.getElementById('sys-inv').checked;
+    if (anySystem) {
+      const sysNamesOk = !!document.getElementById('system-names').value.trim();
+      markField('system-names', !sysNamesOk); showErr('err-system-names', !sysNamesOk);
+      if (!sysNamesOk) valid = false;
+    } else {
+      markField('system-names', false); showErr('err-system-names', false);
+    }
+
+    // PO required - must select
+    const poReqVal = document.querySelector('input[name="po-required"]:checked')?.value;
+    showErr('err-po-required', !poReqVal);
+    if (!poReqVal) valid = false;
+
+    // PO sub-fields only if Yes
+    if (poReqVal === 'Yes') {
+      const poCountOk = !!document.getElementById('po-count')?.value?.trim();
+      showErr('err-po-count', !poCountOk);
+      if (!poCountOk) valid = false;
+
+      const poIncludedOk = !!document.getElementById('po-included')?.value?.trim();
+      showErr('err-po-included', !poIncludedOk);
+      if (!poIncludedOk) valid = false;
+
+      const poStageOk = !!document.getElementById('po-when')?.value?.trim();
+      showErr('err-po-stage', !poStageOk);
+      if (!poStageOk) valid = false;
+
+      const poJobsOk = !!document.querySelector('input[name="po-jobs"]:checked');
+      showErr('err-po-jobs', !poJobsOk);
+      if (!poJobsOk) valid = false;
+
+      // PO missing contact - same-as checked or name filled
+      const poSameChecked = ['primary','sched','ap','qa'].some(s => document.getElementById(`po-same-${s}`)?.checked);
+      const poMissingNameVal = document.getElementById('po-missing-name')?.value?.trim();
+      const poContactOk = poSameChecked || !!poMissingNameVal;
+      showErr('err-po-contact', !poContactOk);
+      if (!poContactOk) valid = false;
+    }
+
+    // Invoice delivery - at least one checked
+    const invOk = document.getElementById('inv-email').checked || document.getElementById('inv-portal').checked || document.getElementById('inv-both').checked;
+    showErr('err-invoice', !invOk);
+    if (!invOk) valid = false;
+
+    // Past due contact - same-as checked or name filled
+    const pdSameChecked = ['primary','sched','ap','qa'].some(s => document.getElementById(`pd-same-${s}`)?.checked);
+    const pdName = document.getElementById('pastdue-name')?.value?.trim();
+    const pdOk = pdSameChecked || !!pdName;
+    showErr('err-pastdue', !pdOk);
+    if (!pdOk) valid = false;
+
+    // Notification preference
+    const notifOk = !!document.querySelector('input[name="notif-pref"]:checked');
+    showErr('err-notif', !notifOk);
+    if (!notifOk) valid = false;
+
+    // Aging frequency
+    const agingOk = !!document.querySelector('input[name="aging-freq"]:checked');
+    showErr('err-aging', !agingOk);
+    if (!agingOk) valid = false;
+
+    // Terms checkbox
+    const termsOk = document.getElementById('terms-agree').checked;
+    showErr('err-terms', !termsOk);
+    if (!termsOk) valid = false;
+
+    return valid;
+  }
+
+  function collectData() {
+    const getVal = id => document.getElementById(id)?.value?.trim() || '';
+    const getChecked = id => document.getElementById(id)?.checked || false;
+    const getRadio = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
+
+    // Key contacts: use primary if same-as checked
+    const primaryName = getVal('primary-contact');
+    const primaryPhone = getVal('phone');
+    const primaryEmail = getVal('email');
+
+    const resolveContact = (prefix) => {
+      const info = getContactInfo(prefix);
+      return { name: info.name, phone: info.phone, email: info.email };
+    };
+
+    const invoiceMethod = [];
+    if (getChecked('inv-email')) invoiceMethod.push('Email per job');
+    if (getChecked('inv-portal')) invoiceMethod.push('Upload to portal');
+    if (getChecked('inv-both')) invoiceMethod.push('Both');
+
+    const systems = [];
+    if (getChecked('sys-sched')) systems.push('Scheduling');
+    if (getChecked('sys-docs')) systems.push('Job Documentation');
+    if (getChecked('sys-inv')) systems.push('Invoicing');
+    if (getChecked('sys-none')) systems.push('None Required');
+
+    // Additional contacts
+    const additionalContacts = [];
+    document.querySelectorAll('#additional-contacts-list .contact-group').forEach(card => {
+      const name  = card.querySelector('.ac-name')?.value?.trim();
+      const phone = card.querySelector('.ac-phone')?.value?.trim();
+      const email = card.querySelector('.ac-email')?.value?.trim();
+      const note  = card.querySelector('.ac-note')?.value?.trim();
+      if (name || email) additionalContacts.push({ name, phone, email, note });
+    });
+    const otherServices = [];
+    document.querySelectorAll('.other-service-row').forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      const svc = inputs[0]?.value?.trim();
+      const price = inputs[1]?.value?.trim();
+      if (svc || price) otherServices.push({ service: svc, price: price });
+    });
+
+    const sched = resolveContact('sched');
+    const ap = resolveContact('ap');
+    const qa = resolveContact('qa');
+
+    // PO missing contact
+    const poSrc = ['primary','sched','ap','qa'].find(s => document.getElementById(`po-same-${s}`)?.checked);
+    const poInfo = poSrc ? getContactInfo(poSrc) : { name: getVal('po-missing-name'), phone: getVal('po-missing-phone'), email: getVal('po-missing-email') };
+
+    // Past due contact
+    const pdSrc = ['primary','sched','ap','qa'].find(s => document.getElementById(`pd-same-${s}`)?.checked);
+    const pdInfo = pdSrc ? getContactInfo(pdSrc) : { name: getVal('pastdue-name'), phone: getVal('pastdue-phone'), email: getVal('pastdue-email') };
+
+    return {
+      date: getVal('form-date'),
+      rep: getVal('rep'),
+      companyName: getVal('company-name'),
+      companyDivision: getVal('company-division'),
+      companyState: getVal('company-state'),
+      projectType: getVal('project-type'),
+      billingStreet: getVal('billing-street'),
+      billingCity: getVal('billing-city'),
+      billingState: getVal('billing-state'),
+      billingZip: getVal('billing-zip'),
+      primaryContact: primaryName,
+      primaryPhone,
+      primaryEmail,
+      schedName: sched.name, schedPhone: sched.phone, schedEmail: sched.email,
+      apName: ap.name, apPhone: ap.phone, apEmail: ap.email,
+      qaName: qa.name, qaPhone: qa.phone, qaEmail: qa.email,
+      additionalContacts,
+      systemsRequired: systems.join(', '),
+      systemNames: getVal('system-names'),
+      systemURL: getVal('system-url'),
+      requiredForms: getVal('required-forms'),
+      requiredFormsURL: getVal('required-forms-url'),
+      poRequired: getRadio('po-required'),
+      poCount: getVal('po-count'),
+      poIncluded: getVal('po-included'),
+      poWhen: getVal('po-when'),
+      poJobs: getRadio('po-jobs'),
+      poJobTypes: getVal('po-job-types'),
+      poMissingName: poInfo.name, poMissingPhone: poInfo.phone, poMissingEmail: poInfo.email,
+      priceComplianceReview: getVal('price-compliance-review'),
+      priceComplianceRevisionsSimple: getVal('price-compliance-revisions-simple'),
+      priceComplianceRevisionsComplex: getVal('price-compliance-revisions-complex'),
+      pricePrebatt: getVal('price-prebatt'),
+      pricePredrywall: getVal('price-predrywall'),
+      priceFinal: getVal('price-final'),
+      priceBlowerDoor: getVal('price-blowerdoor'),
+      priceDuctBlaster: getVal('price-ductblaster'),
+      priceMechanicalVentilation: getVal('price-mechvent'),
+      priceTestingCombined: getVal('price-testing-combined'),
+      priceAirSealing: getVal('price-airsealing'),
+      priceManualsJDS: getVal('price-manuals-jds'),
+      priceManualsJS: getVal('price-manuals-js'),
+      priceManualsOption: getVal('price-manuals-option'),
+      manualsNotes: getVal('manuals-notes'),
+      priceHVACDrawing: getVal('price-hvac-drawing'),
+      priceCertificationFee: getVal('price-cert-fee'),
+      priceDuctSealing: getVal('price-duct-sealing'),
+      priceNoBurn: getVal('price-no-burn'),
+      priceStreetCleaning: getVal('price-street-cleaning'),
+      priceRetest: getVal('price-retest'),
+      retestWaived: getChecked('retest-waived') ? 'Yes' : '',
+      priceTrip: getVal('price-trip'),
+      tripFirstFree: getChecked('trip-first-free') ? 'Yes' : '',
+      tripWaived: getChecked('trip-waived') ? 'Yes' : '',
+      priceHVACExtra: getVal('price-hvac-extra'),
+      hvacWaived: getChecked('hvac-waived') ? 'Yes' : '',
+      otherServices,
+      invoiceDelivery: invoiceMethod.join(', '),
+      invoiceAdditional: getVal('inv-additional'),
+      pastdueName: pdInfo.name, pastduePhone: pdInfo.phone, pastdueEmail: pdInfo.email,
+      poPaymentTerms: getVal('po-payment-terms'),
+      notifPref: getRadio('notif-pref'),
+      agingFreq: getRadio('aging-freq'),
+      agingDate: getVal('aging-date'),
+      agingEmail: getVal('aging-email'),
+      agingNotes: getVal('aging-notes'),
+      specialNotes: getVal('special-notes'),
+    };
+  }
+
+  function submitForm() {
+    if (!validate()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const data = collectData();
+    console.log('Form Data (ready for Power Automate):', JSON.stringify(data, null, 2));
+
+    // TODO: Replace this with Power Automate HTTP trigger URL
+    // fetch('YOUR_POWER_AUTOMATE_URL', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) })
+
+    document.getElementById('success-banner').style.display = 'block';
+    document.getElementById('success-banner').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function resetForm() {
+    if (!confirm('Clear all fields and delete the saved draft?')) return;
+    document.querySelectorAll('input:not(#form-date), select, textarea').forEach(el => {
+      if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+      else el.value = '';
+    });
+    document.getElementById('po-details').classList.remove('visible');
+    document.getElementById('success-banner').style.display = 'none';
+    clearDraft();
+  }
+
+  // Init
+  updateDownstreamOptions();
+  updateProgress();
+  updateDraftIndicator();
+  const urlPrefilled = applyPrefillFromURL();
+  if (!urlPrefilled) loadDraft();
+
+  // PO conditional toggle
+  document.querySelectorAll('input[name="po-required"]').forEach(r => {
+    r.addEventListener('change', () => {
+      const show = document.querySelector('input[name="po-required"]:checked')?.value === 'Yes';
+      document.getElementById('po-details').classList.toggle('visible', show);
+    });
+  });
+  (function() {
+    const dateField = document.getElementById('form-date');
+    if (dateField) {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      dateField.value = `${yyyy}-${mm}-${dd}`;
+    }
+  })();
+</script>
+</body>
+</html>
