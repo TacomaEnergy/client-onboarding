@@ -1533,26 +1533,34 @@
 
   window.addEventListener('scroll', updateProgress, { passive: true });
 
-  // Save Draft — collects all fields into localStorage
+  // Save Draft — saves locally and downloads a JSON draft file
   function saveDraft() {
     try {
-      const data = {};
-      document.querySelectorAll('input[id], select[id], textarea[id]').forEach(el => {
-        if (el.type !== 'checkbox' && el.type !== 'radio') data[el.id] = el.value;
-      });
-      document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(el => {
-        data['checked_' + (el.id || el.name + '_' + el.value)] = true;
-      });
-      const clientName = document.getElementById('company-name')?.value?.trim() || 'Unknown Client';
+      const data = collectData();
+      data._fileType = 'Tacoma Onboarding Draft';
+      data._savedAt = new Date().toISOString();
+      const clientName = data.companyName || 'Unknown Client';
       const draftMeta = { clientName, time: new Date().toLocaleString() };
+
+      // Save in this browser for quick recovery
       localStorage.setItem('tacoma_onboarding_draft', JSON.stringify(data));
       localStorage.setItem('tacoma_onboarding_draft_meta', JSON.stringify(draftMeta));
-      document.getElementById('draft-banner').style.display = 'block';
-      document.getElementById('draft-banner').scrollIntoView({ behavior: 'smooth' });
+
+      // Also download a draft JSON file so it can be stored/shared
+      const filename = buildOnboardingFilename(clientName, data.companyDivision, 'draft', 'json');
+      downloadJSON(data, filename);
+
+      const banner = document.getElementById('draft-banner');
+      if (banner) {
+        banner.innerHTML = '<h3 style="color:#1877B8;font-size:16px;margin-bottom:6px;">✓ Draft Saved</h3><p style="color:#374151;font-size:14px;">Draft saved in this browser and downloaded as <strong>' + filename + '</strong>.</p>';
+        banner.style.display = 'block';
+        banner.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => { banner.style.display = 'none'; }, 6000);
+      }
       updateDraftIndicator();
-      setTimeout(() => { document.getElementById('draft-banner').style.display = 'none'; }, 4000);
     } catch(e) {
-      alert('Draft could not be saved — your browser may have storage restrictions.');
+      console.error(e);
+      alert('Draft could not be saved. Please try again or use Print/Save PDF.');
     }
   }
 
@@ -2089,20 +2097,54 @@
     };
   }
 
+  function safeFilePart(value) {
+    return String(value || '')
+      .trim()
+      .replace(/[^a-z0-9]+/gi, '_')
+      .replace(/^_+|_+$/g, '')
+      .substring(0, 80) || 'onboarding';
+  }
+
+  function buildOnboardingFilename(company, division, suffix, ext) {
+    const parts = [safeFilePart(company), safeFilePart(division), suffix, new Date().toISOString().slice(0,10)]
+      .filter(Boolean);
+    return parts.join('_') + '.' + ext;
+  }
+
+  function downloadJSON(data, filename) {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   function submitForm() {
     if (!validate()) {
+      alert('Please complete the required fields highlighted on the form before saving the onboarding summary.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     const data = collectData();
-    console.log('Form Data (ready for Power Automate):', JSON.stringify(data, null, 2));
+    data._fileType = 'Tacoma Onboarding Summary';
+    data._savedAt = new Date().toISOString();
 
-    // TODO: Replace this with Power Automate HTTP trigger URL
-    // fetch('YOUR_POWER_AUTOMATE_URL', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) })
+    const filename = buildOnboardingFilename(data.companyName, data.companyDivision, 'onboarding_summary', 'json');
+    downloadJSON(data, filename);
 
-    document.getElementById('success-banner').style.display = 'block';
-    document.getElementById('success-banner').scrollIntoView({ behavior: 'smooth' });
+    console.log('Onboarding Summary Data:', JSON.stringify(data, null, 2));
+
+    const success = document.getElementById('success-banner');
+    if (success) {
+      success.innerHTML = '<h3>✓ Onboarding Summary Downloaded</h3><p>The onboarding data file was downloaded as <strong>' + filename + '</strong>. Save it with the completed client onboarding record.</p>';
+      success.style.display = 'block';
+      success.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   function resetForm() {
