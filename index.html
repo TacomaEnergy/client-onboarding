@@ -1283,15 +1283,19 @@
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="17 21 17 13 7 13 7 21"/><polyline stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="7 3 7 8 15 8"/></svg>
       Save Draft
     </button>
+    <button type="button" class="btn-draft" onclick="document.getElementById('draft-file-input').click()">
+      Load Draft
+    </button>
+    <input type="file" id="draft-file-input" accept="application/json,.json" style="display:none" onchange="loadDraftFromFile(event)">
     <button type="button" class="btn-submit" onclick="submitForm()">
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-      Save Onboarding Summary
+      Save Final Onboarding
     </button>
   </div>
 
   <div class="success-banner" id="success-banner">
-    <h3>✓ Onboarding Summary Ready</h3>
-    <p>The onboarding summary is ready. Please save or submit according to the current internal workflow.</p>
+    <h3>✓ Final Onboarding Ready</h3>
+    <p>The final onboarding files are ready. Save the downloaded data file and choose Save as PDF in the print window.</p>
   </div>
 
   <div id="draft-banner" style="display:none;background:#EBF4FB;border:1px solid #A9D4F5;border-radius:10px;padding:20px 28px;text-align:center;margin-top:24px;">
@@ -1585,7 +1589,70 @@
     }
   }
 
-  // Load Draft on page open
+  function applyDataToForm(data) {
+    if (!data || typeof data !== 'object') return 0;
+    let applied = 0;
+    Object.entries(data).forEach(([id, val]) => {
+      if (id.startsWith('_')) return;
+      if (id.startsWith('checked_')) {
+        const realId = id.replace('checked_', '');
+        const el = document.getElementById(realId);
+        if (el) {
+          el.checked = !!val;
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+          applied++;
+        }
+        return;
+      }
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.type === 'checkbox') {
+        el.checked = !!val;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      } else if (el.type === 'radio') {
+        if (el.value === val) el.checked = true;
+      } else {
+        el.value = val || '';
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      applied++;
+    });
+    updateDownstreamOptions();
+    buildPastDueOptions();
+    updateProgress();
+    return applied;
+  }
+
+  // Load Draft from downloaded JSON file
+  function loadDraftFromFile(event) {
+    const file = event?.target?.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        const applied = applyDataToForm(data);
+        const banner = document.getElementById('draft-banner');
+        if (banner) {
+          banner.innerHTML = '<h3 style="color:#1877B8;font-size:16px;margin-bottom:6px;">✓ Draft Loaded</h3><p style="color:#374151;font-size:14px;">Loaded <strong>' + applied + '</strong> field(s) from <strong>' + file.name + '</strong>.</p>';
+          banner.style.display = 'block';
+          banner.scrollIntoView({ behavior: 'smooth' });
+          setTimeout(() => { banner.style.display = 'none'; }, 6000);
+        } else {
+          alert('Draft loaded. Fields updated: ' + applied);
+        }
+      } catch(err) {
+        console.error(err);
+        alert('Could not load that draft file. Make sure it is a Tacoma onboarding .json draft file.');
+      } finally {
+        event.target.value = '';
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // Load Draft on page open from this browser's local storage
   function loadDraft() {
     try {
       const saved = localStorage.getItem('tacoma_onboarding_draft');
@@ -1595,21 +1662,7 @@
       const load = confirm(`You have a saved draft for "${clientName}" from ${time}.\n\nLoad it?`);
       if (!load) { clearDraft(); return; }
       const data = JSON.parse(saved);
-      Object.entries(data).forEach(([id, val]) => {
-        if (id.startsWith('checked_')) {
-          const realId = id.replace('checked_', '');
-          const el = document.getElementById(realId);
-          if (el) { el.checked = true; el.dispatchEvent(new Event('change')); }
-        } else {
-          const el = document.getElementById(id);
-          if (el && el.type !== 'checkbox' && el.type !== 'radio') {
-            el.value = val;
-            el.dispatchEvent(new Event('input'));
-          }
-        }
-      });
-      updateProgress();
-      updateDownstreamOptions();
+      applyDataToForm(data);
     } catch(e) { /* no draft */ }
   }
 
@@ -2123,28 +2176,101 @@
     URL.revokeObjectURL(url);
   }
 
+  function collectFormDataFallback() {
+    const data = {};
+    document.querySelectorAll('input, select, textarea').forEach(function(el) {
+      if (!el.id && !el.name) return;
+      const key = el.id || el.name;
+      if (el.type === 'file' || el.type === 'button' || el.type === 'submit' || el.type === 'reset') return;
+      if (el.type === 'checkbox') {
+        data[key] = !!el.checked;
+      } else if (el.type === 'radio') {
+        if (el.checked) data[el.name || key] = el.value;
+      } else {
+        data[key] = el.value || '';
+      }
+    });
+    data.companyName = data.companyName || data['company-name'] || data['legal-name'] || data['companyName'] || '';
+    data.companyDivision = data.companyDivision || data['division-city'] || data['divisionCity'] || '';
+    return data;
+  }
+
+  function downloadTextFile(text, filename, mimeType) {
+    const blob = new Blob([text], { type: mimeType || 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function() {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 1000);
+  }
+
   function submitForm() {
-    if (!validate()) {
-      alert('Please complete the required fields highlighted on the form before saving the onboarding summary.');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
+    // Final onboarding should always produce two records:
+    // 1) JSON data file for future Excel/import automation
+    // 2) Browser print dialog so the user can choose Save as PDF
+    let isComplete = true;
+    try {
+      isComplete = validate();
+    } catch (err) {
+      console.warn('Validation check could not complete. Continuing with final export.', err);
+      isComplete = false;
     }
 
-    const data = collectData();
-    data._fileType = 'Tacoma Onboarding Summary';
+    if (!isComplete) {
+      const proceed = confirm('Some required onboarding fields appear to be incomplete.\n\nSave the final onboarding JSON and PDF anyway?');
+      if (!proceed) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+    }
+
+    let data;
+    try {
+      data = collectData();
+    } catch (err) {
+      console.warn('Structured collectData failed; using fallback form collector.', err);
+      data = collectFormDataFallback();
+    }
+
+    data._fileType = 'Tacoma Final Onboarding';
     data._savedAt = new Date().toISOString();
+    data._completionStatus = isComplete ? 'Complete' : 'Final saved with missing required fields';
+    data._sourceUrl = window.location.href;
 
-    const filename = buildOnboardingFilename(data.companyName, data.companyDivision, 'onboarding_summary', 'json');
-    downloadJSON(data, filename);
+    const company = data.companyName || data['company-name'] || data['legal-name'] || 'client';
+    const division = data.companyDivision || data['division-city'] || data.divisionCity || '';
+    const jsonFilename = buildOnboardingFilename(company, division, 'final_onboarding', 'json');
 
-    console.log('Onboarding Summary Data:', JSON.stringify(data, null, 2));
+    try {
+      downloadTextFile(JSON.stringify(data, null, 2), jsonFilename, 'application/json');
+    } catch (err) {
+      console.error('JSON download failed:', err);
+      alert('The JSON file could not be downloaded automatically. Your browser may be blocking downloads. The print/PDF window will still open.');
+    }
 
     const success = document.getElementById('success-banner');
     if (success) {
-      success.innerHTML = '<h3>✓ Onboarding Summary Downloaded</h3><p>The onboarding data file was downloaded as <strong>' + filename + '</strong>. Save it with the completed client onboarding record.</p>';
+      success.innerHTML = '<h3>✓ Final Onboarding Started</h3><p>The final onboarding JSON should download as <strong>' + jsonFilename + '</strong>. The print window will open next — choose <strong>Save as PDF</strong>. Save both files with the client record.</p>';
       success.style.display = 'block';
       success.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      alert('Final onboarding JSON should download as ' + jsonFilename + '. The print window will open next — choose Save as PDF.');
     }
+
+    setTimeout(function() {
+      try {
+        window.print();
+      } catch (err) {
+        console.error('Print dialog failed:', err);
+        alert('The print window could not be opened automatically. Use Ctrl+P and choose Save as PDF.');
+      }
+    }, 800);
   }
 
   function resetForm() {
