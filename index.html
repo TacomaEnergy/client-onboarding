@@ -2210,10 +2210,237 @@
     }, 1000);
   }
 
+  function htmlEscape(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function displayValue(value) {
+    const v = String(value ?? '').trim();
+    return v ? htmlEscape(v) : '<span class="muted">—</span>';
+  }
+
+  function displayMoney(value) {
+    const v = String(value ?? '').trim();
+    if (!v) return '<span class="muted">—</span>';
+    if (/^\$/.test(v)) return htmlEscape(v);
+    if (/^-?\d+(\.\d+)?$/.test(v)) return '$' + Number(v).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return htmlEscape(v);
+  }
+
+  function reportRow(label, value, type) {
+    const formatted = type === 'money' ? displayMoney(value) : displayValue(value);
+    return '<tr><th>' + htmlEscape(label) + '</th><td>' + formatted + '</td></tr>';
+  }
+
+  function reportSection(title, rowsHtml, options) {
+    if (!rowsHtml) return '';
+    const className = options && options.wide ? ' section wide-section' : ' section';
+    return '<section class="' + className.trim() + '"><h2>' + htmlEscape(title) + '</h2><table>' + rowsHtml + '</table></section>';
+  }
+
+  function reportTwoColumnSection(title, leftRows, rightRows) {
+    return '<section class="section"><h2>' + htmlEscape(title) + '</h2><div class="two-col"><table>' + leftRows + '</table><table>' + rightRows + '</table></div></section>';
+  }
+
+  function buildProfessionalPrintHtml(data, jsonFilename) {
+    const preparedDate = new Date().toLocaleString();
+    const clientTitle = [data.companyName, data.companyDivision, data.companyState].filter(Boolean).join(' | ') || 'Client Onboarding';
+
+    const coreLeft = [
+      reportRow('Company / Builder', data.companyName),
+      reportRow('Division / City', data.companyDivision),
+      reportRow('State', data.companyState),
+      reportRow('Project Type', data.projectType),
+      reportRow('Tacoma Rep', data.rep),
+      reportRow('Onboarding Date', data.date)
+    ].join('');
+
+    const coreRight = [
+      reportRow('Billing Street', data.billingStreet),
+      reportRow('Billing City', data.billingCity),
+      reportRow('Billing State', data.billingState),
+      reportRow('Billing ZIP', data.billingZip),
+      reportRow('Payment Terms', data.poPaymentTerms)
+    ].join('');
+
+    const contactRows = [
+      reportRow('Primary Contact', data.primaryContact),
+      reportRow('Primary Phone', data.primaryPhone),
+      reportRow('Primary Email', data.primaryEmail),
+      reportRow('Scheduling Contact', data.schedName),
+      reportRow('Scheduling Phone', data.schedPhone),
+      reportRow('Scheduling Email', data.schedEmail),
+      reportRow('AP Contact', data.apName),
+      reportRow('AP Phone', data.apPhone),
+      reportRow('AP Email', data.apEmail),
+      reportRow('QA Contact', data.qaName),
+      reportRow('QA Phone', data.qaPhone),
+      reportRow('QA Email', data.qaEmail)
+    ].join('');
+
+    let additionalContacts = '';
+    if (Array.isArray(data.additionalContacts) && data.additionalContacts.length) {
+      additionalContacts = data.additionalContacts.map((c, idx) => {
+        return '<tr><th>Additional Contact ' + (idx + 1) + '</th><td>' +
+          displayValue([c.name, c.phone, c.email, c.note].filter(Boolean).join(' | ')) + '</td></tr>';
+      }).join('');
+    }
+
+    const systemsRows = [
+      reportRow('Systems Required', data.systemsRequired),
+      reportRow('System Names / Access Details', data.systemNames),
+      reportRow('System / Portal URL', data.systemURL),
+      reportRow('Required Forms / Templates', data.requiredForms),
+      reportRow('Forms / Templates URL', data.requiredFormsURL)
+    ].join('');
+
+    const poRows = [
+      reportRow('POs Required', data.poRequired),
+      reportRow('PO Count / Structure', data.poCount),
+      reportRow('What Each PO Includes', data.poIncluded),
+      reportRow('When POs Are Released', data.poWhen),
+      reportRow('Jobs Requiring POs', data.poJobs),
+      reportRow('Specific Job Types', data.poJobTypes),
+      reportRow('PO Missing / Incorrect Contact', data.poMissingName),
+      reportRow('PO Contact Phone', data.poMissingPhone),
+      reportRow('PO Contact Email', data.poMissingEmail)
+    ].join('');
+
+    const pricingCore = [
+      reportRow('Compliance Review', data.priceComplianceReview, 'money'),
+      reportRow('Pre-Batt Inspection', data.pricePrebatt, 'money'),
+      reportRow('Pre-Drywall Inspection', data.pricePredrywall, 'money'),
+      reportRow('Final Inspection', data.priceFinal, 'money')
+    ].join('');
+
+    const pricingTesting = [
+      reportRow('Blower Door Testing', data.priceBlowerDoor, 'money'),
+      reportRow('Duct Blaster Testing', data.priceDuctBlaster, 'money'),
+      reportRow('Mechanical Ventilation Testing', data.priceMechanicalVentilation, 'money'),
+      reportRow('Testing Combined Price', data.priceTestingCombined, 'money'),
+      reportRow('Air Sealing', data.priceAirSealing, 'money')
+    ].join('');
+
+    const pricingManuals = [
+      reportRow('Manuals J, D & S', data.priceManualsJDS, 'money'),
+      reportRow('Manuals J & S', data.priceManualsJS, 'money'),
+      reportRow('Manuals Per Option', data.priceManualsOption, 'money'),
+      reportRow('Manuals Notes', data.manualsNotes)
+    ].join('');
+
+    const pricingCharges = [
+      reportRow('Compliance Revisions - Simple', data.priceComplianceRevisionsSimple, 'money'),
+      reportRow('Compliance Revisions - Complex', data.priceComplianceRevisionsComplex, 'money'),
+      reportRow('Repair / Retest Labor Hourly Rate', data.priceRetest, 'money'),
+      reportRow('Repair / Retest Waived', data.retestWaived),
+      reportRow('Trip Charge / Re-inspection Fee', data.priceTrip, 'money'),
+      reportRow('First Trip Charge Free', data.tripFirstFree),
+      reportRow('Trip Waived', data.tripWaived),
+      reportRow('Additional HVAC System Fee', data.priceHVACExtra, 'money'),
+      reportRow('Additional HVAC Fee Waived', data.hvacWaived)
+    ].join('');
+
+    const pricingSpecialty = [
+      reportRow('HVAC Drawing', data.priceHVACDrawing, 'money'),
+      reportRow('Certification Fee', data.priceCertificationFee, 'money'),
+      reportRow('Duct Sealing', data.priceDuctSealing, 'money'),
+      reportRow('No Burn', data.priceNoBurn, 'money'),
+      reportRow('Street Cleaning', data.priceStreetCleaning, 'money')
+    ].join('');
+
+    let otherServicesRows = '';
+    if (Array.isArray(data.otherServices) && data.otherServices.length) {
+      otherServicesRows = data.otherServices.map((s, idx) =>
+        reportRow('Other Service ' + (idx + 1), [s.service, s.price ? ('$' + s.price) : ''].filter(Boolean).join(' — '))
+      ).join('');
+    }
+
+    const invoiceRows = [
+      reportRow('Invoice Delivery', data.invoiceDelivery),
+      reportRow('Additional Invoice Instructions', data.invoiceAdditional),
+      reportRow('Past Due Contact', data.pastdueName),
+      reportRow('Past Due Phone', data.pastduePhone),
+      reportRow('Past Due Email', data.pastdueEmail),
+      reportRow('Notification Preference', data.notifPref),
+      reportRow('Aging Report Frequency', data.agingFreq),
+      reportRow('Monthly Report Date', data.agingDate),
+      reportRow('Aging Report Email', data.agingEmail),
+      reportRow('Aging Report Notes', data.agingNotes)
+    ].join('');
+
+    const notesRows = [
+      reportRow('Special Instructions / Notes', data.specialNotes),
+      reportRow('JSON File', jsonFilename),
+      reportRow('Saved At', preparedDate),
+      reportRow('Source URL', data._sourceUrl)
+    ].join('');
+
+    return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + htmlEscape(clientTitle) + ' Onboarding Summary</title>' +
+      '<style>' +
+      '@page{size:letter;margin:0.45in 0.5in;}*{box-sizing:border-box}body{font-family:Segoe UI,Arial,sans-serif;color:#0D1B2A;margin:0;background:white;font-size:10.5px;line-height:1.35}' +
+      '.report{max-width:7.5in;margin:0 auto}.top{border-bottom:3px solid #1877B8;padding-bottom:10px;margin-bottom:12px;display:flex;justify-content:space-between;gap:18px;align-items:flex-start}' +
+      '.brand{font-size:22px;font-weight:800;color:#0B3D6B;letter-spacing:-0.02em}.subtitle{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#6B7280;margin-top:2px}' +
+      '.meta{text-align:right;font-size:10px;color:#374151}.meta strong{display:block;color:#0B3D6B;font-size:12px;margin-bottom:2px}' +
+      '.client-title{background:#EBF4FB;border:1px solid #A9D4F5;border-radius:8px;padding:10px 12px;margin-bottom:12px}.client-title h1{font-size:16px;margin:0 0 3px;color:#0B3D6B}.client-title p{margin:0;color:#374151;font-size:10.5px}' +
+      '.section{border:1px solid #DDE2E8;border-radius:8px;margin:0 0 10px;overflow:hidden;break-inside:avoid;page-break-inside:avoid;background:white}' +
+      '.section h2{margin:0;background:#1877B8;color:white;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:7px 10px}' +
+      'table{width:100%;border-collapse:collapse;break-inside:avoid;page-break-inside:avoid}th,td{padding:5px 8px;border-bottom:1px solid #EEF2F6;vertical-align:top}tr:last-child th,tr:last-child td{border-bottom:none}' +
+      'th{width:34%;text-align:left;color:#6B7280;text-transform:uppercase;font-size:8.5px;letter-spacing:.04em;font-weight:700;background:#FAFBFC}td{font-size:10.5px;color:#111827;word-break:break-word}' +
+      '.two-col{display:grid;grid-template-columns:1fr 1fr;gap:0}.two-col table:first-child{border-right:1px solid #DDE2E8}.muted{color:#9CA3AF}.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;break-inside:auto}.pricing-grid .section{margin-bottom:0}' +
+      '.footer{border-top:1px solid #DDE2E8;margin-top:14px;padding-top:8px;color:#6B7280;font-size:9px;display:flex;justify-content:space-between;gap:12px}' +
+      '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.section{break-inside:avoid;page-break-inside:avoid}.pricing-grid{break-inside:auto}.footer{position:fixed;bottom:0.1in;left:0.5in;right:0.5in}.report{padding-bottom:0.25in}}' +
+      '</style></head><body><div class="report">' +
+      '<div class="top"><div><div class="brand">Tacoma Energy</div><div class="subtitle">New Customer Onboarding Record</div></div><div class="meta"><strong>Internal Record</strong><div>Prepared: ' + htmlEscape(preparedDate) + '</div><div>Status: ' + htmlEscape(data._completionStatus || 'Final') + '</div></div></div>' +
+      '<div class="client-title"><h1>' + htmlEscape(clientTitle) + '</h1><p>Completed onboarding summary generated from the confirmed onboarding form. Pricing shown below should reflect the confirmed proposal.</p></div>' +
+      reportTwoColumnSection('Client & Billing', coreLeft, coreRight) +
+      reportSection('Contacts', contactRows + additionalContacts) +
+      reportSection('Systems / Portals / Required Forms', systemsRows) +
+      reportSection('PO Requirements', poRows) +
+      '<div class="pricing-grid">' +
+      reportSection('Pricing - Core Services', pricingCore) +
+      reportSection('Pricing - Testing', pricingTesting) +
+      reportSection('Pricing - Manuals', pricingManuals) +
+      reportSection('Additional Charges', pricingCharges) +
+      reportSection('Specialty Services', pricingSpecialty) +
+      reportSection('Other / Custom Services', otherServicesRows || reportRow('Other Services', '')) +
+      '</div>' +
+      reportSection('Invoicing / Aging / Payment Setup', invoiceRows) +
+      reportSection('Notes & Record Details', notesRows, { wide: true }) +
+      '<div class="footer"><span>Generated by Tacoma Energy onboarding form.</span><span>Keep PDF and JSON with the client record.</span></div>' +
+      '</div></body></html>';
+  }
+
+  function openProfessionalPrintWindow(data, jsonFilename) {
+    const printHtml = buildProfessionalPrintHtml(data, jsonFilename);
+    const w = window.open('', '_blank');
+    if (!w) {
+      alert('The print window was blocked by the browser. Allow pop-ups for this site, or use Ctrl+P from the form as a fallback.');
+      return false;
+    }
+    w.document.open();
+    w.document.write(printHtml);
+    w.document.close();
+    setTimeout(function() {
+      try {
+        w.focus();
+        w.print();
+      } catch (err) {
+        console.error('Professional print dialog failed:', err);
+        alert('The PDF print window opened, but the print dialog did not start. Use Ctrl+P in the new window and choose Save as PDF.');
+      }
+    }, 650);
+    return true;
+  }
+
   function submitForm() {
-    // Final onboarding should always produce two records:
+    // Final onboarding creates two records:
     // 1) JSON data file for future Excel/import automation
-    // 2) Browser print dialog so the user can choose Save as PDF
+    // 2) Professional print summary so the user can choose Save as PDF
     let isComplete = true;
     try {
       isComplete = validate();
@@ -2251,26 +2478,24 @@
       downloadTextFile(JSON.stringify(data, null, 2), jsonFilename, 'application/json');
     } catch (err) {
       console.error('JSON download failed:', err);
-      alert('The JSON file could not be downloaded automatically. Your browser may be blocking downloads. The print/PDF window will still open.');
+      alert('The JSON file could not be downloaded automatically. Your browser may be blocking downloads. The PDF window will still open.');
     }
 
     const success = document.getElementById('success-banner');
     if (success) {
-      success.innerHTML = '<h3>✓ Final Onboarding Started</h3><p>The final onboarding JSON should download as <strong>' + jsonFilename + '</strong>. The print window will open next — choose <strong>Save as PDF</strong>. Save both files with the client record.</p>';
+      success.innerHTML = '<h3>✓ Final Onboarding Started</h3><p>The final onboarding JSON should download as <strong>' + jsonFilename + '</strong>. A professional PDF summary will open next — choose <strong>Save as PDF</strong>. Save both files with the client record.</p>';
       success.style.display = 'block';
       success.scrollIntoView({ behavior: 'smooth' });
     } else {
-      alert('Final onboarding JSON should download as ' + jsonFilename + '. The print window will open next — choose Save as PDF.');
+      alert('Final onboarding JSON should download as ' + jsonFilename + '. A professional PDF summary will open next — choose Save as PDF.');
     }
 
     setTimeout(function() {
-      try {
-        window.print();
-      } catch (err) {
-        console.error('Print dialog failed:', err);
-        alert('The print window could not be opened automatically. Use Ctrl+P and choose Save as PDF.');
+      const opened = openProfessionalPrintWindow(data, jsonFilename);
+      if (!opened) {
+        try { window.print(); } catch (err) { console.error('Fallback print failed:', err); }
       }
-    }, 800);
+    }, 500);
   }
 
   function resetForm() {
