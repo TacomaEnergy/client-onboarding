@@ -2438,9 +2438,11 @@
   }
 
   function submitForm() {
-    // Final onboarding creates two records:
-    // 1) JSON data file for future Excel/import automation
-    // 2) Professional print summary so the user can choose Save as PDF
+    // Final onboarding one-click helper:
+    // 1) Download JSON for future Excel/import automation
+    // 2) Open professional PDF/print summary
+    // 3) Copy final email message to clipboard
+    // 4) Open Outlook/default mail client with subject/body prefilled
     let isComplete = true;
     try {
       isComplete = validate();
@@ -2450,7 +2452,7 @@
     }
 
     if (!isComplete) {
-      const proceed = confirm('Some required onboarding fields appear to be incomplete.\n\nSave the final onboarding JSON and PDF anyway?');
+      const proceed = confirm('Some required onboarding fields appear to be incomplete.\n\nSave the final onboarding JSON, PDF, and email draft anyway?');
       if (!proceed) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
@@ -2478,24 +2480,92 @@
       downloadTextFile(JSON.stringify(data, null, 2), jsonFilename, 'application/json');
     } catch (err) {
       console.error('JSON download failed:', err);
-      alert('The JSON file could not be downloaded automatically. Your browser may be blocking downloads. The PDF window will still open.');
+      alert('The JSON file could not be downloaded automatically. Your browser may be blocking downloads. The PDF window and email draft will still be prepared.');
     }
+
+    const email = buildFinalOnboardingEmail(data, jsonFilename);
+    copyEmailMessageToClipboard(email);
 
     const success = document.getElementById('success-banner');
     if (success) {
-      success.innerHTML = '<h3>✓ Final Onboarding Started</h3><p>The final onboarding JSON should download as <strong>' + jsonFilename + '</strong>. A professional PDF summary will open next — choose <strong>Save as PDF</strong>. Save both files with the client record.</p>';
+      success.innerHTML = '<h3>✓ Final Onboarding Started</h3><p>The final onboarding JSON should download as <strong>' + htmlEscape(jsonFilename) + '</strong>. A professional PDF summary will open next — choose <strong>Save as PDF</strong>. An Outlook/default email draft will also open with the message prefilled. Attach the saved PDF and JSON before sending.</p>';
       success.style.display = 'block';
       success.scrollIntoView({ behavior: 'smooth' });
     } else {
-      alert('Final onboarding JSON should download as ' + jsonFilename + '. A professional PDF summary will open next — choose Save as PDF.');
+      alert('Final onboarding JSON should download as ' + jsonFilename + '. A professional PDF summary will open next — choose Save as PDF. An email draft/message will also be prepared.');
     }
 
+    // Open print/PDF summary first, then open email draft. If the browser blocks the email,
+    // the message is already copied to the clipboard as a fallback.
     setTimeout(function() {
       const opened = openProfessionalPrintWindow(data, jsonFilename);
       if (!opened) {
         try { window.print(); } catch (err) { console.error('Fallback print failed:', err); }
       }
-    }, 500);
+    }, 350);
+
+    setTimeout(function() {
+      openFinalOnboardingEmailDraft(email);
+    }, 1100);
+  }
+
+  function buildFinalOnboardingEmail(data, jsonFilename) {
+    const clientId = data.accountId || data.clientId || data.ClientID || '';
+    const company = data.companyName || data['company-name'] || data['legal-name'] || 'Client';
+    const division = data.companyDivision || data.divisionCity || data['division-city'] || '';
+    const state = data.companyState || data.state || data['company-state'] || '';
+    const clientLabel = clientId || [company, division, state].filter(Boolean).join(' | ') || 'Client';
+    const subject = 'Completed Onboarding Files - ' + clientLabel;
+
+    const body =
+      'The completed onboarding files are ready for ' + clientLabel + '.\n\n' +
+      'Please attach the following files before sending/saving this email:\n' +
+      '- Completed onboarding PDF\n' +
+      '- Completed onboarding JSON data file: ' + jsonFilename + '\n\n' +
+      'The PDF is the readable onboarding record. The JSON file is for future import/sync with the Client Setup Master.\n\n' +
+      'Client / Builder: ' + company + '\n' +
+      (division ? 'Division / City: ' + division + '\n' : '') +
+      (state ? 'State: ' + state + '\n' : '') +
+      '\nSaved from Tacoma Energy Client Onboarding.';
+
+    return { subject, body, clientLabel, jsonFilename };
+  }
+
+  function copyEmailMessageToClipboard(email) {
+    const message = 'Subject: ' + email.subject + '\n\n' + email.body;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(message).catch(function(err) {
+        console.warn('Clipboard write failed:', err);
+      });
+    } else {
+      try {
+        const temp = document.createElement('textarea');
+        temp.value = message;
+        temp.style.position = 'fixed';
+        temp.style.left = '-9999px';
+        document.body.appendChild(temp);
+        temp.focus();
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      } catch (err) {
+        console.warn('Fallback clipboard copy failed:', err);
+      }
+    }
+  }
+
+  function openFinalOnboardingEmailDraft(email) {
+    const mailtoUrl = 'mailto:' +
+      '?subject=' + encodeURIComponent(email.subject) +
+      '&body=' + encodeURIComponent(email.body);
+
+    try {
+      window.location.href = mailtoUrl;
+    } catch (err) {
+      console.warn('Unable to open mail client automatically:', err);
+      alert('The email message was copied to your clipboard. Open Outlook, create a new email, paste the message, and attach the saved PDF and JSON files.');
+    }
   }
 
   function resetForm() {
@@ -2677,6 +2747,99 @@
   }
   setTimeout(run, 250);
   setTimeout(run, 1000);
+})();
+</script>
+
+<script>
+(function(){
+  function onlyDigits(value) {
+    return String(value || '').replace(/\D/g, '');
+  }
+
+  function formatPhone(value) {
+    const digits = onlyDigits(value).slice(0, 10);
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return '(' + digits.slice(0, 3) + ') ' + digits.slice(3);
+    return '(' + digits.slice(0, 3) + ') ' + digits.slice(3, 6) + '-' + digits.slice(6);
+  }
+
+  function formatZip(value) {
+    const digits = onlyDigits(value).slice(0, 9);
+    if (digits.length <= 5) return digits;
+    return digits.slice(0, 5) + '-' + digits.slice(5);
+  }
+
+  function cleanNameText(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function normalizeState(value) {
+    return String(value || '').replace(/[^a-zA-Z]/g, '').slice(0, 2).toUpperCase();
+  }
+
+  function normalizeEmail(value) {
+    return String(value || '').replace(/\s+/g, '').trim().toLowerCase();
+  }
+
+  function normalizeUrl(value) {
+    const v = String(value || '').trim();
+    if (!v) return '';
+    if (/^(https?:\/\/|mailto:)/i.test(v)) return v;
+    if (/^[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(v)) return 'https://' + v;
+    return v;
+  }
+
+  function attachFormattingHelpers() {
+    document.querySelectorAll('input[type="tel"], input[id*="phone"], input[class*="phone"]').forEach(function(input){
+      input.setAttribute('inputmode', 'tel');
+      input.setAttribute('placeholder', input.getAttribute('placeholder') || '(555) 000-0000');
+      input.addEventListener('input', function(){
+        const start = input.selectionStart;
+        input.value = formatPhone(input.value);
+        try { input.setSelectionRange(input.value.length, input.value.length); } catch(e) {}
+      });
+      input.addEventListener('blur', function(){ input.value = formatPhone(input.value); });
+    });
+
+    ['billing-zip'].forEach(function(id){
+      const input = document.getElementById(id);
+      if (!input) return;
+      input.setAttribute('inputmode', 'numeric');
+      input.setAttribute('maxlength', '10');
+      input.setAttribute('placeholder', '12345');
+      input.addEventListener('input', function(){ input.value = formatZip(input.value); });
+      input.addEventListener('blur', function(){ input.value = formatZip(input.value); });
+    });
+
+    ['company-state','billing-state'].forEach(function(id){
+      const input = document.getElementById(id);
+      if (!input) return;
+      input.setAttribute('maxlength', '2');
+      input.addEventListener('input', function(){ input.value = normalizeState(input.value); });
+      input.addEventListener('blur', function(){ input.value = normalizeState(input.value); });
+    });
+
+    document.querySelectorAll('input[type="email"], input[id*="email"], input[class*="email"]').forEach(function(input){
+      input.setAttribute('inputmode', 'email');
+      input.addEventListener('blur', function(){ input.value = normalizeEmail(input.value); });
+    });
+
+    document.querySelectorAll('input[id*="url" i], input[id*="URL"], input[placeholder*="URL"], input[placeholder*="link" i]').forEach(function(input){
+      input.addEventListener('blur', function(){ input.value = normalizeUrl(input.value); });
+    });
+
+    document.querySelectorAll('input[type="text"], textarea').forEach(function(input){
+      if (input.readOnly || input.disabled) return;
+      if (input.id && (/email|phone|zip|state|url/i).test(input.id)) return;
+      input.addEventListener('blur', function(){ input.value = cleanNameText(input.value); });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachFormattingHelpers);
+  } else {
+    attachFormattingHelpers();
+  }
 })();
 </script>
 
