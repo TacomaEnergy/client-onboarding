@@ -479,169 +479,12 @@
   }
   .btn-add-service:hover { background: var(--gray-light); }
 
-
-
-  .setup-mode-card {
-    background: var(--white);
-    border: 1px solid var(--gray-border);
-    border-radius: 10px;
-    padding: 18px 24px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  }
-  .setup-mode-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
-  }
-  .setup-mode-header strong {
-    color: var(--navy);
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .setup-mode-header span {
-    display: block;
-    margin-top: 4px;
-    font-size: 12px;
-    color: var(--gray-text);
-    line-height: 1.4;
-  }
-  .mode-pills {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-  }
-  .mode-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    border: 1px solid var(--gray-border);
-    border-radius: 999px;
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--navy);
-    background: #fff;
-    cursor: pointer;
-    user-select: none;
-  }
-  .mode-pill input { accent-color: #1877B8; }
-  .mode-pill.active {
-    background: #EBF4FB;
-    border-color: #A9D4F5;
-    color: #0B3D6B;
-    font-weight: 600;
-  }
-  .prefill-status {
-    display: none;
-    background: #EBF5EB;
-    border: 1px solid #A9DFBF;
-    border-left: 4px solid #1877B8;
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-top: 10px;
-    font-size: 12px;
-    color: #1E5631;
-    line-height: 1.4;
-  }
-  .existing-client-panel {
-    display: none;
-    background: var(--gray-light);
-    border: 1px dashed var(--gray-border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin-top: 10px;
-  }
-  .existing-client-panel.visible { display: block; }
-  .future-note {
-    font-size: 11px;
-    color: var(--gray-text);
-    line-height: 1.45;
-    margin-top: 6px;
-  }
-
-
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px 20px;
-    margin-bottom: 16px;
-  }
-  .pricing-grid:last-child { margin-bottom: 0; }
-  .pricing-cell label {
-    min-height: 30px;
-    display: flex;
-    align-items: flex-end;
-  }
-  .pricing-cell .hint { line-height: 1.35; }
-  .pricing-card-warning {
-    margin-top: 18px;
-    background: #FFF8EC;
-    border: 2px solid #F39C12;
-    border-radius: 8px;
-    padding: 18px;
-  }
-  .pricing-card-warning .pricing-cell input[type="number"] { border-color: #F39C12; }
-  .pricing-warning-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-  .pricing-warning-title label {
-    font-size: 12px;
-    font-weight: 700;
-    color: #8C5E00;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 0;
-  }
-  .pricing-warning-copy {
-    font-size: 12px;
-    color: #7A5200;
-    margin-bottom: 14px;
-    line-height: 1.5;
-  }
-  @media (max-width: 800px) {
-    .pricing-grid { grid-template-columns: 1fr; }
-    .pricing-cell label { min-height: auto; }
-  }
-
   @media (max-width: 600px) {
     .row { flex-direction: column; gap: 14px; }
     .rep-bar { flex-direction: column; }
     .form-header { padding: 20px; }
     .section-body { padding: 18px; }
   }
-
-  .pricing-locked-note {
-    background:#F7FBFF;
-    border:1px solid #A9D4F5;
-    border-left:4px solid #1877B8;
-    border-radius:8px;
-    padding:10px 12px;
-    margin-bottom:16px;
-    font-size:12px;
-    color:#334155;
-    line-height:1.4;
-  }
-  .pricing-locked input,
-  .pricing-locked textarea {
-    background:#F3F4F6 !important;
-    color:#374151 !important;
-    cursor:not-allowed;
-  }
-  .pricing-locked .checkbox-row {
-    opacity:.82;
-  }
-  .pricing-locked input[type=checkbox] {
-    cursor:not-allowed;
-  }
-
 </style>
 </head>
 <body>
@@ -650,13 +493,11 @@
   <div class="logo-mark"><img src="data:image/png;base64,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" alt="Tacoma Energy" style="width:38px;height:38px;object-fit:contain;object-fit:contain;"></div>
   <div>
     <h1>New Customer Onboarding</h1>
-    <p>Tacoma Energy — Client Setup</p>
+    <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
   </div>
 </div>
 
 <div class="form-wrapper">
-
-  <div class="prefill-status" id="prefill-status"></div>
 
   <!-- Rep Info Bar -->
   <div class="rep-bar">
@@ -705,55 +546,15 @@
     <div class="section-body">
       <div class="row">
         <div class="col-2">
-          <label>Legal Company / Builder Name <span class="req">*</span></label>
-          <input type="text" id="company-name" placeholder="Full legal name / builder name" required>
+          <label>Legal Company Name <span class="req">*</span></label>
+          <input type="text" id="company-name" placeholder="Full legal name" required>
           <div class="error-msg" id="err-company">Required.</div>
-        </div>
-        <div class="col">
-          <label>Division / City</label>
-          <input type="text" id="company-division" placeholder="e.g. Columbus, Dayton, South Houston">
-        </div>
-        <div class="col">
-          <label>State</label>
-          <input type="text" id="company-state" placeholder="OH" maxlength="2">
         </div>
       </div>
       <div class="row">
-        <div class="col">
-          <label>Project Type</label>
-          <select id="project-type">
-            <option value="">Select...</option>
-            <option>Single Family</option>
-            <option>Multifamily</option>
-            <option>Townhomes</option>
-            <option>Commercial</option>
-            <option>Mixed / Other</option>
-          </select>
-        </div>
-        <div class="col"></div>
-      </div>
-      <div class="price-group" style="margin-bottom:18px;">
-        <div class="price-group-label">Billing Address</div>
-        <div class="row">
-          <div class="col-2">
-            <label>Billing Street Address</label>
-            <input type="text" id="billing-street" placeholder="Street address">
-          </div>
-          <div class="col">
-            <label>Billing City</label>
-            <input type="text" id="billing-city" placeholder="City">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <label>Billing State</label>
-            <input type="text" id="billing-state" placeholder="State" maxlength="2">
-          </div>
-          <div class="col">
-            <label>Billing ZIP</label>
-            <input type="text" id="billing-zip" placeholder="ZIP">
-          </div>
-          <div class="col"></div>
+        <div class="col-2">
+          <label>Billing Address</label>
+          <input type="text" id="billing-address" placeholder="Street, City, State, ZIP">
         </div>
       </div>
       <div class="contact-group">
@@ -974,166 +775,81 @@
       </div>
     </div>
   </div>
-  <div class="section pricing-locked" id="section-5">
+  <div class="section" id="section-5">
     <div class="section-header"><div class="dot"></div> Pricing Agreement</div>
     <div class="section-body">
-      <div class="pricing-locked-note">Pricing is locked from the confirmed proposal.</div>
+      <p class="hint" style="margin-bottom:16px;">Enter agreed pricing for each service. Leave blank if not applicable.</p>
 
+      <!-- Compliance Inspections -->
       <div class="price-group">
-        <div class="price-group-label">Core Services — included in Total Audit Fee</div>
+        <div class="price-group-label">Compliance Inspections</div>
         <div class="row">
           <div class="col">
-            <label>Compliance Review</label>
-            <div class="dollar-wrap"><input type="number" id="price-compliance-review" min="0" step="0.01"></div>
+            <label>Energy Star (ES)</label>
+            <div class="dollar-wrap"><input type="number" id="price-compliance-es" placeholder="0.00" min="0" step="0.01"></div>
           </div>
           <div class="col">
-            <label>Pre-Batt Inspection</label>
-            <div class="dollar-wrap"><input type="number" id="price-prebatt" min="0" step="0.01"></div>
-          </div>
-          <div class="col">
-            <label>Pre-Drywall Inspection</label>
-            <div class="dollar-wrap"><input type="number" id="price-predrywall" min="0" step="0.01"></div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <label>Final Inspection</label>
-            <div class="dollar-wrap"><input type="number" id="price-final" min="0" step="0.01"></div>
-          </div>
-          <div class="col">
-            <label>Air Sealing</label>
-            <div class="dollar-wrap"><input type="number" id="price-airsealing" min="0" step="0.01"></div>
-          </div>
-          <div class="col"></div>
-        </div>
-      </div>
-
-      <div class="price-group">
-        <div class="price-group-label">Testing Only — included in Total Audit Fee</div>
-        <div class="row">
-          <div class="col">
-            <label>Blower Door</label>
-            <div class="dollar-wrap"><input type="number" id="price-blowerdoor" min="0" step="0.01"></div>
-          </div>
-          <div class="col">
-            <label>Duct Blaster</label>
-            <div class="dollar-wrap"><input type="number" id="price-ductblaster" min="0" step="0.01"></div>
-          </div>
-          <div class="col">
-            <label>Mechanical Ventilation</label>
-            <div class="dollar-wrap"><input type="number" id="price-mechvent" min="0" step="0.01"></div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <label>Testing Combined Price</label>
-            <div class="dollar-wrap"><input type="number" id="price-testing-combined" min="0" step="0.01"></div>
-            <div class="hint">Use combined OR itemized testing pricing, as applicable.</div>
-          </div>
-          <div class="col"></div>
-          <div class="col"></div>
-        </div>
-      </div>
-
-      <div class="price-group">
-        <div class="price-group-label">Manuals</div>
-        <div class="row">
-          <div class="col">
-            <label>Manuals (Manual J, D &amp; S)</label>
-            <div class="dollar-wrap"><input type="number" id="price-manuals-jds" min="0" step="0.01"></div>
-          </div>
-          <div class="col">
-            <label>Manuals (Manual J &amp; S)</label>
-            <div class="dollar-wrap"><input type="number" id="price-manuals-js" min="0" step="0.01"></div>
-          </div>
-          <div class="col">
-            <label>Manuals — Per Option</label>
-            <div class="dollar-wrap"><input type="number" id="price-manuals-option" min="0" step="0.01"></div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <label>HVAC Drawing</label>
-            <div class="dollar-wrap"><input type="number" id="price-hvac-drawing" min="0" step="0.01"></div>
-          </div>
-          <div class="col-2">
-            <label>Manuals Notes</label>
-            <input type="text" id="manuals-notes" placeholder="Manuals notes (optional — e.g. per model/base house details, scope clarification...)">
+            <label>Code</label>
+            <div class="dollar-wrap"><input type="number" id="price-compliance-code" placeholder="0.00" min="0" step="0.01"></div>
           </div>
         </div>
       </div>
 
-      <div class="pricing-card-warning">
-        <div class="pricing-warning-title">
+      <!-- Ordered price fields -->
+      <div class="row">
+        <div class="col">
+          <label>Pre-Batt Inspections</label>
+          <div class="dollar-wrap"><input type="number" id="price-prebatt" placeholder="0.00" min="0" step="0.01"></div>
+        </div>
+        <div class="col">
+          <label>Pre-Drywall Inspections</label>
+          <div class="dollar-wrap"><input type="number" id="price-predrywall" placeholder="0.00" min="0" step="0.01"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Final Inspections</label>
+          <div class="dollar-wrap"><input type="number" id="price-final" placeholder="0.00" min="0" step="0.01"></div>
+        </div>
+        <div class="col">
+          <label>Manuals</label>
+          <div class="dollar-wrap"><input type="number" id="price-manuals" placeholder="0.00" min="0" step="0.01"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Blower Door Only</label>
+          <div class="dollar-wrap"><input type="number" id="price-blowerdoor" placeholder="0.00" min="0" step="0.01"></div>
+        </div>
+        <div class="col">
+          <label>Duct Blaster Only</label>
+          <div class="dollar-wrap"><input type="number" id="price-ductblaster" placeholder="0.00" min="0" step="0.01"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>Air Sealing</label>
+          <div class="dollar-wrap"><input type="number" id="price-airsealing" placeholder="0.00" min="0" step="0.01"></div>
+        </div>
+        <div class="col"></div>
+      </div>
+
+      <div style="margin-top:18px; background:#FFF8EC; border:2px solid #F39C12; border-radius:8px; padding:16px 18px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
           <span style="font-size:15px;">⚠️</span>
-          <label>Additional Charges — NOT included in Total Audit Fee</label>
+          <label style="font-size:12px; font-weight:700; color:#8C5E00; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0;">Trip Charges / Re-inspection Fees</label>
         </div>
-        <p class="pricing-warning-copy">These charges/fees are locked from the confirmed proposal.</p>
-
-        <div class="pricing-grid">
-          <div class="pricing-cell">
-            <label>Compliance Revisions — Simple</label>
-            <div class="dollar-wrap"><input type="number" id="price-compliance-revisions-simple" min="0" step="0.01"></div>
-            <div class="hint">Administrative updates such as address, lot, or minor corrections.</div>
-          </div>
-          <div class="pricing-cell">
-            <label>Compliance Revisions — Complex</label>
-            <div class="dollar-wrap"><input type="number" id="price-compliance-revisions-complex" min="0" step="0.01"></div>
-            <div class="hint">Plan changes such as model, elevation, layout, or HVAC/equipment changes.</div>
-          </div>
-          <div class="pricing-cell">
-            <label>Repair / Retest Labor — Hourly Rate</label>
-            <div class="dollar-wrap"><input type="number" id="price-retest" min="0" step="0.01"></div>
-            <div class="checkbox-row" style="margin-top:8px;"><input type="checkbox" id="retest-waived"><label for="retest-waived">Repair / retest fee waived</label></div>
-          </div>
-          <div class="pricing-cell">
-            <label>Trip Charge / Re-inspection Fee</label>
-            <div class="dollar-wrap"><input type="number" id="price-trip" min="0" step="0.01"></div>
-            <div class="checkbox-row" style="margin-top:8px;"><input type="checkbox" id="trip-first-free"><label for="trip-first-free">First trip charge free</label></div>
-            <div class="checkbox-row" style="margin-top:6px;"><input type="checkbox" id="trip-waived"><label for="trip-waived">Trip charge waived</label></div>
-          </div>
-          <div class="pricing-cell">
-            <label>Additional HVAC System Fee</label>
-            <div class="dollar-wrap"><input type="number" id="price-hvac-extra" min="0" step="0.01"></div>
-            <div class="hint">Per HVAC system over 1.</div>
-            <div class="checkbox-row" style="margin-top:8px;"><input type="checkbox" id="hvac-waived"><label for="hvac-waived">Additional HVAC fee waived</label></div>
-          </div>
-        </div>
+        <p style="font-size:12px; color:#7A5200; margin-bottom:12px; line-height:1.5;">Confirm the agreed rate clearly — this is a common point of dispute. Leave blank only if explicitly waived.</p>
+        <div class="dollar-wrap" style="max-width:200px;"><input type="number" id="price-trip" placeholder="0.00" min="0" step="0.01" style="border-color:#F39C12;"></div>
       </div>
 
-      <div class="price-group" style="margin-top:18px;">
-        <div class="price-group-label">Specialty Services</div>
-        <div class="row">
-          <div class="col">
-            <label>Duct Sealing</label>
-            <div class="dollar-wrap"><input type="number" id="price-duct-sealing" min="0" step="0.01"></div>
-          </div>
-          <div class="col">
-            <label>No Burn</label>
-            <div class="dollar-wrap"><input type="number" id="price-no-burn" min="0" step="0.01"></div>
-          </div>
-          <div class="col">
-            <label>Certification Fee</label>
-            <div class="dollar-wrap"><input type="number" id="price-cert-fee" min="0" step="0.01"></div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <label>Street Cleaning</label>
-            <div class="dollar-wrap"><input type="number" id="price-street-cleaning" min="0" step="0.01"></div>
-          </div>
-          <div class="col"></div>
-          <div class="col"></div>
-        </div>
-      </div>
-
-      <div style="margin-top:18px;">
-        <label style="margin-bottom:10px;">Other / Custom Services</label>
+      <div style="margin-top:4px;">
+        <label style="margin-bottom:10px;">Other Services</label>
         <div id="other-services-list">
           <div class="other-service-row row">
             <div class="col-2"><input type="text" placeholder="Service description..."></div>
             <div class="col">
-              <div class="dollar-wrap"><input type="number" min="0" step="0.01"></div>
+              <div class="dollar-wrap"><input type="number" placeholder="0.00" min="0" step="0.01"></div>
             </div>
             <div style="display:flex;align-items:center;padding-top:2px;">
               <button type="button" class="btn-remove-service" onclick="removeServiceRow(this)" title="Remove">✕</button>
@@ -1145,6 +861,7 @@
     </div>
   </div>
 
+  <!-- SECTION 6: Invoicing -->
   <div class="section" id="section-6">
     <div class="section-header"><div class="dot"></div> Invoicing Preferences</div>
     <div class="section-body">
@@ -1172,13 +889,6 @@
   <div class="section" id="section-7">
     <div class="section-header"><div class="dot"></div> Payment Terms &amp; Aging</div>
     <div class="section-body">
-      <div class="row">
-        <div class="col">
-          <label>PO &amp; Payment Terms</label>
-          <input type="text" id="po-payment-terms" placeholder="e.g. Net 30, PO required before work, payment due after inspection...">
-          <div class="hint">Confirm the payment and PO terms for this client.</div>
-        </div>
-      </div>
       <div class="contact-group">
         <div class="contact-label">Past Due Invoice Contact <span class="req">*</span></div>
         <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:14px;">
@@ -1283,19 +993,20 @@
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="17 21 17 13 7 13 7 21"/><polyline stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="7 3 7 8 15 8"/></svg>
       Save Draft
     </button>
-    <button type="button" class="btn-draft" onclick="document.getElementById('draft-file-input').click()">
-      Load Draft
+    <button type="button" class="btn-draft" onclick="document.getElementById('load-json-input').click()" style="background:#EBF4FB;border-color:#1B75BC;color:#1B75BC;">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Load from File
     </button>
-    <input type="file" id="draft-file-input" accept="application/json,.json" style="display:none" onchange="loadDraftFromFile(event)">
+    <input type="file" id="load-json-input" accept=".json" style="display:none" onchange="loadFromFile(this)">
     <button type="button" class="btn-submit" onclick="submitForm()">
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-      Save Final Onboarding
+      Send to Client
     </button>
   </div>
 
   <div class="success-banner" id="success-banner">
-    <h3>✓ Final Onboarding Ready</h3>
-    <p>The final onboarding files are ready. Save the downloaded data file and choose Save as PDF in the print window.</p>
+    <h3>✓ Form Submitted</h3>
+    <p>The onboarding summary has been sent to the client for approval. You'll be notified once they confirm.</p>
   </div>
 
   <div id="draft-banner" style="display:none;background:#EBF4FB;border:1px solid #A9D4F5;border-radius:10px;padding:20px 28px;text-align:center;margin-top:24px;">
@@ -1306,205 +1017,6 @@
 </div>
 
 <script>
-
-  // Form data plumbing
-  const CLIENT_DIRECTORY = [];
-  let filteredClientRecords = [];
-
-  const PREFILL_FIELDS = {
-    accountId: null,
-    rep: 'rep',
-    date: 'form-date', formDate: 'form-date',
-    companyName: 'company-name', client: 'company-name', builder: 'company-name',
-    companyDivision: 'company-division', division: 'company-division', divisionCity: 'company-division', city: 'company-division',
-    companyState: 'company-state', state: 'company-state',
-    projectType: 'project-type',
-    billingStreet: 'billing-street', billingAddress: 'billing-street',
-    billingCity: 'billing-city',
-    billingState: 'billing-state',
-    billingZip: 'billing-zip', billingZIP: 'billing-zip',
-    poPaymentTerms: 'po-payment-terms', paymentTerms: 'po-payment-terms',
-    priceComplianceReview: 'price-compliance-review', complianceReview: 'price-compliance-review',
-    priceComplianceRevisionsSimple: 'price-compliance-revisions-simple', complianceRevisionsSimple: 'price-compliance-revisions-simple',
-    priceComplianceRevisionsComplex: 'price-compliance-revisions-complex', complianceRevisionsComplex: 'price-compliance-revisions-complex',
-    pricePrebatt: 'price-prebatt', preBatt: 'price-prebatt', prebatt: 'price-prebatt',
-    pricePredrywall: 'price-predrywall', preDrywall: 'price-predrywall', predrywall: 'price-predrywall',
-    priceFinal: 'price-final', final: 'price-final',
-    priceBlowerDoor: 'price-blowerdoor', blowerDoor: 'price-blowerdoor',
-    priceDuctBlaster: 'price-ductblaster', ductBlaster: 'price-ductblaster',
-    priceMechanicalVentilation: 'price-mechvent', mechVent: 'price-mechvent', mechanicalVentilation: 'price-mechvent',
-    priceTestingCombined: 'price-testing-combined', testingCombined: 'price-testing-combined',
-    priceAirSealing: 'price-airsealing', airSealing: 'price-airsealing',
-    priceManualsJDS: 'price-manuals-jds', manualsJDS: 'price-manuals-jds',
-    priceManualsJS: 'price-manuals-js', manualsJS: 'price-manuals-js',
-    priceManualsOption: 'price-manuals-option', manualsOption: 'price-manuals-option',
-    manualsNotes: 'manuals-notes',
-    priceHVACDrawing: 'price-hvac-drawing', hvacDrawing: 'price-hvac-drawing',
-    priceCertificationFee: 'price-cert-fee', certFee: 'price-cert-fee', certificationFee: 'price-cert-fee',
-    priceDuctSealing: 'price-duct-sealing', ductSealing: 'price-duct-sealing',
-    priceNoBurn: 'price-no-burn', noBurn: 'price-no-burn',
-    priceStreetCleaning: 'price-street-cleaning', streetCleaning: 'price-street-cleaning',
-    priceRetest: 'price-retest', retest: 'price-retest',
-    retestWaived: 'retest-waived',
-    priceTrip: 'price-trip', trip: 'price-trip', tripCharge: 'price-trip',
-    tripFirstFree: 'trip-first-free',
-    tripWaived: 'trip-waived',
-    priceHVACExtra: 'price-hvac-extra', hvacExtra: 'price-hvac-extra', additionalHVAC: 'price-hvac-extra',
-    hvacWaived: 'hvac-waived',
-    systemNames: 'system-names', systemURL: 'system-url',
-    requiredForms: 'required-forms', requiredFormsURL: 'required-forms-url',
-    invoiceAdditional: 'inv-additional',
-    agingDate: 'aging-date', agingEmail: 'aging-email', agingNotes: 'aging-notes',
-    specialNotes: 'special-notes'
-  };
-
-  const CHECKBOX_FIELDS = new Set(['retest-waived','trip-first-free','trip-waived','hvac-waived','sys-sched','sys-docs','sys-inv','sys-none','inv-email','inv-portal','inv-both']);
-
-  function toBool(value) {
-    if (typeof value === 'boolean') return value;
-    if (value == null) return false;
-    return ['1','true','yes','y','checked','waived'].includes(String(value).trim().toLowerCase());
-  }
-
-  function setFieldValue(id, value) {
-    if (!id || value == null || value === '') return false;
-    const el = document.getElementById(id);
-    if (!el) return false;
-    if (el.type === 'checkbox') el.checked = toBool(value);
-    else if (el.type === 'radio') el.checked = String(el.value).toLowerCase() === String(value).toLowerCase();
-    else el.value = String(value);
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    el.dispatchEvent(new Event('change', { bubbles: true }));
-    return true;
-  }
-
-  function setRadioValue(name, value) {
-    if (value == null || value === '') return false;
-    const match = Array.from(document.querySelectorAll(`input[name="${name}"]`)).find(r => String(r.value).toLowerCase() === String(value).toLowerCase());
-    if (!match) return false;
-    match.checked = true;
-    match.dispatchEvent(new Event('change', { bubbles: true }));
-    return true;
-  }
-
-  function applyPayload(payload, sourceLabel = 'source') {
-    let applied = 0;
-    Object.entries(payload || {}).forEach(([key, value]) => {
-      if (value == null || value === '') return;
-      if (key === 'poRequired') { if (setRadioValue('po-required', value)) applied++; return; }
-      if (key === 'poJobs') { if (setRadioValue('po-jobs', value)) applied++; return; }
-      if (key === 'notifPref') { if (setRadioValue('notif-pref', value)) applied++; return; }
-      if (key === 'agingFreq') { if (setRadioValue('aging-freq', value)) applied++; return; }
-      if (key === 'systemsRequired') {
-        const v = String(value).toLowerCase();
-        setFieldValue('sys-sched', v.includes('sched'));
-        setFieldValue('sys-docs', v.includes('document') || v.includes('docs'));
-        setFieldValue('sys-inv', v.includes('invoic'));
-        setFieldValue('sys-none', v.includes('none'));
-        applied++; return;
-      }
-      if (key === 'invoiceDelivery') {
-        const v = String(value).toLowerCase();
-        setFieldValue('inv-email', v.includes('email'));
-        setFieldValue('inv-portal', v.includes('portal'));
-        setFieldValue('inv-both', v.includes('both'));
-        applied++; return;
-      }
-      const id = PREFILL_FIELDS[key] || (document.getElementById(key) ? key : null);
-      if (setFieldValue(id, value)) applied++;
-    });
-    document.getElementById('po-details')?.classList.toggle('visible', document.querySelector('input[name="po-required"]:checked')?.value === 'Yes');
-    updateDownstreamOptions?.();
-    updateProgress?.();
-    return applied;
-  }
-
-
-  const LOCKED_PRICING_FIELDS = [
-    'price-compliance-review','price-compliance-revisions-simple','price-compliance-revisions-complex',
-    'price-prebatt','price-predrywall','price-final','price-airsealing',
-    'price-blowerdoor','price-ductblaster','price-mechvent','price-testing-combined',
-    'price-manuals-jds','price-manuals-js','price-manuals-option','manuals-notes','price-hvac-drawing',
-    'price-cert-fee','price-duct-sealing','price-no-burn','price-street-cleaning',
-    'price-retest','retest-waived','price-trip','trip-first-free','trip-waived','price-hvac-extra','hvac-waived'
-  ];
-
-  function lockPricingFields() {
-    LOCKED_PRICING_FIELDS.forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (el.type === 'checkbox' || el.tagName === 'SELECT') {
-        el.disabled = true;
-      } else {
-        el.readOnly = true;
-      }
-      el.setAttribute('aria-readonly', 'true');
-      el.title = 'Locked from confirmed proposal';
-    });
-  }
-
-  function applyPrefillFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    if (![...params.keys()].length) return false;
-    const payload = {};
-    params.forEach((value, key) => payload[key] = value);
-    const applied = applyPayload(payload, 'URL');
-    if (applied > 0) {
-      setSetupMode('new');
-      // Prefill occurs silently so the form stays clean for onboarding users.
-      return true;
-    }
-    return false;
-  }
-
-  function showPrefillStatus(message) {
-    const box = document.getElementById('prefill-status');
-    if (!box) return;
-    box.textContent = message;
-    box.style.display = 'block';
-  }
-
-  function setSetupMode(mode) {
-    document.querySelectorAll('input[name="setup-mode"]').forEach(r => r.checked = r.value === mode);
-    document.getElementById('mode-pill-new')?.classList.toggle('active', mode === 'new');
-    document.getElementById('mode-pill-existing')?.classList.toggle('active', mode === 'existing');
-    document.getElementById('existing-client-panel')?.classList.toggle('visible', mode === 'existing');
-  }
-
-  function initClientLookup() {
-    filteredClientRecords = CLIENT_DIRECTORY.slice();
-    renderClientLookup();
-  }
-
-  function renderClientLookup() {
-    const search = document.getElementById('client-search');
-    const select = document.getElementById('client-record-select');
-    if (!search || !select) return;
-    const enabled = CLIENT_DIRECTORY.length > 0;
-    search.disabled = !enabled;
-    select.disabled = !enabled;
-    select.innerHTML = enabled ? '<option value="">Select client...</option>' : '<option value="">Client lookup not available</option>';
-    filteredClientRecords.forEach((record, i) => {
-      const opt = document.createElement('option');
-      opt.value = String(i);
-      opt.textContent = [record.companyName || record.client || record.builder, record.companyDivision || record.division, record.companyState || record.state, record.accountId].filter(Boolean).join(' — ');
-      select.appendChild(opt);
-    });
-  }
-
-  function filterClientLookup() {
-    const q = (document.getElementById('client-search')?.value || '').toLowerCase();
-    filteredClientRecords = CLIENT_DIRECTORY.filter(record => JSON.stringify(record).toLowerCase().includes(q));
-    renderClientLookup();
-  }
-
-  function loadSelectedClientRecord() {
-    const idx = document.getElementById('client-record-select')?.value;
-    if (idx === '') return;
-    const record = filteredClientRecords[Number(idx)];
-    const applied = applyPayload(record, 'client directory');
-    showPrefillStatus(`Loaded ${applied} field${applied === 1 ? '' : 's'}. Review and update as needed.`);
-  }
   // Progress tracker
   const sectionIds = ['section-1','section-2','section-3','section-4','section-5','section-6','section-7','section-notes','section-8'];
   const sectionLabels = ['Section 1 of 8','Section 2 of 8','Section 3 of 8','Section 4 of 8','Section 5 of 8','Section 6 of 8','Section 7 of 8','Notes','Section 8 of 8'];
@@ -1537,34 +1049,26 @@
 
   window.addEventListener('scroll', updateProgress, { passive: true });
 
-  // Save Draft — saves locally and downloads a JSON draft file
+  // Save Draft — collects all fields into localStorage
   function saveDraft() {
     try {
-      const data = collectData();
-      data._fileType = 'Tacoma Onboarding Draft';
-      data._savedAt = new Date().toISOString();
-      const clientName = data.companyName || 'Unknown Client';
+      const data = {};
+      document.querySelectorAll('input[id], select[id], textarea[id]').forEach(el => {
+        if (el.type !== 'checkbox' && el.type !== 'radio') data[el.id] = el.value;
+      });
+      document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(el => {
+        data['checked_' + (el.id || el.name + '_' + el.value)] = true;
+      });
+      const clientName = document.getElementById('company-name')?.value?.trim() || 'Unknown Client';
       const draftMeta = { clientName, time: new Date().toLocaleString() };
-
-      // Save in this browser for quick recovery
       localStorage.setItem('tacoma_onboarding_draft', JSON.stringify(data));
       localStorage.setItem('tacoma_onboarding_draft_meta', JSON.stringify(draftMeta));
-
-      // Also download a draft JSON file so it can be stored/shared
-      const filename = buildOnboardingFilename(clientName, data.companyDivision, 'draft', 'json');
-      downloadJSON(data, filename);
-
-      const banner = document.getElementById('draft-banner');
-      if (banner) {
-        banner.innerHTML = '<h3 style="color:#1877B8;font-size:16px;margin-bottom:6px;">✓ Draft Saved</h3><p style="color:#374151;font-size:14px;">Draft saved in this browser and downloaded as <strong>' + filename + '</strong>.</p>';
-        banner.style.display = 'block';
-        banner.scrollIntoView({ behavior: 'smooth' });
-        setTimeout(() => { banner.style.display = 'none'; }, 6000);
-      }
+      document.getElementById('draft-banner').style.display = 'block';
+      document.getElementById('draft-banner').scrollIntoView({ behavior: 'smooth' });
       updateDraftIndicator();
+      setTimeout(() => { document.getElementById('draft-banner').style.display = 'none'; }, 4000);
     } catch(e) {
-      console.error(e);
-      alert('Draft could not be saved. Please try again or use Print/Save PDF.');
+      alert('Draft could not be saved — your browser may have storage restrictions.');
     }
   }
 
@@ -1589,70 +1093,7 @@
     }
   }
 
-  function applyDataToForm(data) {
-    if (!data || typeof data !== 'object') return 0;
-    let applied = 0;
-    Object.entries(data).forEach(([id, val]) => {
-      if (id.startsWith('_')) return;
-      if (id.startsWith('checked_')) {
-        const realId = id.replace('checked_', '');
-        const el = document.getElementById(realId);
-        if (el) {
-          el.checked = !!val;
-          el.dispatchEvent(new Event('change', { bubbles: true }));
-          applied++;
-        }
-        return;
-      }
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (el.type === 'checkbox') {
-        el.checked = !!val;
-        el.dispatchEvent(new Event('change', { bubbles: true }));
-      } else if (el.type === 'radio') {
-        if (el.value === val) el.checked = true;
-      } else {
-        el.value = val || '';
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-        el.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-      applied++;
-    });
-    updateDownstreamOptions();
-    buildPastDueOptions();
-    updateProgress();
-    return applied;
-  }
-
-  // Load Draft from downloaded JSON file
-  function loadDraftFromFile(event) {
-    const file = event?.target?.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        const data = JSON.parse(e.target.result);
-        const applied = applyDataToForm(data);
-        const banner = document.getElementById('draft-banner');
-        if (banner) {
-          banner.innerHTML = '<h3 style="color:#1877B8;font-size:16px;margin-bottom:6px;">✓ Draft Loaded</h3><p style="color:#374151;font-size:14px;">Loaded <strong>' + applied + '</strong> field(s) from <strong>' + file.name + '</strong>.</p>';
-          banner.style.display = 'block';
-          banner.scrollIntoView({ behavior: 'smooth' });
-          setTimeout(() => { banner.style.display = 'none'; }, 6000);
-        } else {
-          alert('Draft loaded. Fields updated: ' + applied);
-        }
-      } catch(err) {
-        console.error(err);
-        alert('Could not load that draft file. Make sure it is a Tacoma onboarding .json draft file.');
-      } finally {
-        event.target.value = '';
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  // Load Draft on page open from this browser's local storage
+  // Load Draft on page open
   function loadDraft() {
     try {
       const saved = localStorage.getItem('tacoma_onboarding_draft');
@@ -1662,7 +1103,21 @@
       const load = confirm(`You have a saved draft for "${clientName}" from ${time}.\n\nLoad it?`);
       if (!load) { clearDraft(); return; }
       const data = JSON.parse(saved);
-      applyDataToForm(data);
+      Object.entries(data).forEach(([id, val]) => {
+        if (id.startsWith('checked_')) {
+          const realId = id.replace('checked_', '');
+          const el = document.getElementById(realId);
+          if (el) { el.checked = true; el.dispatchEvent(new Event('change')); }
+        } else {
+          const el = document.getElementById(id);
+          if (el && el.type !== 'checkbox' && el.type !== 'radio') {
+            el.value = val;
+            el.dispatchEvent(new Event('input'));
+          }
+        }
+      });
+      updateProgress();
+      updateDownstreamOptions();
     } catch(e) { /* no draft */ }
   }
 
@@ -1747,7 +1202,7 @@
     row.className = 'other-service-row row';
     row.innerHTML = `
       <div class="col-2"><input type="text" placeholder="Service description..."></div>
-      <div class="col"><div class="dollar-wrap"><input type="number" min="0" step="0.01"></div></div>
+      <div class="col"><div class="dollar-wrap"><input type="number" placeholder="0.00" min="0" step="0.01"></div></div>
       <div style="display:flex;align-items:center;padding-top:2px;">
         <button type="button" class="btn-remove-service" onclick="removeServiceRow(this)" title="Remove">✕</button>
       </div>`;
@@ -2083,13 +1538,7 @@
       date: getVal('form-date'),
       rep: getVal('rep'),
       companyName: getVal('company-name'),
-      companyDivision: getVal('company-division'),
-      companyState: getVal('company-state'),
-      projectType: getVal('project-type'),
-      billingStreet: getVal('billing-street'),
-      billingCity: getVal('billing-city'),
-      billingState: getVal('billing-state'),
-      billingZip: getVal('billing-zip'),
+      billingAddress: getVal('billing-address'),
       primaryContact: primaryName,
       primaryPhone,
       primaryEmail,
@@ -2109,38 +1558,20 @@
       poJobs: getRadio('po-jobs'),
       poJobTypes: getVal('po-job-types'),
       poMissingName: poInfo.name, poMissingPhone: poInfo.phone, poMissingEmail: poInfo.email,
-      priceComplianceReview: getVal('price-compliance-review'),
-      priceComplianceRevisionsSimple: getVal('price-compliance-revisions-simple'),
-      priceComplianceRevisionsComplex: getVal('price-compliance-revisions-complex'),
+      priceComplianceES: getVal('price-compliance-es'),
+      priceComplianceCode: getVal('price-compliance-code'),
       pricePrebatt: getVal('price-prebatt'),
       pricePredrywall: getVal('price-predrywall'),
       priceFinal: getVal('price-final'),
+      priceManuals: getVal('price-manuals'),
       priceBlowerDoor: getVal('price-blowerdoor'),
       priceDuctBlaster: getVal('price-ductblaster'),
-      priceMechanicalVentilation: getVal('price-mechvent'),
-      priceTestingCombined: getVal('price-testing-combined'),
       priceAirSealing: getVal('price-airsealing'),
-      priceManualsJDS: getVal('price-manuals-jds'),
-      priceManualsJS: getVal('price-manuals-js'),
-      priceManualsOption: getVal('price-manuals-option'),
-      manualsNotes: getVal('manuals-notes'),
-      priceHVACDrawing: getVal('price-hvac-drawing'),
-      priceCertificationFee: getVal('price-cert-fee'),
-      priceDuctSealing: getVal('price-duct-sealing'),
-      priceNoBurn: getVal('price-no-burn'),
-      priceStreetCleaning: getVal('price-street-cleaning'),
-      priceRetest: getVal('price-retest'),
-      retestWaived: getChecked('retest-waived') ? 'Yes' : '',
       priceTrip: getVal('price-trip'),
-      tripFirstFree: getChecked('trip-first-free') ? 'Yes' : '',
-      tripWaived: getChecked('trip-waived') ? 'Yes' : '',
-      priceHVACExtra: getVal('price-hvac-extra'),
-      hvacWaived: getChecked('hvac-waived') ? 'Yes' : '',
       otherServices,
       invoiceDelivery: invoiceMethod.join(', '),
       invoiceAdditional: getVal('inv-additional'),
       pastdueName: pdInfo.name, pastduePhone: pdInfo.phone, pastdueEmail: pdInfo.email,
-      poPaymentTerms: getVal('po-payment-terms'),
       notifPref: getRadio('notif-pref'),
       agingFreq: getRadio('aging-freq'),
       agingDate: getVal('aging-date'),
@@ -2150,422 +1581,20 @@
     };
   }
 
-  function safeFilePart(value) {
-    return String(value || '')
-      .trim()
-      .replace(/[^a-z0-9]+/gi, '_')
-      .replace(/^_+|_+$/g, '')
-      .substring(0, 80) || 'onboarding';
-  }
-
-  function buildOnboardingFilename(company, division, suffix, ext) {
-    const parts = [safeFilePart(company), safeFilePart(division), suffix, new Date().toISOString().slice(0,10)]
-      .filter(Boolean);
-    return parts.join('_') + '.' + ext;
-  }
-
-  function downloadJSON(data, filename) {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
-  function collectFormDataFallback() {
-    const data = {};
-    document.querySelectorAll('input, select, textarea').forEach(function(el) {
-      if (!el.id && !el.name) return;
-      const key = el.id || el.name;
-      if (el.type === 'file' || el.type === 'button' || el.type === 'submit' || el.type === 'reset') return;
-      if (el.type === 'checkbox') {
-        data[key] = !!el.checked;
-      } else if (el.type === 'radio') {
-        if (el.checked) data[el.name || key] = el.value;
-      } else {
-        data[key] = el.value || '';
-      }
-    });
-    data.companyName = data.companyName || data['company-name'] || data['legal-name'] || data['companyName'] || '';
-    data.companyDivision = data.companyDivision || data['division-city'] || data['divisionCity'] || '';
-    return data;
-  }
-
-  function downloadTextFile(text, filename, mimeType) {
-    const blob = new Blob([text], { type: mimeType || 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function() {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }, 1000);
-  }
-
-  function htmlEscape(value) {
-    return String(value ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
-  function displayValue(value) {
-    const v = String(value ?? '').trim();
-    return v ? htmlEscape(v) : '<span class="muted">—</span>';
-  }
-
-  function displayMoney(value) {
-    const v = String(value ?? '').trim();
-    if (!v) return '<span class="muted">—</span>';
-    if (/^\$/.test(v)) return htmlEscape(v);
-    if (/^-?\d+(\.\d+)?$/.test(v)) return '$' + Number(v).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return htmlEscape(v);
-  }
-
-  function reportRow(label, value, type) {
-    const formatted = type === 'money' ? displayMoney(value) : displayValue(value);
-    return '<tr><th>' + htmlEscape(label) + '</th><td>' + formatted + '</td></tr>';
-  }
-
-  function reportSection(title, rowsHtml, options) {
-    if (!rowsHtml) return '';
-    const className = options && options.wide ? ' section wide-section' : ' section';
-    return '<section class="' + className.trim() + '"><h2>' + htmlEscape(title) + '</h2><table>' + rowsHtml + '</table></section>';
-  }
-
-  function reportTwoColumnSection(title, leftRows, rightRows) {
-    return '<section class="section"><h2>' + htmlEscape(title) + '</h2><div class="two-col"><table>' + leftRows + '</table><table>' + rightRows + '</table></div></section>';
-  }
-
-  function buildProfessionalPrintHtml(data, jsonFilename) {
-    const preparedDate = new Date().toLocaleString();
-    const clientTitle = [data.companyName, data.companyDivision, data.companyState].filter(Boolean).join(' | ') || 'Client Onboarding';
-
-    const coreLeft = [
-      reportRow('Company / Builder', data.companyName),
-      reportRow('Division / City', data.companyDivision),
-      reportRow('State', data.companyState),
-      reportRow('Project Type', data.projectType),
-      reportRow('Tacoma Rep', data.rep),
-      reportRow('Onboarding Date', data.date)
-    ].join('');
-
-    const coreRight = [
-      reportRow('Billing Street', data.billingStreet),
-      reportRow('Billing City', data.billingCity),
-      reportRow('Billing State', data.billingState),
-      reportRow('Billing ZIP', data.billingZip),
-      reportRow('Payment Terms', data.poPaymentTerms)
-    ].join('');
-
-    const contactRows = [
-      reportRow('Primary Contact', data.primaryContact),
-      reportRow('Primary Phone', data.primaryPhone),
-      reportRow('Primary Email', data.primaryEmail),
-      reportRow('Scheduling Contact', data.schedName),
-      reportRow('Scheduling Phone', data.schedPhone),
-      reportRow('Scheduling Email', data.schedEmail),
-      reportRow('AP Contact', data.apName),
-      reportRow('AP Phone', data.apPhone),
-      reportRow('AP Email', data.apEmail),
-      reportRow('QA Contact', data.qaName),
-      reportRow('QA Phone', data.qaPhone),
-      reportRow('QA Email', data.qaEmail)
-    ].join('');
-
-    let additionalContacts = '';
-    if (Array.isArray(data.additionalContacts) && data.additionalContacts.length) {
-      additionalContacts = data.additionalContacts.map((c, idx) => {
-        return '<tr><th>Additional Contact ' + (idx + 1) + '</th><td>' +
-          displayValue([c.name, c.phone, c.email, c.note].filter(Boolean).join(' | ')) + '</td></tr>';
-      }).join('');
-    }
-
-    const systemsRows = [
-      reportRow('Systems Required', data.systemsRequired),
-      reportRow('System Names / Access Details', data.systemNames),
-      reportRow('System / Portal URL', data.systemURL),
-      reportRow('Required Forms / Templates', data.requiredForms),
-      reportRow('Forms / Templates URL', data.requiredFormsURL)
-    ].join('');
-
-    const poRows = [
-      reportRow('POs Required', data.poRequired),
-      reportRow('PO Count / Structure', data.poCount),
-      reportRow('What Each PO Includes', data.poIncluded),
-      reportRow('When POs Are Released', data.poWhen),
-      reportRow('Jobs Requiring POs', data.poJobs),
-      reportRow('Specific Job Types', data.poJobTypes),
-      reportRow('PO Missing / Incorrect Contact', data.poMissingName),
-      reportRow('PO Contact Phone', data.poMissingPhone),
-      reportRow('PO Contact Email', data.poMissingEmail)
-    ].join('');
-
-    const pricingCore = [
-      reportRow('Compliance Review', data.priceComplianceReview, 'money'),
-      reportRow('Pre-Batt Inspection', data.pricePrebatt, 'money'),
-      reportRow('Pre-Drywall Inspection', data.pricePredrywall, 'money'),
-      reportRow('Final Inspection', data.priceFinal, 'money')
-    ].join('');
-
-    const pricingTesting = [
-      reportRow('Blower Door Testing', data.priceBlowerDoor, 'money'),
-      reportRow('Duct Blaster Testing', data.priceDuctBlaster, 'money'),
-      reportRow('Mechanical Ventilation Testing', data.priceMechanicalVentilation, 'money'),
-      reportRow('Testing Combined Price', data.priceTestingCombined, 'money'),
-      reportRow('Air Sealing', data.priceAirSealing, 'money')
-    ].join('');
-
-    const pricingManuals = [
-      reportRow('Manuals J, D & S', data.priceManualsJDS, 'money'),
-      reportRow('Manuals J & S', data.priceManualsJS, 'money'),
-      reportRow('Manuals Per Option', data.priceManualsOption, 'money'),
-      reportRow('Manuals Notes', data.manualsNotes)
-    ].join('');
-
-    const pricingCharges = [
-      reportRow('Compliance Revisions - Simple', data.priceComplianceRevisionsSimple, 'money'),
-      reportRow('Compliance Revisions - Complex', data.priceComplianceRevisionsComplex, 'money'),
-      reportRow('Repair / Retest Labor Hourly Rate', data.priceRetest, 'money'),
-      reportRow('Repair / Retest Waived', data.retestWaived),
-      reportRow('Trip Charge / Re-inspection Fee', data.priceTrip, 'money'),
-      reportRow('First Trip Charge Free', data.tripFirstFree),
-      reportRow('Trip Waived', data.tripWaived),
-      reportRow('Additional HVAC System Fee', data.priceHVACExtra, 'money'),
-      reportRow('Additional HVAC Fee Waived', data.hvacWaived)
-    ].join('');
-
-    const pricingSpecialty = [
-      reportRow('HVAC Drawing', data.priceHVACDrawing, 'money'),
-      reportRow('Certification Fee', data.priceCertificationFee, 'money'),
-      reportRow('Duct Sealing', data.priceDuctSealing, 'money'),
-      reportRow('No Burn', data.priceNoBurn, 'money'),
-      reportRow('Street Cleaning', data.priceStreetCleaning, 'money')
-    ].join('');
-
-    let otherServicesRows = '';
-    if (Array.isArray(data.otherServices) && data.otherServices.length) {
-      otherServicesRows = data.otherServices.map((s, idx) =>
-        reportRow('Other Service ' + (idx + 1), [s.service, s.price ? ('$' + s.price) : ''].filter(Boolean).join(' — '))
-      ).join('');
-    }
-
-    const invoiceRows = [
-      reportRow('Invoice Delivery', data.invoiceDelivery),
-      reportRow('Additional Invoice Instructions', data.invoiceAdditional),
-      reportRow('Past Due Contact', data.pastdueName),
-      reportRow('Past Due Phone', data.pastduePhone),
-      reportRow('Past Due Email', data.pastdueEmail),
-      reportRow('Notification Preference', data.notifPref),
-      reportRow('Aging Report Frequency', data.agingFreq),
-      reportRow('Monthly Report Date', data.agingDate),
-      reportRow('Aging Report Email', data.agingEmail),
-      reportRow('Aging Report Notes', data.agingNotes)
-    ].join('');
-
-    const notesRows = [
-      reportRow('Special Instructions / Notes', data.specialNotes),
-      reportRow('JSON File', jsonFilename),
-      reportRow('Saved At', preparedDate),
-      reportRow('Source URL', data._sourceUrl)
-    ].join('');
-
-    return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + htmlEscape(clientTitle) + ' Onboarding Summary</title>' +
-      '<style>' +
-      '@page{size:letter;margin:0.45in 0.5in;}*{box-sizing:border-box}body{font-family:Segoe UI,Arial,sans-serif;color:#0D1B2A;margin:0;background:white;font-size:10.5px;line-height:1.35}' +
-      '.report{max-width:7.5in;margin:0 auto}.top{border-bottom:3px solid #1877B8;padding-bottom:10px;margin-bottom:12px;display:flex;justify-content:space-between;gap:18px;align-items:flex-start}' +
-      '.brand{font-size:22px;font-weight:800;color:#0B3D6B;letter-spacing:-0.02em}.subtitle{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#6B7280;margin-top:2px}' +
-      '.meta{text-align:right;font-size:10px;color:#374151}.meta strong{display:block;color:#0B3D6B;font-size:12px;margin-bottom:2px}' +
-      '.client-title{background:#EBF4FB;border:1px solid #A9D4F5;border-radius:8px;padding:10px 12px;margin-bottom:12px}.client-title h1{font-size:16px;margin:0 0 3px;color:#0B3D6B}.client-title p{margin:0;color:#374151;font-size:10.5px}' +
-      '.section{border:1px solid #DDE2E8;border-radius:8px;margin:0 0 10px;overflow:hidden;break-inside:avoid;page-break-inside:avoid;background:white}' +
-      '.section h2{margin:0;background:#1877B8;color:white;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:7px 10px}' +
-      'table{width:100%;border-collapse:collapse;break-inside:avoid;page-break-inside:avoid}th,td{padding:5px 8px;border-bottom:1px solid #EEF2F6;vertical-align:top}tr:last-child th,tr:last-child td{border-bottom:none}' +
-      'th{width:34%;text-align:left;color:#6B7280;text-transform:uppercase;font-size:8.5px;letter-spacing:.04em;font-weight:700;background:#FAFBFC}td{font-size:10.5px;color:#111827;word-break:break-word}' +
-      '.two-col{display:grid;grid-template-columns:1fr 1fr;gap:0}.two-col table:first-child{border-right:1px solid #DDE2E8}.muted{color:#9CA3AF}.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;break-inside:auto}.pricing-grid .section{margin-bottom:0}' +
-      '.footer{border-top:1px solid #DDE2E8;margin-top:14px;padding-top:8px;color:#6B7280;font-size:9px;display:flex;justify-content:space-between;gap:12px}' +
-      '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.section{break-inside:avoid;page-break-inside:avoid}.pricing-grid{break-inside:auto}.footer{position:fixed;bottom:0.1in;left:0.5in;right:0.5in}.report{padding-bottom:0.25in}}' +
-      '</style></head><body><div class="report">' +
-      '<div class="top"><div><div class="brand">Tacoma Energy</div><div class="subtitle">New Customer Onboarding Record</div></div><div class="meta"><strong>Internal Record</strong><div>Prepared: ' + htmlEscape(preparedDate) + '</div><div>Status: ' + htmlEscape(data._completionStatus || 'Final') + '</div></div></div>' +
-      '<div class="client-title"><h1>' + htmlEscape(clientTitle) + '</h1><p>Completed onboarding summary generated from the confirmed onboarding form. Pricing shown below should reflect the confirmed proposal.</p></div>' +
-      reportTwoColumnSection('Client & Billing', coreLeft, coreRight) +
-      reportSection('Contacts', contactRows + additionalContacts) +
-      reportSection('Systems / Portals / Required Forms', systemsRows) +
-      reportSection('PO Requirements', poRows) +
-      '<div class="pricing-grid">' +
-      reportSection('Pricing - Core Services', pricingCore) +
-      reportSection('Pricing - Testing', pricingTesting) +
-      reportSection('Pricing - Manuals', pricingManuals) +
-      reportSection('Additional Charges', pricingCharges) +
-      reportSection('Specialty Services', pricingSpecialty) +
-      reportSection('Other / Custom Services', otherServicesRows || reportRow('Other Services', '')) +
-      '</div>' +
-      reportSection('Invoicing / Aging / Payment Setup', invoiceRows) +
-      reportSection('Notes & Record Details', notesRows, { wide: true }) +
-      '<div class="footer"><span>Generated by Tacoma Energy onboarding form.</span><span>Keep PDF and JSON with the client record.</span></div>' +
-      '</div></body></html>';
-  }
-
-  function openProfessionalPrintWindow(data, jsonFilename) {
-    const printHtml = buildProfessionalPrintHtml(data, jsonFilename);
-    const w = window.open('', '_blank');
-    if (!w) {
-      alert('The print window was blocked by the browser. Allow pop-ups for this site, or use Ctrl+P from the form as a fallback.');
-      return false;
-    }
-    w.document.open();
-    w.document.write(printHtml);
-    w.document.close();
-    setTimeout(function() {
-      try {
-        w.focus();
-        w.print();
-      } catch (err) {
-        console.error('Professional print dialog failed:', err);
-        alert('The PDF print window opened, but the print dialog did not start. Use Ctrl+P in the new window and choose Save as PDF.');
-      }
-    }, 650);
-    return true;
-  }
-
   function submitForm() {
-    // Final onboarding one-click helper:
-    // 1) Download JSON for future Excel/import automation
-    // 2) Open professional PDF/print summary
-    // 3) Copy final email message to clipboard
-    // 4) Open Outlook/default mail client with subject/body prefilled
-    let isComplete = true;
-    try {
-      isComplete = validate();
-    } catch (err) {
-      console.warn('Validation check could not complete. Continuing with final export.', err);
-      isComplete = false;
+    if (!validate()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
     }
 
-    if (!isComplete) {
-      const proceed = confirm('Some required onboarding fields appear to be incomplete.\n\nSave the final onboarding JSON, PDF, and email draft anyway?');
-      if (!proceed) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-    }
+    const data = collectData();
+    console.log('Form Data (ready for Power Automate):', JSON.stringify(data, null, 2));
 
-    let data;
-    try {
-      data = collectData();
-    } catch (err) {
-      console.warn('Structured collectData failed; using fallback form collector.', err);
-      data = collectFormDataFallback();
-    }
+    // TODO: Replace this with Power Automate HTTP trigger URL
+    // fetch('YOUR_POWER_AUTOMATE_URL', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) })
 
-    data._fileType = 'Tacoma Final Onboarding';
-    data._savedAt = new Date().toISOString();
-    data._completionStatus = isComplete ? 'Complete' : 'Final saved with missing required fields';
-    data._sourceUrl = window.location.href;
-
-    const company = data.companyName || data['company-name'] || data['legal-name'] || 'client';
-    const division = data.companyDivision || data['division-city'] || data.divisionCity || '';
-    const jsonFilename = buildOnboardingFilename(company, division, 'final_onboarding', 'json');
-
-    try {
-      downloadTextFile(JSON.stringify(data, null, 2), jsonFilename, 'application/json');
-    } catch (err) {
-      console.error('JSON download failed:', err);
-      alert('The JSON file could not be downloaded automatically. Your browser may be blocking downloads. The PDF window and email draft will still be prepared.');
-    }
-
-    const email = buildFinalOnboardingEmail(data, jsonFilename);
-    copyEmailMessageToClipboard(email);
-
-    const success = document.getElementById('success-banner');
-    if (success) {
-      success.innerHTML = '<h3>✓ Final Onboarding Started</h3><p>The final onboarding JSON should download as <strong>' + htmlEscape(jsonFilename) + '</strong>. A professional PDF summary will open next — choose <strong>Save as PDF</strong>. An Outlook/default email draft will also open with the message prefilled. Attach the saved PDF and JSON before sending.</p>';
-      success.style.display = 'block';
-      success.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      alert('Final onboarding JSON should download as ' + jsonFilename + '. A professional PDF summary will open next — choose Save as PDF. An email draft/message will also be prepared.');
-    }
-
-    // Open print/PDF summary first, then open email draft. If the browser blocks the email,
-    // the message is already copied to the clipboard as a fallback.
-    setTimeout(function() {
-      const opened = openProfessionalPrintWindow(data, jsonFilename);
-      if (!opened) {
-        try { window.print(); } catch (err) { console.error('Fallback print failed:', err); }
-      }
-    }, 350);
-
-    setTimeout(function() {
-      openFinalOnboardingEmailDraft(email);
-    }, 1100);
-  }
-
-  function buildFinalOnboardingEmail(data, jsonFilename) {
-    const clientId = data.accountId || data.clientId || data.ClientID || '';
-    const company = data.companyName || data['company-name'] || data['legal-name'] || 'Client';
-    const division = data.companyDivision || data.divisionCity || data['division-city'] || '';
-    const state = data.companyState || data.state || data['company-state'] || '';
-    const clientLabel = clientId || [company, division, state].filter(Boolean).join(' | ') || 'Client';
-    const subject = 'Completed Onboarding Files - ' + clientLabel;
-
-    const body =
-      'The completed onboarding files are ready for ' + clientLabel + '.\n\n' +
-      'Please attach the following files before sending/saving this email:\n' +
-      '- Completed onboarding PDF\n' +
-      '- Completed onboarding JSON data file: ' + jsonFilename + '\n\n' +
-      'The PDF is the readable onboarding record. The JSON file is for future import/sync with the Client Setup Master.\n\n' +
-      'Client / Builder: ' + company + '\n' +
-      (division ? 'Division / City: ' + division + '\n' : '') +
-      (state ? 'State: ' + state + '\n' : '') +
-      '\nSaved from Tacoma Energy Client Onboarding.';
-
-    return { subject, body, clientLabel, jsonFilename };
-  }
-
-  function copyEmailMessageToClipboard(email) {
-    const message = 'Subject: ' + email.subject + '\n\n' + email.body;
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(message).catch(function(err) {
-        console.warn('Clipboard write failed:', err);
-      });
-    } else {
-      try {
-        const temp = document.createElement('textarea');
-        temp.value = message;
-        temp.style.position = 'fixed';
-        temp.style.left = '-9999px';
-        document.body.appendChild(temp);
-        temp.focus();
-        temp.select();
-        document.execCommand('copy');
-        document.body.removeChild(temp);
-      } catch (err) {
-        console.warn('Fallback clipboard copy failed:', err);
-      }
-    }
-  }
-
-  function openFinalOnboardingEmailDraft(email) {
-    const mailtoUrl = 'mailto:' +
-      '?subject=' + encodeURIComponent(email.subject) +
-      '&body=' + encodeURIComponent(email.body);
-
-    try {
-      window.location.href = mailtoUrl;
-    } catch (err) {
-      console.warn('Unable to open mail client automatically:', err);
-      alert('The email message was copied to your clipboard. Open Outlook, create a new email, paste the message, and attach the saved PDF and JSON files.');
-    }
+    document.getElementById('success-banner').style.display = 'block';
+    document.getElementById('success-banner').scrollIntoView({ behavior: 'smooth' });
   }
 
   function resetForm() {
@@ -2583,9 +1612,7 @@
   updateDownstreamOptions();
   updateProgress();
   updateDraftIndicator();
-  const urlPrefilled = applyPrefillFromURL();
-    lockPricingFields();
-  if (!urlPrefilled) loadDraft();
+  loadDraft();
 
   // PO conditional toggle
   document.querySelectorAll('input[name="po-required"]').forEach(r => {
@@ -2604,244 +1631,199 @@
       dateField.value = `${yyyy}-${mm}-${dd}`;
     }
   })();
-</script>
 
-<script>
-(function(){
-  window.__ONBOARD_PREFILL_VERSION = 'client-onboarding-prefill-2026-05-22';
+  // ── LOAD FROM FILE ──
+  function loadFromFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const d = JSON.parse(e.target.result);
+        applyDraftData(d);
+        input.value = ''; // reset so same file can be loaded again
+      } catch(err) {
+        alert('Could not read the file. Make sure it is a valid Tacoma Onboarding draft (.json).');
+      }
+    };
+    reader.readAsText(file);
+  }
 
-  const MAP = {
-    accountId: null,
-    rep: 'rep', date: 'form-date', formDate: 'form-date',
-    companyName: 'company-name', client: 'company-name', builder: 'company-name',
-    companyDivision: 'company-division', division: 'company-division', divisionCity: 'company-division', city: 'company-division',
-    companyState: 'company-state', state: 'company-state',
-    projectType: 'project-type',
-    billingStreet: 'billing-street', billingAddress: 'billing-street',
-    billingCity: 'billing-city', billingState: 'billing-state', billingZip: 'billing-zip', billingZIP: 'billing-zip',
-    poPaymentTerms: 'po-payment-terms', paymentTerms: 'po-payment-terms',
-
-    primaryContact: 'primary-contact', primaryName: 'primary-contact', phone: 'phone', primaryPhone: 'phone', email: 'email', primaryEmail: 'email',
-    'primary-contact': 'primary-contact',
-    schedName: 'sched-name', 'sched-name': 'sched-name', schedPhone: 'sched-phone', 'sched-phone': 'sched-phone', schedEmail: 'sched-email', 'sched-email': 'sched-email',
-    apName: 'ap-name', 'ap-name': 'ap-name', apPhone: 'ap-phone', 'ap-phone': 'ap-phone', apEmail: 'ap-email', 'ap-email': 'ap-email',
-    qaName: 'qa-name', 'qa-name': 'qa-name', qaPhone: 'qa-phone', 'qa-phone': 'qa-phone', qaEmail: 'qa-email', 'qa-email': 'qa-email',
-    pastdueName: 'pastdue-name', 'pastdue-name': 'pastdue-name', pastduePhone: 'pastdue-phone', 'pastdue-phone': 'pastdue-phone', pastdueEmail: 'pastdue-email', 'pastdue-email': 'pastdue-email',
-    poMissingName: 'po-missing-name', 'po-missing-name': 'po-missing-name', poMissingPhone: 'po-missing-phone', 'po-missing-phone': 'po-missing-phone', poMissingEmail: 'po-missing-email', 'po-missing-email': 'po-missing-email',
-
-    poCount: 'po-count', 'po-count': 'po-count', poIncluded: 'po-included', 'po-included': 'po-included', poWhen: 'po-when', 'po-when': 'po-when', poJobTypes: 'po-job-types', 'po-job-types': 'po-job-types',
-    systemNames: 'system-names', systemURL: 'system-url', requiredForms: 'required-forms', requiredFormsURL: 'required-forms-url',
-    invoiceAdditional: 'inv-additional', agingDate: 'aging-date', agingEmail: 'aging-email', agingNotes: 'aging-notes', specialNotes: 'special-notes',
-
-    priceComplianceReview: 'price-compliance-review', complianceReview: 'price-compliance-review',
-    priceComplianceRevisionsSimple: 'price-compliance-revisions-simple', complianceRevisionsSimple: 'price-compliance-revisions-simple',
-    priceComplianceRevisionsComplex: 'price-compliance-revisions-complex', complianceRevisionsComplex: 'price-compliance-revisions-complex',
-    pricePrebatt: 'price-prebatt', preBatt: 'price-prebatt', prebatt: 'price-prebatt',
-    pricePredrywall: 'price-predrywall', preDrywall: 'price-predrywall', predrywall: 'price-predrywall',
-    priceFinal: 'price-final', final: 'price-final',
-    priceBlowerDoor: 'price-blowerdoor', blowerDoor: 'price-blowerdoor',
-    priceDuctBlaster: 'price-ductblaster', ductBlaster: 'price-ductblaster',
-    priceMechanicalVentilation: 'price-mechvent', mechVent: 'price-mechvent', mechanicalVentilation: 'price-mechvent',
-    priceTestingCombined: 'price-testing-combined', testingCombined: 'price-testing-combined',
-    priceAirSealing: 'price-airsealing', airSealing: 'price-airsealing',
-    priceManualsJDS: 'price-manuals-jds', manualsJDS: 'price-manuals-jds',
-    priceManualsJS: 'price-manuals-js', manualsJS: 'price-manuals-js',
-    priceManualsOption: 'price-manuals-option', manualsOption: 'price-manuals-option',
-    manualsNotes: 'manuals-notes',
-    priceHVACDrawing: 'price-hvac-drawing', hvacDrawing: 'price-hvac-drawing',
-    priceCertificationFee: 'price-cert-fee', certFee: 'price-cert-fee', certificationFee: 'price-cert-fee',
-    priceDuctSealing: 'price-duct-sealing', ductSealing: 'price-duct-sealing',
-    priceNoBurn: 'price-no-burn', noBurn: 'price-no-burn',
-    priceStreetCleaning: 'price-street-cleaning', streetCleaning: 'price-street-cleaning',
-    priceRetest: 'price-retest', retest: 'price-retest',
-    retestWaived: 'retest-waived',
-    priceTrip: 'price-trip', trip: 'price-trip', tripCharge: 'price-trip',
-    tripFirstFree: 'trip-first-free', tripWaived: 'trip-waived',
-    priceHVACExtra: 'price-hvac-extra', hvacExtra: 'price-hvac-extra', additionalHVAC: 'price-hvac-extra',
-    hvacWaived: 'hvac-waived'
+  // Key translation map — JSON key → element ID
+  const KEY_MAP = {
+    // Identity
+    date:                          'form-date',
+    rep:                           'rep',
+    companyName:                   'company-name',
+    billingAddress:                'billing-address',
+    billingStreet:                 'billing-address',
+    // Contacts
+    primaryContact:                'primary-contact',
+    primaryPhone:                  'phone',
+    primaryEmail:                  'email',
+    otherContact:                  'other-contact',
+    schedName:                     'sched-name',
+    schedPhone:                    'sched-phone',
+    schedEmail:                    'sched-email',
+    apName:                        'ap-name',
+    apPhone:                       'ap-phone',
+    apEmail:                       'ap-email',
+    qaName:                        'qa-name',
+    qaPhone:                       'qa-phone',
+    qaEmail:                       'qa-email',
+    // Systems
+    systemNames:                   'system-names',
+    systemURL:                     'system-url',
+    systemUrl:                     'system-url',
+    requiredForms:                 'required-forms',
+    requiredFormsURL:              'required-forms-url',
+    requiredFormsUrl:              'required-forms-url',
+    // PO
+    poCount:                       'po-count',
+    poIncluded:                    'po-included',
+    poWhen:                        'po-when',
+    poJobTypes:                    'po-job-types',
+    poMissingName:                 'po-missing-name',
+    poMissingPhone:                'po-missing-phone',
+    poMissingEmail:                'po-missing-email',
+    // Pricing — core
+    priceComplianceReview:         'p-compliance',
+    priceComplianceES:             'p-compliance',
+    priceComplianceCode:           'p-compliance',
+    priceComplianceRevisionsSimple:'p-compliance-revisions-simple',
+    priceComplianceRevisionsComplex:'p-compliance-revisions-complex',
+    pricePrebatt:                  'p-prebatt',
+    pricePredrywall:               'p-predrywall',
+    priceFinal:                    'p-final',
+    priceAirSealing:               'p-airsealing',
+    // Pricing — testing
+    priceBlowerDoor:               'p-test-blowerdoor',
+    priceDuctBlaster:              'p-test-ductblaster',
+    priceMechanicalVentilation:    'p-test-mechvent',
+    priceTestingCombined:          'p-testing-bundled',
+    // Pricing — additional services
+    priceManualsJDS:               'p-manuals',
+    priceManuals:                  'p-manuals',
+    priceManualsJS:                'p-manuals-js',
+    priceManualsOption:            'p-manuals-option',
+    manualsNotes:                  'manuals-notes',
+    priceHVACDrawing:              'p-hvac-drawing',
+    // Pricing — specialty
+    priceDuctSealing:              'p-duct-sealing',
+    priceNoBurn:                   'p-no-burn',
+    priceCertificationFee:         'p-cert-fee',
+    priceStreetCleaning:           'p-street-cleaning',
+    // Pricing — charges
+    priceRetest:                   'p-retest',
+    priceTrip:                     'p-trip',
+    priceHVACExtra:                'p-hvac-extra',
+    // Invoicing
+    invoiceAdditional:             'inv-additional',
+    pastdueName:                   'pastdue-name',
+    pastduePhone:                  'pastdue-phone',
+    pastdueEmail:                  'pastdue-email',
+    agingDate:                     'aging-date',
+    agingEmail:                    'aging-email',
+    agingNotes:                    'aging-notes',
+    specialNotes:                  'special-notes',
+    poPaymentTerms:                'po-terms',
   };
 
-  function truthy(value) {
-    return ['1','true','yes','y','checked','waived','x'].includes(String(value || '').trim().toLowerCase());
-  }
+  // Checkbox keys — JSON key → element ID
+  const CHK_MAP = {
+    retestWaived:   'retest-waived',
+    tripFirstFree:  'trip-first-free',
+    tripWaived:     'trip-waived',
+    hvacWaived:     'hvac-waived',
+  };
 
-  function setById(id, value) {
-    if (!id || value === null || value === undefined || value === '') return false;
-    const el = document.getElementById(id);
-    if (!el) return false;
-    if (el.type === 'checkbox') {
-      el.checked = truthy(value);
-    } else if (el.type === 'radio') {
-      el.checked = String(el.value).toLowerCase() === String(value).toLowerCase();
-    } else {
-      el.value = String(value);
-    }
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    el.dispatchEvent(new Event('change', { bubbles: true }));
-    return true;
-  }
+  // Radio keys — JSON key → input name
+  const RADIO_MAP = {
+    poRequired:   'po-required',
+    notifPref:    'notif-pref',
+    agingFreq:    'aging-freq',
+    poJobs:       'po-jobs',
+  };
 
-  function setRadio(name, value) {
-    const val = String(value || '').toLowerCase();
-    if (!val) return false;
-    const buttons = Array.from(document.querySelectorAll('input[name="' + name + '"]'));
-    const match = buttons.find(r => String(r.value).toLowerCase() === val || String(r.value).toLowerCase().startsWith(val));
-    if (!match) return false;
-    match.checked = true;
-    match.dispatchEvent(new Event('change', { bubbles: true }));
-    return true;
-  }
-
-  function applyUrlPrefill() {
-    const params = new URLSearchParams(window.location.search);
-    if (![...params.keys()].length) return 0;
-    let applied = 0;
-    params.forEach((value, key) => {
-      if (value === null || value === '') return;
-      if (key === 'accountId') return;
-      if (key === 'poRequired') { if (setRadio('po-required', value)) applied++; return; }
-      if (key === 'poJobs') { if (setRadio('po-jobs', value)) applied++; return; }
-      if (key === 'notifPref') { if (setRadio('notif-pref', value)) applied++; return; }
-      if (key === 'agingFreq') { if (setRadio('aging-freq', value)) applied++; return; }
-      if (key === 'systemsRequired') {
-        const v = String(value).toLowerCase();
-        setById('sys-sched', v.includes('sched'));
-        setById('sys-docs', v.includes('document') || v.includes('docs'));
-        setById('sys-inv', v.includes('invoic'));
-        setById('sys-none', v.includes('none'));
-        applied++;
-        return;
+  function applyDraftData(d) {
+    const set = (id, val) => {
+      if (!val && val !== 0) return;
+      const el = document.getElementById(id);
+      if (el) { el.value = val; el.dispatchEvent(new Event('input', { bubbles: true })); }
+    };
+    const setChk = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.checked = (val === true || val === 'true' || val === 'Yes' || val === '1' || val === 1);
+        el.dispatchEvent(new Event('change', { bubbles: true }));
       }
-      if (key === 'invoiceDelivery') {
-        const v = String(value).toLowerCase();
-        setById('inv-email', v.includes('email'));
-        setById('inv-portal', v.includes('portal'));
-        setById('inv-both', v.includes('both'));
-        applied++;
-        return;
-      }
-      const id = MAP[key] || (document.getElementById(key) ? key : null);
-      if (setById(id, value)) applied++;
-    });
-    const poChecked = document.querySelector('input[name="po-required"]:checked');
-    const poDetails = document.getElementById('po-details');
-    if (poDetails && poChecked) poDetails.classList.toggle('visible', poChecked.value === 'Yes');
-    if (typeof updateDownstreamOptions === 'function') updateDownstreamOptions();
-    if (typeof updateProgress === 'function') updateProgress();
-    return applied;
-  }
-
-  function run() {
-    try {
-      const applied = applyUrlPrefill();
-      if (applied) console.log('Tacoma onboarding prefill applied:', applied, 'fields');
-    } catch (err) {
-      console.error('Tacoma onboarding prefill error:', err);
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', run);
-  } else {
-    run();
-  }
-  setTimeout(run, 250);
-  setTimeout(run, 1000);
-})();
-</script>
-
-<script>
-(function(){
-  function onlyDigits(value) {
-    return String(value || '').replace(/\D/g, '');
-  }
-
-  function formatPhone(value) {
-    const digits = onlyDigits(value).slice(0, 10);
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 6) return '(' + digits.slice(0, 3) + ') ' + digits.slice(3);
-    return '(' + digits.slice(0, 3) + ') ' + digits.slice(3, 6) + '-' + digits.slice(6);
-  }
-
-  function formatZip(value) {
-    const digits = onlyDigits(value).slice(0, 9);
-    if (digits.length <= 5) return digits;
-    return digits.slice(0, 5) + '-' + digits.slice(5);
-  }
-
-  function cleanNameText(value) {
-    return String(value || '').replace(/\s+/g, ' ').trim();
-  }
-
-  function normalizeState(value) {
-    return String(value || '').replace(/[^a-zA-Z]/g, '').slice(0, 2).toUpperCase();
-  }
-
-  function normalizeEmail(value) {
-    return String(value || '').replace(/\s+/g, '').trim().toLowerCase();
-  }
-
-  function normalizeUrl(value) {
-    const v = String(value || '').trim();
-    if (!v) return '';
-    if (/^(https?:\/\/|mailto:)/i.test(v)) return v;
-    if (/^[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(v)) return 'https://' + v;
-    return v;
-  }
-
-  function attachFormattingHelpers() {
-    document.querySelectorAll('input[type="tel"], input[id*="phone"], input[class*="phone"]').forEach(function(input){
-      input.setAttribute('inputmode', 'tel');
-      input.setAttribute('placeholder', input.getAttribute('placeholder') || '(555) 000-0000');
-      input.addEventListener('input', function(){
-        const start = input.selectionStart;
-        input.value = formatPhone(input.value);
-        try { input.setSelectionRange(input.value.length, input.value.length); } catch(e) {}
+    };
+    const setRadio = (name, val) => {
+      if (!val) return;
+      document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+        if (r.value === val) { r.checked = true; r.dispatchEvent(new Event('change', { bubbles: true })); }
       });
-      input.addEventListener('blur', function(){ input.value = formatPhone(input.value); });
+    };
+
+    // Apply text/number fields
+    Object.entries(KEY_MAP).forEach(([jsonKey, elId]) => {
+      if (d[jsonKey] !== undefined && d[jsonKey] !== null) set(elId, d[jsonKey]);
     });
 
-    ['billing-zip'].forEach(function(id){
-      const input = document.getElementById(id);
-      if (!input) return;
-      input.setAttribute('inputmode', 'numeric');
-      input.setAttribute('maxlength', '10');
-      input.setAttribute('placeholder', '12345');
-      input.addEventListener('input', function(){ input.value = formatZip(input.value); });
-      input.addEventListener('blur', function(){ input.value = formatZip(input.value); });
+    // Apply checkboxes
+    Object.entries(CHK_MAP).forEach(([jsonKey, elId]) => {
+      if (d[jsonKey] !== undefined && d[jsonKey] !== null) setChk(elId, d[jsonKey]);
     });
 
-    ['company-state','billing-state'].forEach(function(id){
-      const input = document.getElementById(id);
-      if (!input) return;
-      input.setAttribute('maxlength', '2');
-      input.addEventListener('input', function(){ input.value = normalizeState(input.value); });
-      input.addEventListener('blur', function(){ input.value = normalizeState(input.value); });
+    // Apply radios
+    Object.entries(RADIO_MAP).forEach(([jsonKey, name]) => {
+      if (d[jsonKey]) setRadio(name, d[jsonKey]);
     });
 
-    document.querySelectorAll('input[type="email"], input[id*="email"], input[class*="email"]').forEach(function(input){
-      input.setAttribute('inputmode', 'email');
-      input.addEventListener('blur', function(){ input.value = normalizeEmail(input.value); });
-    });
+    // Handle billing address from parts if needed
+    if (!d.billingAddress && (d.billingStreet || d.billingCity)) {
+      const parts = [d.billingStreet, d.billingCity, d.billingState, d.billingZip].filter(Boolean);
+      set('billing-address', parts.join(', '));
+    }
 
-    document.querySelectorAll('input[id*="url" i], input[id*="URL"], input[placeholder*="URL"], input[placeholder*="link" i]').forEach(function(input){
-      input.addEventListener('blur', function(){ input.value = normalizeUrl(input.value); });
-    });
+    // Handle testing checkboxes — check box if there's a value for that test
+    if (parseFloat(d.priceBlowerDoor || 0) > 0) setChk('tc-blowerdoor', true);
+    if (parseFloat(d.priceDuctBlaster || 0) > 0) setChk('tc-ductblaster', true);
+    if (parseFloat(d.priceMechanicalVentilation || 0) > 0) setChk('tc-mechvent', true);
 
-    document.querySelectorAll('input[type="text"], textarea').forEach(function(input){
-      if (input.readOnly || input.disabled) return;
-      if (input.id && (/email|phone|zip|state|url/i).test(input.id)) return;
-      input.addEventListener('blur', function(){ input.value = cleanNameText(input.value); });
-    });
+    // PO details visibility
+    if (d.poRequired === 'Yes') {
+      const poDetails = document.getElementById('po-details');
+      if (poDetails) poDetails.classList.add('visible');
+    }
+
+    // Invoice delivery
+    if (d.invoiceDelivery) {
+      const del = d.invoiceDelivery.toLowerCase();
+      if (del.includes('email')) setChk('inv-email', true);
+      if (del.includes('portal')) setChk('inv-portal', true);
+      if (del.includes('both')) { setChk('inv-email', true); setChk('inv-portal', true); }
+    }
+
+    // Trigger testing UI update if function exists
+    if (typeof updateOnboardingTestingUI === 'function') updateOnboardingTestingUI();
+
+    updateProgress();
+    updateDraftIndicator();
+
+    // Show confirmation banner
+    const name = d.companyName || '';
+    const div  = d.companyDivision || d.divisionCity || '';
+    const st   = d.companyState || d.state || '';
+    const existing = document.getElementById('load-file-banner');
+    if (existing) existing.remove();
+    const banner = document.createElement('div');
+    banner.id = 'load-file-banner';
+    banner.style.cssText = 'background:#1B75BC;color:#fff;text-align:center;padding:10px 16px;font-size:13px;font-weight:600;position:sticky;top:0;z-index:999;';
+    banner.textContent = `✓ Draft loaded — ${name}${div ? ' | ' + div : ''}${st ? ' (' + st + ')' : ''} · Review all fields before submitting.`;
+    document.body.prepend(banner);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', attachFormattingHelpers);
-  } else {
-    attachFormattingHelpers();
-  }
-})();
 </script>
-
 </body>
 </html>
