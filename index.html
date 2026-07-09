@@ -485,6 +485,141 @@
     .form-header { padding: 20px; }
     .section-body { padding: 18px; }
   }
+
+  /* ═══════════ PRINT / PDF STYLES ═══════════ */
+  @media print {
+    @page {
+      size: letter;
+      margin: 0.5in 0.55in;
+    }
+
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      background: #fff !important;
+      font-size: 10.5pt;
+    }
+
+    /* Hide interactive chrome */
+    .submit-bar,
+    .btn-reset, .btn-draft, .btn-submit,
+    .btn-add-service, .btn-remove-service,
+    .btn-add-contact, .btn-remove-contact,
+    #draft-indicator, #draft-banner, #success-banner,
+    #load-file-banner, #load-json-input,
+    #progress-bar,
+    .hint {
+      display: none !important;
+    }
+
+    /* Header — compact single block */
+    .form-header {
+      background: #10425F !important;
+      border-radius: 0;
+      padding: 14pt 18pt !important;
+      margin-bottom: 10pt;
+      page-break-inside: avoid;
+    }
+    .form-header h1 { font-size: 15pt !important; margin: 0 !important; }
+    .form-header p { font-size: 8pt !important; margin: 2pt 0 0 !important; }
+    .form-header .logo-mark img { width: 30pt !important; height: 30pt !important; }
+
+    .form-wrapper {
+      max-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    /* Sections — clean bordered cards, content flows across pages */
+    .section {
+      box-shadow: none !important;
+      border: 1pt solid #C9D6E0 !important;
+      border-radius: 4pt !important;
+      margin-bottom: 8pt !important;
+    }
+    .section-header {
+      background: #EEF4F8 !important;
+      color: #10425F !important;
+      font-size: 9.5pt !important;
+      padding: 6pt 12pt !important;
+      border-bottom: 1pt solid #C9D6E0 !important;
+      page-break-after: avoid;
+    }
+    .section-header .dot { display: none !important; }
+    .section-body { padding: 8pt 12pt !important; }
+
+    /* Fields — label above a clean underline, no boxes */
+    label {
+      font-size: 7pt !important;
+      margin-bottom: 1pt !important;
+      color: #5A7184 !important;
+    }
+    input[type="text"], input[type="tel"], input[type="email"],
+    input[type="number"], input[type="date"], input[type="url"],
+    select, textarea {
+      border: none !important;
+      border-bottom: 0.75pt solid #B9C7D2 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      padding: 1pt 2pt !important;
+      font-size: 9.5pt !important;
+      min-height: 0 !important;
+      height: auto !important;
+      color: #14202B !important;
+    }
+    textarea { min-height: 24pt !important; }
+
+    .row { gap: 8pt !important; margin-bottom: 4pt !important; }
+
+    /* Checkboxes and radios — visible state */
+    input[type="checkbox"], input[type="radio"] {
+      width: 9pt !important;
+      height: 9pt !important;
+    }
+    .checkbox-row, .radio-row {
+      padding: 1.5pt 0 !important;
+      font-size: 9pt !important;
+      border: none !important;
+    }
+
+    /* Pricing table */
+    .services-table th {
+      font-size: 7.5pt !important;
+      padding: 4pt 8pt !important;
+    }
+    .services-table td {
+      padding: 3.5pt 8pt !important;
+      font-size: 9pt !important;
+    }
+    .dollar-wrap::before { font-size: 9pt !important; left: 0 !important; }
+    .dollar-wrap input { padding-left: 9pt !important; }
+
+    /* Specialty panel — force open in print so values show */
+    #ob-specialty-panel { display: block !important; }
+    #ob-specialty-btn { display: none !important; }
+    #onboarding-testing-ui { display: block !important; }
+
+    /* Terms box */
+    .terms-box {
+      font-size: 7.5pt !important;
+      padding: 6pt 10pt !important;
+      max-height: none !important;
+      overflow: visible !important;
+      border: 0.75pt solid #C9D6E0 !important;
+    }
+    .agree-row { font-size: 9pt !important; padding: 4pt 0 0 !important; }
+
+    /* Keep small units together */
+    .contact-group, .price-group, .conditional,
+    .services-table tr, .checkbox-group, .radio-group {
+      page-break-inside: avoid;
+    }
+    .conditional { display: block !important; }
+    .contact-group { padding: 6pt 10pt !important; margin-bottom: 5pt !important; }
+  }
 </style>
 </head>
 <body>
@@ -494,6 +629,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v2.0 · Updated Jul 8, 2026</p>
   </div>
 </div>
 
@@ -777,83 +913,92 @@
   </div>
   <div class="section" id="section-5">
     <div class="section-header"><div class="dot"></div> Pricing Agreement</div>
-    <div class="section-body">
-      <p class="hint" style="margin-bottom:16px;">Enter agreed pricing for each service. Leave blank if not applicable.</p>
+    <div class="section-body" style="padding:0">
+      <table class="services-table" style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:700;color:var(--gray-text);text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--gray-border)">Service</th>
+            <th style="text-align:center;padding:10px 16px;font-size:11px;font-weight:700;color:var(--gray-text);text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--gray-border);width:160px">Price per Unit</th>
+          </tr>
+        </thead>
+        <tbody>
 
-      <!-- Compliance Inspections -->
-      <div class="price-group">
-        <div class="price-group-label">Compliance Inspections</div>
-        <div class="row">
-          <div class="col">
-            <label>Energy Star (ES)</label>
-            <div class="dollar-wrap"><input type="number" id="price-compliance-es" placeholder="0.00" min="0" step="0.01"></div>
-          </div>
-          <div class="col">
-            <label>Code</label>
-            <div class="dollar-wrap"><input type="number" id="price-compliance-code" placeholder="0.00" min="0" step="0.01"></div>
-          </div>
+          <tr><td colspan="2" style="background:#F0F4F8;padding:7px 16px;border-bottom:1px solid var(--gray-border)"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--navy)">Core Services — included in Total Audit Fee</span></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Compliance Review</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-compliance" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Pre-Batt Inspection</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-prebatt" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Pre-Drywall Inspection</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-predrywall" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Final Inspection</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-final" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Air Sealing</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-airsealing" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+
+          <tr><td colspan="2" style="background:#F0F4F8;padding:7px 16px;border-bottom:1px solid var(--gray-border);border-top:1px solid var(--gray-border)"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--navy)">Testing Only — included in Total Audit Fee</span></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)">
+            <td colspan="2" style="padding:14px 16px">
+              <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px">
+                <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--navy);cursor:pointer"><input type="checkbox" id="tc-blowerdoor" onchange="updateOnboardingTestingUI()" style="width:15px;height:15px"> Blower Door</label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--navy);cursor:pointer"><input type="checkbox" id="tc-ductblaster" onchange="updateOnboardingTestingUI()" style="width:15px;height:15px"> Duct Blaster</label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--navy);cursor:pointer"><input type="checkbox" id="tc-mechvent" onchange="updateOnboardingTestingUI()" style="width:15px;height:15px"> Mechanical Ventilation</label>
+              </div>
+              <div id="onboarding-testing-ui" style="display:none">
+                <div style="background:var(--gray-light);border:1px solid var(--gray-border);border-radius:8px;padding:14px 16px">
+                  <div style="font-size:11px;font-weight:700;color:var(--gray-text);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Use combined OR individual pricing</div>
+                  <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+                    <div>
+                      <label style="font-size:10px;margin-bottom:5px;display:block">Combined Price</label>
+                      <div class="dollar-wrap" style="max-width:130px;margin:0"><input type="number" id="p-testing-bundled" placeholder="0.00" min="0" step="0.01" oninput="onboardingBundledInput()"></div>
+                    </div>
+                    <div style="padding-top:22px;color:var(--gray-text);font-weight:700;font-size:13px">OR</div>
+                    <div style="display:flex;gap:14px;flex-wrap:wrap">
+                      <div id="ob-test-block-blowerdoor" style="display:none"><label style="font-size:10px;margin-bottom:4px;display:block">Blower Door</label><div class="dollar-wrap" style="max-width:120px;margin:0"><input type="number" id="p-test-blowerdoor" placeholder="0.00" min="0" step="0.01" oninput="onboardingIndivInput()"></div></div>
+                      <div id="ob-test-block-ductblaster" style="display:none"><label style="font-size:10px;margin-bottom:4px;display:block">Duct Blaster</label><div class="dollar-wrap" style="max-width:120px;margin:0"><input type="number" id="p-test-ductblaster" placeholder="0.00" min="0" step="0.01" oninput="onboardingIndivInput()"></div></div>
+                      <div id="ob-test-block-mechvent" style="display:none"><label style="font-size:10px;margin-bottom:4px;display:block">Mechanical Ventilation</label><div class="dollar-wrap" style="max-width:120px;margin:0"><input type="number" id="p-test-mechvent" placeholder="0.00" min="0" step="0.01" oninput="onboardingIndivInput()"></div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <tr><td colspan="2" style="background:#F0F4F8;padding:7px 16px;border-bottom:1px solid var(--gray-border);border-top:1px solid var(--gray-border)"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--navy)">Additional Services — NOT included in Total Audit Fee</span></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Manuals (Manual J, D &amp; S)</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-manuals" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Manuals (Manual J &amp; S)</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-manuals-js" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:500;color:var(--gray-text);padding-left:28px">↳ Manuals — Per Option</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-manuals-option" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)"><td colspan="2" style="padding:6px 16px 12px"><input type="text" id="manuals-notes" placeholder="Manuals notes (optional)" style="font-size:12px;width:100%;border:1.5px solid var(--gray-border);border-radius:6px;padding:7px 10px;font-family:inherit"></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">HVAC Drawing</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-hvac-drawing" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+
+          <tr><td colspan="2" style="background:#FFF8EC;padding:7px 16px;border-bottom:1px solid #F5CBA7;border-top:1px solid var(--gray-border)"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#8C5E00">⚠ Additional Charges — NOT included in Total Audit Fee</span></td></tr>
+          <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Compliance Revisions — Simple</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Administrative updates such as address, lot, or minor corrections</div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-compliance-revisions-simple" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+          <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Compliance Revisions — Complex</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Plan changes such as model, elevation, layout, or HVAC/equipment changes</div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-compliance-revisions-complex" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+          <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Repair / Retest Labor — Hourly Rate</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="retest-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-retest" placeholder="250.00" value="250.00" min="0" step="0.01"></div><div style="font-size:10px;color:#8C5E00;text-align:center;margin-top:3px">per hour</div></td></tr>
+          <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Trip Charge / Re-inspection Fee</div><div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px"><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-first-free" style="accent-color:#F39C12;width:14px;height:14px"> First trip charge is free</label></div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-trip" placeholder="125.00" value="125.00" min="0" step="0.01"></div></td></tr>
+          <tr style="background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Additional HVAC System Fee</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Per HVAC system over 1</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="hvac-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-hvac-extra" placeholder="200.00" value="200.00" min="0" step="0.01"></div></td></tr>
+
+        </tbody>
+      </table>
+
+      <div style="border-top:1px solid var(--gray-border)">
+        <button type="button" onclick="toggleOnboardingSpecialty()" id="ob-specialty-btn" style="width:100%;background:var(--gray-light);border:none;padding:10px 16px;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-family:inherit">
+          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-text)">＋ Specialty Services &nbsp;<span style="font-weight:400">(Duct Sealing · No Burn · Certification Fee · Street Cleaning)</span></span>
+          <span id="ob-specialty-icon" style="font-size:12px;color:var(--gray-text);transition:transform 0.2s">▼</span>
+        </button>
+        <div id="ob-specialty-panel" style="display:none">
+          <table style="width:100%;border-collapse:collapse">
+            <tbody>
+              <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:9px 16px;font-size:13px;font-weight:600;width:70%">Duct Sealing</td><td style="padding:9px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-duct-sealing" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+              <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:9px 16px;font-size:13px;font-weight:600">No Burn</td><td style="padding:9px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-no-burn" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+              <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:9px 16px;font-size:13px;font-weight:600">Certification Fee</td><td style="padding:9px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-cert-fee" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+              <tr><td style="padding:9px 16px;font-size:13px;font-weight:600">Street Cleaning</td><td style="padding:9px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-street-cleaning" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <!-- Ordered price fields -->
-      <div class="row">
-        <div class="col">
-          <label>Pre-Batt Inspections</label>
-          <div class="dollar-wrap"><input type="number" id="price-prebatt" placeholder="0.00" min="0" step="0.01"></div>
-        </div>
-        <div class="col">
-          <label>Pre-Drywall Inspections</label>
-          <div class="dollar-wrap"><input type="number" id="price-predrywall" placeholder="0.00" min="0" step="0.01"></div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <label>Final Inspections</label>
-          <div class="dollar-wrap"><input type="number" id="price-final" placeholder="0.00" min="0" step="0.01"></div>
-        </div>
-        <div class="col">
-          <label>Manuals</label>
-          <div class="dollar-wrap"><input type="number" id="price-manuals" placeholder="0.00" min="0" step="0.01"></div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <label>Blower Door Only</label>
-          <div class="dollar-wrap"><input type="number" id="price-blowerdoor" placeholder="0.00" min="0" step="0.01"></div>
-        </div>
-        <div class="col">
-          <label>Duct Blaster Only</label>
-          <div class="dollar-wrap"><input type="number" id="price-ductblaster" placeholder="0.00" min="0" step="0.01"></div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <label>Air Sealing</label>
-          <div class="dollar-wrap"><input type="number" id="price-airsealing" placeholder="0.00" min="0" step="0.01"></div>
-        </div>
-        <div class="col"></div>
-      </div>
-
-      <div style="margin-top:18px; background:#FFF8EC; border:2px solid #F39C12; border-radius:8px; padding:16px 18px;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
-          <span style="font-size:15px;">⚠️</span>
-          <label style="font-size:12px; font-weight:700; color:#8C5E00; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0;">Trip Charges / Re-inspection Fees</label>
-        </div>
-        <p style="font-size:12px; color:#7A5200; margin-bottom:12px; line-height:1.5;">Confirm the agreed rate clearly — this is a common point of dispute. Leave blank only if explicitly waived.</p>
-        <div class="dollar-wrap" style="max-width:200px;"><input type="number" id="price-trip" placeholder="0.00" min="0" step="0.01" style="border-color:#F39C12;"></div>
-      </div>
-
-      <div style="margin-top:4px;">
-        <label style="margin-bottom:10px;">Other Services</label>
+      <div style="padding:16px 20px;border-top:1px solid var(--gray-border)">
+        <label style="margin-bottom:10px">Other / Custom Services <span style="font-weight:400;color:var(--gray-text);text-transform:none;letter-spacing:0">(optional)</span></label>
         <div id="other-services-list">
           <div class="other-service-row row">
             <div class="col-2"><input type="text" placeholder="Service description..."></div>
-            <div class="col">
-              <div class="dollar-wrap"><input type="number" placeholder="0.00" min="0" step="0.01"></div>
-            </div>
-            <div style="display:flex;align-items:center;padding-top:2px;">
-              <button type="button" class="btn-remove-service" onclick="removeServiceRow(this)" title="Remove">✕</button>
-            </div>
+            <div class="col"><div class="dollar-wrap"><input type="number" placeholder="0.00" min="0" step="0.01"></div></div>
+            <div style="display:flex;align-items:center;padding-top:2px;"><button type="button" class="btn-remove-service" onclick="removeServiceRow(this)" title="Remove">✕</button></div>
           </div>
         </div>
         <button type="button" class="btn-add-service" onclick="addServiceRow()">+ Add Another Service</button>
@@ -997,6 +1142,10 @@
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
       Load from File
     </button>
+    <button type="button" class="btn-draft" onclick="printForm()">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>
+      Print / PDF
+    </button>
     <input type="file" id="load-json-input" accept=".json" style="display:none" onchange="loadFromFile(this)">
     <button type="button" class="btn-submit" onclick="submitForm()">
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
@@ -1063,6 +1212,10 @@
       const draftMeta = { clientName, time: new Date().toLocaleString() };
       localStorage.setItem('tacoma_onboarding_draft', JSON.stringify(data));
       localStorage.setItem('tacoma_onboarding_draft_meta', JSON.stringify(draftMeta));
+
+      // Also download a portable JSON draft file
+      downloadJSON(collectData(), 'draft');
+
       document.getElementById('draft-banner').style.display = 'block';
       document.getElementById('draft-banner').scrollIntoView({ behavior: 'smooth' });
       updateDraftIndicator();
@@ -1070,6 +1223,25 @@
     } catch(e) {
       alert('Draft could not be saved — your browser may have storage restrictions.');
     }
+  }
+
+  // ── Download form data as a JSON file ──
+  function downloadJSON(data, kind) {
+    const d = { ...data };
+    d._fileType = kind === 'draft' ? 'Tacoma Onboarding Draft' : 'Tacoma Final Onboarding';
+    d._savedAt = new Date().toISOString();
+    const name = (d.companyName || 'Client').replace(/[^a-z0-9]+/gi, '_');
+    const today = new Date().toISOString().slice(0, 10);
+    const fname = `${name}_${kind === 'draft' ? 'draft' : 'final_onboarding'}_${today}.json`;
+    const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fname;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   // Clear draft from storage
@@ -1558,20 +1730,39 @@
       poJobs: getRadio('po-jobs'),
       poJobTypes: getVal('po-job-types'),
       poMissingName: poInfo.name, poMissingPhone: poInfo.phone, poMissingEmail: poInfo.email,
-      priceComplianceES: getVal('price-compliance-es'),
-      priceComplianceCode: getVal('price-compliance-code'),
-      pricePrebatt: getVal('price-prebatt'),
-      pricePredrywall: getVal('price-predrywall'),
-      priceFinal: getVal('price-final'),
-      priceManuals: getVal('price-manuals'),
-      priceBlowerDoor: getVal('price-blowerdoor'),
-      priceDuctBlaster: getVal('price-ductblaster'),
-      priceAirSealing: getVal('price-airsealing'),
-      priceTrip: getVal('price-trip'),
+      projectType: getVal('project-type'),
+      priceComplianceReview: getVal('p-compliance'),
+      priceComplianceRevisionsSimple: getVal('p-compliance-revisions-simple'),
+      priceComplianceRevisionsComplex: getVal('p-compliance-revisions-complex'),
+      pricePrebatt: getVal('p-prebatt'),
+      pricePredrywall: getVal('p-predrywall'),
+      priceFinal: getVal('p-final'),
+      priceAirSealing: getVal('p-airsealing'),
+      priceBlowerDoor: getVal('p-test-blowerdoor'),
+      priceDuctBlaster: getVal('p-test-ductblaster'),
+      priceMechanicalVentilation: getVal('p-test-mechvent'),
+      priceTestingCombined: getVal('p-testing-bundled'),
+      priceManualsJDS: getVal('p-manuals'),
+      priceManualsJS: getVal('p-manuals-js'),
+      priceManualsOption: getVal('p-manuals-option'),
+      manualsNotes: getVal('manuals-notes'),
+      priceHVACDrawing: getVal('p-hvac-drawing'),
+      priceDuctSealing: getVal('p-duct-sealing'),
+      priceNoBurn: getVal('p-no-burn'),
+      priceCertificationFee: getVal('p-cert-fee'),
+      priceStreetCleaning: getVal('p-street-cleaning'),
+      priceRetest: getVal('p-retest'),
+      retestWaived: getChecked('retest-waived'),
+      priceTrip: getVal('p-trip'),
+      tripFirstFree: getChecked('trip-first-free'),
+      tripWaived: getChecked('trip-waived'),
+      priceHVACExtra: getVal('p-hvac-extra'),
+      hvacWaived: getChecked('hvac-waived'),
       otherServices,
       invoiceDelivery: invoiceMethod.join(', '),
       invoiceAdditional: getVal('inv-additional'),
       pastdueName: pdInfo.name, pastduePhone: pdInfo.phone, pastdueEmail: pdInfo.email,
+      poPaymentTerms: getVal('po-terms'),
       notifPref: getRadio('notif-pref'),
       agingFreq: getRadio('aging-freq'),
       agingDate: getVal('aging-date'),
@@ -1590,11 +1781,19 @@
     const data = collectData();
     console.log('Form Data (ready for Power Automate):', JSON.stringify(data, null, 2));
 
+    // Download the final JSON record
+    downloadJSON(data, 'final');
+
     // TODO: Replace this with Power Automate HTTP trigger URL
     // fetch('YOUR_POWER_AUTOMATE_URL', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) })
 
     document.getElementById('success-banner').style.display = 'block';
     document.getElementById('success-banner').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── Print / Save as PDF ──
+  function printForm() {
+    window.print();
   }
 
   function resetForm() {
@@ -1638,13 +1837,20 @@
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function(e) {
+      let d;
       try {
-        const d = JSON.parse(e.target.result);
-        applyDraftData(d);
-        input.value = ''; // reset so same file can be loaded again
+        d = JSON.parse(e.target.result);
       } catch(err) {
-        alert('Could not read the file. Make sure it is a valid Tacoma Onboarding draft (.json).');
+        alert('Could not parse JSON file. Make sure it is a valid .json file.');
+        return;
       }
+      try {
+        applyDraftData(d);
+      } catch(err) {
+        console.error('Error applying draft data:', err);
+        alert('Draft loaded partially — some fields may not have been filled. Check console for details.\n\nError: ' + err.message);
+      }
+      input.value = '';
     };
     reader.readAsText(file);
   }
@@ -1745,6 +1951,54 @@
     poJobs:       'po-jobs',
   };
 
+  // ── TESTING ONLY — show/hide individual price blocks based on checkboxes ──
+  function updateOnboardingTestingUI() {
+    const bd = document.getElementById('tc-blowerdoor')?.checked;
+    const db = document.getElementById('tc-ductblaster')?.checked;
+    const mv = document.getElementById('tc-mechvent')?.checked;
+    const anyChecked = bd || db || mv;
+
+    const ui = document.getElementById('onboarding-testing-ui');
+    if (ui) ui.style.display = anyChecked ? 'block' : 'none';
+
+    const toggle = (blockId, show) => {
+      const b = document.getElementById(blockId);
+      if (b) b.style.display = show ? 'block' : 'none';
+    };
+    toggle('ob-test-block-blowerdoor', bd);
+    toggle('ob-test-block-ductblaster', db);
+    toggle('ob-test-block-mechvent', mv);
+  }
+
+  // ── Bundled vs individual testing pricing (mutually exclusive) ──
+  function onboardingBundledInput() {
+    const bundled = document.getElementById('p-testing-bundled')?.value;
+    const indiv = ['p-test-blowerdoor','p-test-ductblaster','p-test-mechvent'];
+    if (bundled && parseFloat(bundled) > 0) {
+      indiv.forEach(id => { const el = document.getElementById(id); if (el) { el.value = ''; el.disabled = true; } });
+    } else {
+      indiv.forEach(id => { const el = document.getElementById(id); if (el) el.disabled = false; });
+    }
+  }
+  function onboardingIndivInput() {
+    const indiv = ['p-test-blowerdoor','p-test-ductblaster','p-test-mechvent'];
+    const anyFilled = indiv.some(id => { const el = document.getElementById(id); return el && parseFloat(el.value||0) > 0; });
+    const bundledEl = document.getElementById('p-testing-bundled');
+    if (bundledEl) {
+      if (anyFilled) { bundledEl.value = ''; bundledEl.disabled = true; }
+      else { bundledEl.disabled = false; }
+    }
+  }
+
+  // ── Specialty services collapsible ──
+  function toggleOnboardingSpecialty() {
+    const panel = document.getElementById('ob-specialty-panel');
+    const icon  = document.getElementById('ob-specialty-icon');
+    const open  = panel.style.display === 'none' || panel.style.display === '';
+    panel.style.display = open ? 'block' : 'none';
+    if (icon) icon.style.transform = open ? 'rotate(180deg)' : '';
+  }
+
   function applyDraftData(d) {
     const set = (id, val) => {
       if (!val && val !== 0) return;
@@ -1807,6 +2061,14 @@
 
     // Trigger testing UI update if function exists
     if (typeof updateOnboardingTestingUI === 'function') updateOnboardingTestingUI();
+
+    // Auto-open specialty panel if any specialty values present
+    const specialtyVals = ['p-duct-sealing','p-no-burn','p-cert-fee','p-street-cleaning'];
+    if (specialtyVals.some(id => parseFloat(document.getElementById(id)?.value || 0) > 0)) {
+      const panel = document.getElementById('ob-specialty-panel');
+      const icon = document.getElementById('ob-specialty-icon');
+      if (panel) { panel.style.display = 'block'; if (icon) icon.style.transform = 'rotate(180deg)'; }
+    }
 
     updateProgress();
     updateDraftIndicator();
