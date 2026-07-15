@@ -629,7 +629,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v2.0 · Updated Jul 8, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v2.2 · Updated Jul 10, 2026</p>
   </div>
 </div>
 
@@ -959,9 +959,23 @@
           </tr>
 
           <tr><td colspan="2" style="background:#F0F4F8;padding:7px 16px;border-bottom:1px solid var(--gray-border);border-top:1px solid var(--gray-border)"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--navy)">Additional Services — NOT included in Total Audit Fee</span></td></tr>
-          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Manuals (Manual J, D &amp; S)</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-manuals" placeholder="0.00" min="0" step="0.01"></div></td></tr>
-          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Manuals (Manual J &amp; S)</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-manuals-js" placeholder="0.00" min="0" step="0.01"></div></td></tr>
-          <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:500;color:var(--gray-text);padding-left:28px">↳ Manuals — Per Option</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-manuals-option" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+          <tr style="border-bottom:1px solid var(--gray-border)">
+            <td colspan="2" style="padding:12px 16px 6px">
+              <div style="font-size:11px;font-weight:700;color:var(--gray-text);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Manuals — Duct System Type</div>
+              <div style="display:flex;gap:20px;flex-wrap:wrap">
+                <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--navy);cursor:pointer"><input type="checkbox" id="ms-conventional" checked onchange="updateOnboardingManualsUI()" style="width:15px;height:15px"> Conventional</label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--navy);cursor:pointer"><input type="checkbox" id="ms-rheia" onchange="updateOnboardingManualsUI()" style="width:15px;height:15px"> Rheia</label>
+              </div>
+            </td>
+          </tr>
+          <tr class="ob-manuals-conv-row ob-manuals-sys-label" style="display:none"><td colspan="2" style="padding:6px 16px 2px;background:#F0F4F8"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--navy)">Conventional</span></td></tr>
+          <tr class="ob-manuals-conv-row" style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Manuals (Manual J, D &amp; S)</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="text" inputmode="decimal" id="p-manuals" placeholder="0.00" title="Single price or range, e.g. 800-1100"></div></td></tr>
+          <tr class="ob-manuals-conv-row" style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Manuals (Manual J &amp; S)</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="text" inputmode="decimal" id="p-manuals-js" placeholder="0.00" title="Single price or range, e.g. 800-1100"></div></td></tr>
+          <tr class="ob-manuals-conv-row" style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:500;color:var(--gray-text);padding-left:28px">↳ Manuals — Per Option</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="text" inputmode="decimal" id="p-manuals-option" placeholder="0.00" title="Single price or range, e.g. 800-1100"></div></td></tr>
+          <tr class="ob-manuals-rheia-row ob-manuals-sys-label" style="display:none"><td colspan="2" style="padding:6px 16px 2px;background:#F0F4F8"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--navy)">Rheia</span></td></tr>
+          <tr class="ob-manuals-rheia-row" style="display:none;border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Manuals (Manual J, D &amp; S)</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="text" inputmode="decimal" id="p-manuals-rheia" placeholder="0.00" title="Single price or range, e.g. 800-1100" disabled></div></td></tr>
+          <tr class="ob-manuals-rheia-row" style="display:none;border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">Manuals (Manual J &amp; S)</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="text" inputmode="decimal" id="p-manuals-js-rheia" placeholder="0.00" title="Single price or range, e.g. 800-1100" disabled></div></td></tr>
+          <tr class="ob-manuals-rheia-row" style="display:none;border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:500;color:var(--gray-text);padding-left:28px">↳ Manuals — Per Option</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="text" inputmode="decimal" id="p-manuals-option-rheia" placeholder="0.00" title="Single price or range, e.g. 800-1100" disabled></div></td></tr>
           <tr style="border-bottom:1px solid var(--gray-border)"><td colspan="2" style="padding:6px 16px 12px"><input type="text" id="manuals-notes" placeholder="Manuals notes (optional)" style="font-size:12px;width:100%;border:1.5px solid var(--gray-border);border-radius:6px;padding:7px 10px;font-family:inherit"></td></tr>
           <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:10px 16px;font-size:13px;font-weight:600">HVAC Drawing</td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-hvac-drawing" placeholder="0.00" min="0" step="0.01"></div></td></tr>
 
@@ -1294,6 +1308,9 @@
   }
 
   // Simple same-as helpers for key contacts
+  // Stub — past-due contact is a free-text field; no dynamic options needed.
+  function buildPastDueOptions() { /* intentionally no-op */ }
+
   function getContactInfo(prefix) {
     if (prefix === 'primary') return {
       name:  document.getElementById('primary-contact')?.value?.trim() || '',
@@ -1745,6 +1762,11 @@
       priceManualsJDS: getVal('p-manuals'),
       priceManualsJS: getVal('p-manuals-js'),
       priceManualsOption: getVal('p-manuals-option'),
+      priceManualsJDSRheia: getVal('p-manuals-rheia'),
+      priceManualsJSRheia: getVal('p-manuals-js-rheia'),
+      priceManualsOptionRheia: getVal('p-manuals-option-rheia'),
+      manualsConventional: getChecked('ms-conventional'),
+      manualsRheia: getChecked('ms-rheia'),
       manualsNotes: getVal('manuals-notes'),
       priceHVACDrawing: getVal('p-hvac-drawing'),
       priceDuctSealing: getVal('p-duct-sealing'),
@@ -1812,6 +1834,9 @@
   updateProgress();
   updateDraftIndicator();
   loadDraft();
+  if (typeof updateOnboardingManualsUI === 'function') updateOnboardingManualsUI();
+
+  // ── LOAD FROM URL PARAMETERS moved to end of script (after KEY_MAP init) ──
 
   // PO conditional toggle
   document.querySelectorAll('input[name="po-required"]').forEach(r => {
@@ -1865,18 +1890,30 @@
     billingStreet:                 'billing-address',
     // Contacts
     primaryContact:                'primary-contact',
+    'primary-contact':             'primary-contact',
     primaryPhone:                  'phone',
+    phone:                         'phone',
     primaryEmail:                  'email',
+    email:                         'email',
     otherContact:                  'other-contact',
     schedName:                     'sched-name',
+    'sched-name':                  'sched-name',
     schedPhone:                    'sched-phone',
+    'sched-phone':                 'sched-phone',
     schedEmail:                    'sched-email',
+    'sched-email':                 'sched-email',
     apName:                        'ap-name',
+    'ap-name':                     'ap-name',
     apPhone:                       'ap-phone',
+    'ap-phone':                    'ap-phone',
     apEmail:                       'ap-email',
+    'ap-email':                    'ap-email',
     qaName:                        'qa-name',
+    'qa-name':                     'qa-name',
     qaPhone:                       'qa-phone',
+    'qa-phone':                    'qa-phone',
     qaEmail:                       'qa-email',
+    'qa-email':                    'qa-email',
     // Systems
     systemNames:                   'system-names',
     systemURL:                     'system-url',
@@ -1886,12 +1923,19 @@
     requiredFormsUrl:              'required-forms-url',
     // PO
     poCount:                       'po-count',
+    'po-count':                    'po-count',
     poIncluded:                    'po-included',
+    'po-included':                 'po-included',
     poWhen:                        'po-when',
+    'po-when':                     'po-when',
     poJobTypes:                    'po-job-types',
+    'po-job-types':                'po-job-types',
     poMissingName:                 'po-missing-name',
+    'po-missing-name':             'po-missing-name',
     poMissingPhone:                'po-missing-phone',
+    'po-missing-phone':            'po-missing-phone',
     poMissingEmail:                'po-missing-email',
+    'po-missing-email':            'po-missing-email',
     // Pricing — core
     priceComplianceReview:         'p-compliance',
     priceComplianceES:             'p-compliance',
@@ -1912,6 +1956,9 @@
     priceManuals:                  'p-manuals',
     priceManualsJS:                'p-manuals-js',
     priceManualsOption:            'p-manuals-option',
+    priceManualsJDSRheia:          'p-manuals-rheia',
+    priceManualsJSRheia:           'p-manuals-js-rheia',
+    priceManualsOptionRheia:       'p-manuals-option-rheia',
     manualsNotes:                  'manuals-notes',
     priceHVACDrawing:              'p-hvac-drawing',
     // Pricing — specialty
@@ -1926,8 +1973,11 @@
     // Invoicing
     invoiceAdditional:             'inv-additional',
     pastdueName:                   'pastdue-name',
+    'pastdue-name':                'pastdue-name',
     pastduePhone:                  'pastdue-phone',
+    'pastdue-phone':               'pastdue-phone',
     pastdueEmail:                  'pastdue-email',
+    'pastdue-email':               'pastdue-email',
     agingDate:                     'aging-date',
     agingEmail:                    'aging-email',
     agingNotes:                    'aging-notes',
@@ -1950,6 +2000,25 @@
     agingFreq:    'aging-freq',
     poJobs:       'po-jobs',
   };
+
+  // ── MANUALS DUCT SYSTEM TYPE (Conventional / Rheia) ──
+  function updateOnboardingManualsUI() {
+    const conv  = document.getElementById('ms-conventional').checked;
+    const rheia = document.getElementById('ms-rheia').checked;
+    const both  = conv && rheia;
+    const toggleRows = (cls, show) => {
+      document.querySelectorAll('tr.'+cls).forEach(tr => {
+        const isLabel = tr.classList.contains('ob-manuals-sys-label');
+        tr.style.display = (isLabel ? both : show) ? '' : 'none';
+        tr.querySelectorAll('input').forEach(inp => {
+          inp.disabled = !show;
+          if (!show) inp.value = '';
+        });
+      });
+    };
+    toggleRows('ob-manuals-conv-row', conv);
+    toggleRows('ob-manuals-rheia-row', rheia);
+  }
 
   // ── TESTING ONLY — show/hide individual price blocks based on checkboxes ──
   function updateOnboardingTestingUI() {
@@ -2059,6 +2128,23 @@
       if (del.includes('both')) { setChk('inv-email', true); setChk('inv-portal', true); }
     }
 
+    // Restore manuals duct system type (older drafts default to Conventional)
+    const convEl = document.getElementById('ms-conventional');
+    const rheiaEl = document.getElementById('ms-rheia');
+    // Detect Rheia data even when no explicit flag is sent (e.g. from Excel URL)
+    const hasRheiaData = ['priceManualsJDSRheia','priceManualsJSRheia','priceManualsOptionRheia']
+      .some(k => { const v = parseFloat(String(d[k] || '').replace(/[^0-9.]/g, '')); return v > 0; });
+    const rheiaFlag = (d.manualsRheia === true || d.manualsRheia === 'Yes' || d.manualsRheia === 'true');
+    if (convEl) convEl.checked = (d.manualsConventional === undefined || d.manualsConventional === '') ? true : (d.manualsConventional === true || d.manualsConventional === 'Yes' || d.manualsConventional === 'true');
+    if (rheiaEl) rheiaEl.checked = (rheiaFlag || hasRheiaData);
+    if (typeof updateOnboardingManualsUI === 'function') updateOnboardingManualsUI();
+    // Re-apply rheia values since updateOnboardingManualsUI may have cleared disabled inputs
+    if (rheiaEl && rheiaEl.checked) {
+      set('p-manuals-rheia', d.priceManualsJDSRheia);
+      set('p-manuals-js-rheia', d.priceManualsJSRheia);
+      set('p-manuals-option-rheia', d.priceManualsOptionRheia);
+    }
+
     // Trigger testing UI update if function exists
     if (typeof updateOnboardingTestingUI === 'function') updateOnboardingTestingUI();
 
@@ -2086,6 +2172,29 @@
     document.body.prepend(banner);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  // ── LOAD FROM URL PARAMETERS (pre-fill link from Excel) ──
+  // Runs last, after KEY_MAP and applyDraftData are fully initialized.
+  function loadFromURL() {
+    const search = window.location.search;
+    if (!search || search.length < 2) return;
+    const params = new URLSearchParams(search);
+    const d = {};
+    let count = 0;
+    params.forEach((value, key) => {
+      if (value !== '' && value !== null) { d[key] = value; count++; }
+    });
+    if (count === 0) return;
+    applyDraftData(d);
+    const banner = document.getElementById('load-file-banner');
+    if (banner) {
+      const name = d.companyName || '';
+      const div  = d.divisionCity || '';
+      const st   = d.state || '';
+      banner.textContent = `\u2713 Loaded from account database \u2014 ${name}${div ? ' | ' + div : ''}${st ? ' (' + st + ')' : ''} \u00b7 Review all fields before submitting.`;
+    }
+  }
+  loadFromURL();
 </script>
 </body>
 </html>
