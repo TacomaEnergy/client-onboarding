@@ -629,7 +629,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v2.8 · Updated Jul 15, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.0 · Updated Jul 15, 2026</p>
   </div>
 </div>
 
@@ -988,9 +988,9 @@
           <tr><td colspan="2" style="background:#FFF8EC;padding:7px 16px;border-bottom:1px solid #F5CBA7;border-top:1px solid var(--gray-border)"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#8C5E00">⚠ Additional Charges — NOT included in Total Audit Fee</span></td></tr>
           <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Compliance Revisions — Simple</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Administrative updates such as address, lot, or minor corrections</div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-compliance-revisions-simple" placeholder="0.00" min="0" step="0.01"></div></td></tr>
           <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Compliance Revisions — Complex</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Plan changes such as model, elevation, layout, or HVAC/equipment changes</div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-compliance-revisions-complex" placeholder="0.00" min="0" step="0.01"></div></td></tr>
-          <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Repair / Retest Labor — Hourly Rate</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="retest-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-retest" placeholder="250.00" value="250.00" min="0" step="0.01"></div><div style="font-size:10px;color:#8C5E00;text-align:center;margin-top:3px">per hour</div></td></tr>
-          <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Trip Charge / Re-inspection Fee</div><div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px"><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-first-free" style="accent-color:#F39C12;width:14px;height:14px"> First trip charge is free</label></div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-trip" placeholder="125.00" value="125.00" min="0" step="0.01"></div></td></tr>
-          <tr style="background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Additional HVAC System Fee</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Per HVAC system over 1</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="hvac-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-hvac-extra" placeholder="200.00" value="200.00" min="0" step="0.01"></div></td></tr>
+          <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Repair / Retest Labor — Hourly Rate</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="retest-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-retest" placeholder="250.00" min="0" step="0.01"></div><div style="font-size:10px;color:#8C5E00;text-align:center;margin-top:3px">per hour</div></td></tr>
+          <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Trip Charge / Re-inspection Fee</div><div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px"><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-first-free" style="accent-color:#F39C12;width:14px;height:14px"> First trip charge is free</label></div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-trip" placeholder="125.00" min="0" step="0.01"></div></td></tr>
+          <tr style="background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Additional HVAC System Fee</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Per HVAC system over 1</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="hvac-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-hvac-extra" placeholder="200.00" min="0" step="0.01"></div></td></tr>
 
         </tbody>
       </table>
@@ -1887,6 +1887,7 @@
   updateDraftIndicator();
   loadDraft();
   if (typeof updateOnboardingManualsUI === 'function') updateOnboardingManualsUI();
+  attachPhoneFormatting();
 
   // ── LOAD FROM URL PARAMETERS moved to end of script (after KEY_MAP init) ──
 
@@ -2226,11 +2227,39 @@
 
     // Trim pricing to only what was provided
     hideEmptyPricingFields();
+    // Format any phone numbers that came in as raw digits
+    attachPhoneFormatting();
   }
 
   // ── HIDE UNUSED PRICING FIELDS ──
   // After pre-fill, hide any pricing row whose input(s) are empty.
   // Section header rows and rows with any value stay visible.
+  // ── PHONE NUMBER FORMATTING ──
+  function formatPhoneNumber(raw) {
+    if (!raw) return '';
+    // Keep only digits; handle a leading country code 1
+    let d = String(raw).replace(/\D/g, '');
+    if (d.length === 11 && d.charAt(0) === '1') d = d.slice(1);
+    if (d.length < 4) return d;
+    if (d.length < 7) return `(${d.slice(0,3)}) ${d.slice(3)}`;
+    return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6,10)}`;
+  }
+
+  function attachPhoneFormatting() {
+    document.querySelectorAll('input[type="tel"]').forEach(inp => {
+      // Format anything already in the field (e.g. from URL/JSON load)
+      if (inp.value) inp.value = formatPhoneNumber(inp.value);
+      // Bind the live formatter only once per field
+      if (!inp.dataset.phoneBound) {
+        inp.dataset.phoneBound = '1';
+        inp.addEventListener('input', function() {
+          const digits = this.value.replace(/\D/g, '');
+          this.value = formatPhoneNumber(digits);
+        });
+      }
+    });
+  }
+
   function hideEmptyPricingFields() {
     const table = document.querySelector('#pricing-toggle-bar')?.parentElement?.querySelector('.services-table');
     if (!table) return;
