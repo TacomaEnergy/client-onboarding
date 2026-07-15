@@ -629,7 +629,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v2.2 · Updated Jul 10, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v2.3 · Updated Jul 15, 2026</p>
   </div>
 </div>
 
@@ -914,6 +914,12 @@
   <div class="section" id="section-5">
     <div class="section-header"><div class="dot"></div> Pricing Agreement</div>
     <div class="section-body" style="padding:0">
+      <div id="pricing-toggle-bar" style="display:none;padding:9px 16px;background:#EBF4FB;border-bottom:1px solid var(--gray-border);align-items:center;justify-content:space-between">
+        <span style="font-size:12px;color:var(--navy)"><strong id="pricing-hidden-count">0</strong> unused pricing fields hidden for this client</span>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:#1B75BC;cursor:pointer;text-transform:none;letter-spacing:0;margin:0">
+          <input type="checkbox" id="show-all-pricing" onchange="toggleAllPricing()" style="width:15px;height:15px"> Show all pricing fields
+        </label>
+      </div>
       <table class="services-table" style="width:100%;border-collapse:collapse">
         <thead>
           <tr>
@@ -2171,10 +2177,84 @@
     banner.textContent = `✓ Draft loaded — ${name}${div ? ' | ' + div : ''}${st ? ' (' + st + ')' : ''} · Review all fields before submitting.`;
     document.body.prepend(banner);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Trim pricing to only what was provided
+    hideEmptyPricingFields();
+  }
+
+  // ── HIDE UNUSED PRICING FIELDS ──
+  // After pre-fill, hide any pricing row whose input(s) are empty.
+  // Section header rows and rows with any value stay visible.
+  function hideEmptyPricingFields() {
+    const table = document.querySelector('#pricing-toggle-bar')?.parentElement?.querySelector('.services-table');
+    if (!table) return;
+
+    let hiddenCount = 0;
+    const rows = table.querySelectorAll('tbody > tr');
+
+    rows.forEach(tr => {
+      // Skip section-label / header rows (colspan cells with no price input)
+      const priceInputs = tr.querySelectorAll('input[type="number"], input[type="text"][inputmode="decimal"]');
+      const checkboxes  = tr.querySelectorAll('input[type="checkbox"]');
+      const isSectionRow = tr.querySelector('td[colspan]') && priceInputs.length === 0 && checkboxes.length === 0;
+      if (isSectionRow) return;
+
+      // Testing checkbox row — keep if any testing box is checked
+      if (tr.querySelector('#tc-blowerdoor, #tc-ductblaster, #tc-mechvent')) return;
+
+      // Manuals notes row — keep only if it has text
+      if (tr.querySelector('#manuals-notes')) {
+        const notes = tr.querySelector('#manuals-notes');
+        if (!notes.value.trim()) { tr.dataset.pricingHidden = '1'; tr.style.display = 'none'; hiddenCount++; }
+        return;
+      }
+
+      // Regular pricing row — hide if all its price inputs are empty
+      if (priceInputs.length > 0) {
+        const hasValue = Array.from(priceInputs).some(inp => {
+          const v = String(inp.value || '').replace(/[^0-9.]/g, '');
+          return parseFloat(v) > 0;
+        });
+        if (!hasValue) {
+          tr.dataset.pricingHidden = '1';
+          tr.style.display = 'none';
+          hiddenCount++;
+        }
+      }
+    });
+
+    // Also hide specialty rows in the collapsible if empty (and collapse panel if all empty)
+    ['p-duct-sealing','p-no-burn','p-cert-fee','p-street-cleaning'].forEach(id => {
+      const inp = document.getElementById(id);
+      if (!inp) return;
+      const row = inp.closest('tr');
+      const v = parseFloat(String(inp.value||'').replace(/[^0-9.]/g,''));
+      if (row && !(v > 0)) { row.dataset.pricingHidden = '1'; row.style.display = 'none'; hiddenCount++; }
+    });
+
+    // Show the toggle bar if we hid anything
+    const bar = document.getElementById('pricing-toggle-bar');
+    if (bar && hiddenCount > 0) {
+      bar.style.display = 'flex';
+      document.getElementById('pricing-hidden-count').textContent = hiddenCount;
+    }
+  }
+
+  // ── TOGGLE: show all pricing fields again (for adding a service in the meeting) ──
+  function toggleAllPricing() {
+    const showAll = document.getElementById('show-all-pricing').checked;
+    document.querySelectorAll('tr[data-pricing-hidden="1"]').forEach(tr => {
+      tr.style.display = showAll ? '' : 'none';
+    });
+    // If revealing all, also open the specialty panel so those rows are reachable
+    if (showAll) {
+      const panel = document.getElementById('ob-specialty-panel');
+      const icon = document.getElementById('ob-specialty-icon');
+      if (panel) { panel.style.display = 'block'; if (icon) icon.style.transform = 'rotate(180deg)'; }
+    }
   }
 
   // ── LOAD FROM URL PARAMETERS (pre-fill link from Excel) ──
-  // Runs last, after KEY_MAP and applyDraftData are fully initialized.
   function loadFromURL() {
     const search = window.location.search;
     if (!search || search.length < 2) return;
