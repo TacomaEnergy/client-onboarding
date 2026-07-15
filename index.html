@@ -629,7 +629,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v2.7 · Updated Jul 15, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v2.8 · Updated Jul 15, 2026</p>
   </div>
 </div>
 
@@ -2276,6 +2276,50 @@
       const row = inp.closest('tr');
       const v = parseFloat(String(inp.value||'').replace(/[^0-9.]/g,''));
       if (row && !(v > 0)) { row.dataset.pricingHidden = '1'; row.style.display = 'none'; hiddenCount++; }
+    });
+
+    // Special control rows: hide the testing checkbox row if no testing prices,
+    // and hide the manuals duct-type toggle row if no manuals prices.
+    const anyVal = ids => ids.some(id => {
+      const el = document.getElementById(id);
+      return el && parseFloat(String(el.value||'').replace(/[^0-9.]/g,'')) > 0;
+    });
+
+    const testingRow = document.getElementById('tc-blowerdoor')?.closest('tr');
+    if (testingRow && !anyVal(['p-test-blowerdoor','p-test-ductblaster','p-test-mechvent','p-testing-bundled'])) {
+      testingRow.dataset.pricingHidden = '1';
+      testingRow.style.display = 'none';
+    }
+
+    const manualsToggleRow = document.getElementById('ms-conventional')?.closest('tr');
+    if (manualsToggleRow && !anyVal(['p-manuals','p-manuals-js','p-manuals-option','p-manuals-rheia','p-manuals-js-rheia','p-manuals-option-rheia'])) {
+      manualsToggleRow.dataset.pricingHidden = '1';
+      manualsToggleRow.style.display = 'none';
+    }
+
+    // Hide any section header whose data rows are all hidden.
+    // Walk each header row, look at following rows until the next header;
+    // if every one of them is hidden, hide the header too.
+    const allRows = Array.from(table.querySelectorAll('tbody > tr'));
+    allRows.forEach((tr, idx) => {
+      const priceInputs = tr.querySelectorAll('input[type="number"], input[type="text"][inputmode="decimal"]');
+      const checkboxes  = tr.querySelectorAll('input[type="checkbox"]');
+      const isHeader = tr.querySelector('td[colspan]') && priceInputs.length === 0 && checkboxes.length === 0;
+      if (!isHeader) return;
+
+      let anyVisible = false;
+      for (let j = idx + 1; j < allRows.length; j++) {
+        const next = allRows[j];
+        const nextInputs = next.querySelectorAll('input[type="number"], input[type="text"][inputmode="decimal"]');
+        const nextChecks = next.querySelectorAll('input[type="checkbox"]');
+        const nextIsHeader = next.querySelector('td[colspan]') && nextInputs.length === 0 && nextChecks.length === 0;
+        if (nextIsHeader) break; // reached the next section
+        if (next.style.display !== 'none') { anyVisible = true; break; }
+      }
+      if (!anyVisible) {
+        tr.dataset.pricingHidden = '1';
+        tr.style.display = 'none';
+      }
     });
 
     // Show the toggle bar if we hid anything
