@@ -629,7 +629,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v2.3 · Updated Jul 15, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v2.7 · Updated Jul 15, 2026</p>
   </div>
 </div>
 
@@ -1169,13 +1169,13 @@
     <input type="file" id="load-json-input" accept=".json" style="display:none" onchange="loadFromFile(this)">
     <button type="button" class="btn-submit" onclick="submitForm()">
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-      Send to Client
+      Send to Tacoma Team
     </button>
   </div>
 
   <div class="success-banner" id="success-banner">
     <h3>✓ Form Submitted</h3>
-    <p>The onboarding summary has been sent to the client for approval. You'll be notified once they confirm.</p>
+    <p>The completed onboarding form has been submitted to the Tacoma Energy team. The final record has also been downloaded for your records.</p>
   </div>
 
   <div id="draft-banner" style="display:none;background:#EBF4FB;border:1px solid #A9D4F5;border-radius:10px;padding:20px 28px;text-align:center;margin-top:24px;">
@@ -1262,6 +1262,7 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    return fname;
   }
 
   // Clear draft from storage
@@ -1807,16 +1808,61 @@
     }
 
     const data = collectData();
-    console.log('Form Data (ready for Power Automate):', JSON.stringify(data, null, 2));
 
-    // Download the final JSON record
+    // Build the shared base name so JSON and PDF match
+    const clientName = (data.companyName || 'Client').replace(/[^a-z0-9]+/gi, '_');
+    const today = new Date().toISOString().slice(0, 10);
+    const jsonName = `${clientName}_final_onboarding_${today}.json`;
+    const pdfName  = `${clientName}_onboarding_${today}.pdf`;
+
+    // 1) Download the final JSON record
     downloadJSON(data, 'final');
 
-    // TODO: Replace this with Power Automate HTTP trigger URL
-    // fetch('YOUR_POWER_AUTOMATE_URL', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) })
+    // 2) Open the pre-filled email draft (To, subject, body naming both files)
+    openTeamEmailDraft(data, jsonName, pdfName);
+
+    // 3) Trigger print so they can Save as PDF with the matching name
+    setTimeout(() => { window.print(); }, 800);
 
     document.getElementById('success-banner').style.display = 'block';
     document.getElementById('success-banner').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── Open pre-addressed email draft naming the two files to attach ──
+  function openTeamEmailDraft(data, jsonName, pdfName) {
+    const TEAM_EMAIL = 'arick@tacomaenergy.org';
+    const CC_EMAILS  = 'corbin@tacomaenergy.org,brooklynn@tacomaenergy.org,nate@tacomaenergy.org,john@tacomaenergy.org,kelly@tacomaenergy.org';
+    const client = data.companyName || 'New Client';
+    const div    = data.divisionCity ? ' - ' + data.divisionCity : '';
+    const st     = data.state ? ' (' + data.state + ')' : '';
+    const rep    = data.rep || '';
+
+    const subject = `New Onboarding Submission: ${client}${div}${st}`;
+
+    const bodyLines = [
+      `A new client onboarding form has been completed${rep ? ' by ' + rep : ''}.`,
+      ``,
+      `Client: ${client}${div}${st}`,
+      ``,
+      `PLEASE ATTACH THE FOLLOWING TWO FILES BEFORE SENDING:`,
+      `  1. ${jsonName}`,
+      `  2. ${pdfName}`,
+      ``,
+      `Both files were just saved to your Downloads folder`,
+      `(the JSON downloaded automatically; the PDF is created from the`,
+      `Print dialog that just opened — choose "Save as PDF" and keep the`,
+      `suggested file name so it matches the one above).`,
+      ``,
+      `— Sent from the Tacoma Energy Onboarding Form`
+    ];
+    const body = bodyLines.join('\n');
+
+    const mailto = `mailto:${encodeURIComponent(TEAM_EMAIL)}`
+                 + `?cc=${encodeURIComponent(CC_EMAILS)}`
+                 + `&subject=${encodeURIComponent(subject)}`
+                 + `&body=${encodeURIComponent(body)}`;
+
+    window.location.href = mailto;
   }
 
   // ── Print / Save as PDF ──
