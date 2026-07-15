@@ -629,11 +629,27 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.0 · Updated Jul 15, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.1 · Updated Jul 15, 2026</p>
   </div>
 </div>
 
 <div class="form-wrapper">
+
+  <!-- Client Identity Snapshot (read-only, from Excel pre-fill) -->
+  <div id="client-identity" style="display:none;background:linear-gradient(135deg,#10425F,#1B75BC);color:#fff;border-radius:12px;padding:20px 24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(16,66,95,0.25);">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:4px;">Client Setup</div>
+    <div id="ci-builder" style="font-size:24px;font-weight:800;line-height:1.1;margin-bottom:8px;">—</div>
+    <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:baseline;">
+      <div>
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.55);">Service Location</span>
+        <div id="ci-location" style="font-size:15px;font-weight:600;margin-top:1px;">—</div>
+      </div>
+    </div>
+    <div id="ci-services-wrap" style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.2);display:none;">
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.55);">Services</span>
+      <div id="ci-services" style="font-size:14px;font-weight:600;margin-top:3px;line-height:1.4;">—</div>
+    </div>
+  </div>
 
   <!-- Rep Info Bar -->
   <div class="rep-bar">
@@ -2229,6 +2245,8 @@
     hideEmptyPricingFields();
     // Format any phone numbers that came in as raw digits
     attachPhoneFormatting();
+    // Populate the read-only client identity snapshot
+    populateClientIdentity(d);
   }
 
   // ── HIDE UNUSED PRICING FIELDS ──
@@ -2258,6 +2276,57 @@
         });
       }
     });
+  }
+
+  // ── CLIENT IDENTITY SNAPSHOT (read-only top block) ──
+  function populateClientIdentity(d) {
+    const builder = d.companyName || '';
+    const city = d.divisionCity || '';
+    const st = d.state || '';
+    if (!builder && !city && !st) return; // nothing to show (blank/manual form)
+
+    const box = document.getElementById('client-identity');
+    document.getElementById('ci-builder').textContent = builder || '(Builder not specified)';
+    const loc = [city, st].filter(Boolean).join(', ');
+    document.getElementById('ci-location').textContent = loc || '—';
+
+    // Build services list — only actual services (not charges), only those priced
+    const SERVICE_LABELS = {
+      'p-compliance': 'Compliance Review',
+      'p-prebatt': 'Pre-Batt',
+      'p-predrywall': 'Pre-Drywall',
+      'p-final': 'Final',
+      'p-airsealing': 'Air Sealing',
+      'p-test-blowerdoor': 'Blower Door',
+      'p-test-ductblaster': 'Duct Blaster',
+      'p-test-mechvent': 'Mechanical Ventilation',
+      'p-testing-bundled': 'Testing (Combined)',
+      'p-manuals': 'Manuals (J,D&S)',
+      'p-manuals-js': 'Manuals (J&S)',
+      'p-manuals-rheia': 'Manuals — Rheia (J,D&S)',
+      'p-manuals-js-rheia': 'Manuals — Rheia (J&S)',
+      'p-hvac-drawing': 'HVAC Drawing',
+      'p-duct-sealing': 'Duct Sealing',
+      'p-no-burn': 'No Burn',
+      'p-cert-fee': 'Certification Fee',
+      'p-street-cleaning': 'Street Cleaning'
+    };
+    const services = [];
+    Object.entries(SERVICE_LABELS).forEach(([id, label]) => {
+      const el = document.getElementById(id);
+      const v = el ? parseFloat(String(el.value||'').replace(/[^0-9.]/g,'')) : 0;
+      if (v > 0) services.push(label);
+    });
+
+    const wrap = document.getElementById('ci-services-wrap');
+    if (services.length) {
+      document.getElementById('ci-services').textContent = services.join('  ·  ');
+      wrap.style.display = 'block';
+    } else {
+      wrap.style.display = 'none';
+    }
+
+    box.style.display = 'block';
   }
 
   function hideEmptyPricingFields() {
