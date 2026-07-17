@@ -629,7 +629,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.1 · Updated Jul 15, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.2 · Updated Jul 17, 2026</p>
   </div>
 </div>
 
@@ -1006,7 +1006,7 @@
           <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Compliance Revisions — Complex</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Plan changes such as model, elevation, layout, or HVAC/equipment changes</div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-compliance-revisions-complex" placeholder="0.00" min="0" step="0.01"></div></td></tr>
           <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Repair / Retest Labor — Hourly Rate</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="retest-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-retest" placeholder="250.00" min="0" step="0.01"></div><div style="font-size:10px;color:#8C5E00;text-align:center;margin-top:3px">per hour</div></td></tr>
           <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Trip Charge / Re-inspection Fee</div><div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px"><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-first-free" style="accent-color:#F39C12;width:14px;height:14px"> First trip charge is free</label></div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-trip" placeholder="125.00" min="0" step="0.01"></div></td></tr>
-          <tr style="background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Additional HVAC System Fee</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Per HVAC system over 1</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="hvac-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-hvac-extra" placeholder="200.00" min="0" step="0.01"></div></td></tr>
+          <tr style="background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Additional HVAC System Fee</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Per HVAC system over 2</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="hvac-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-hvac-extra" placeholder="200.00" min="0" step="0.01"></div></td></tr>
 
         </tbody>
       </table>
@@ -1234,7 +1234,75 @@
 
   window.addEventListener('scroll', updateProgress, { passive: true });
 
-  // Save Draft — collects all fields into localStorage
+  // Draft storage is client-specific so one client's saved contacts cannot appear on another client's form.
+  const DRAFT_KEY_PREFIX = 'tacoma_onboarding_draft_';
+  const DRAFT_META_PREFIX = 'tacoma_onboarding_draft_meta_';
+  const LAST_DRAFT_ID_KEY = 'tacoma_onboarding_last_draft_id';
+  const LEGACY_DRAFT_KEY = 'tacoma_onboarding_draft';
+  const LEGACY_DRAFT_META_KEY = 'tacoma_onboarding_draft_meta';
+  let activeDraftId = null;
+
+  function draftSlug(value) {
+    return String(value || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '')
+      .slice(0, 120);
+  }
+
+  function hasURLPrefill() {
+    return !!(window.location.search && window.location.search.length > 1);
+  }
+
+  function getClientDraftId() {
+    const params = new URLSearchParams(window.location.search || '');
+    const accountId = params.get('accountId') || params.get('accountID') ||
+                      params.get('clientId') || params.get('clientID') || params.get('ClientID');
+    if (accountId) return 'id_' + draftSlug(accountId);
+
+    const company = params.get('companyName') || document.getElementById('company-name')?.value?.trim() || '';
+    const division = params.get('divisionCity') || params.get('companyDivision') || '';
+    const state = params.get('state') || params.get('companyState') || '';
+    const clientLabel = [company, division, state].filter(Boolean).join('_');
+    return clientLabel ? 'client_' + draftSlug(clientLabel) : 'manual';
+  }
+
+  function getDraftKeys(draftId) {
+    const id = draftId || getClientDraftId();
+    return {
+      id,
+      dataKey: DRAFT_KEY_PREFIX + id,
+      metaKey: DRAFT_META_PREFIX + id,
+    };
+  }
+
+  function getDraftRecordForCurrentPage() {
+    const current = getDraftKeys();
+    let saved = localStorage.getItem(current.dataKey);
+    let meta = localStorage.getItem(current.metaKey);
+    if (saved) return { ...current, saved, meta };
+
+    // A generated Excel/client link must never fall back to another client's draft
+    // or to the old shared draft keys.
+    if (hasURLPrefill()) return null;
+
+    // On the plain form page, offer the most recently saved client-specific draft.
+    const lastId = localStorage.getItem(LAST_DRAFT_ID_KEY);
+    if (lastId) {
+      const last = getDraftKeys(lastId);
+      saved = localStorage.getItem(last.dataKey);
+      meta = localStorage.getItem(last.metaKey);
+      if (saved) return { ...last, saved, meta };
+    }
+
+    // Backward compatibility for drafts saved by older versions of the form.
+    saved = localStorage.getItem(LEGACY_DRAFT_KEY);
+    meta = localStorage.getItem(LEGACY_DRAFT_META_KEY);
+    return saved ? { id: 'legacy', dataKey: LEGACY_DRAFT_KEY, metaKey: LEGACY_DRAFT_META_KEY, saved, meta } : null;
+  }
+
+  // Save Draft — collects all fields into client-specific localStorage
   function saveDraft() {
     try {
       const data = {};
@@ -1245,9 +1313,16 @@
         data['checked_' + (el.id || el.name + '_' + el.value)] = true;
       });
       const clientName = document.getElementById('company-name')?.value?.trim() || 'Unknown Client';
-      const draftMeta = { clientName, time: new Date().toLocaleString() };
-      localStorage.setItem('tacoma_onboarding_draft', JSON.stringify(data));
-      localStorage.setItem('tacoma_onboarding_draft_meta', JSON.stringify(draftMeta));
+      const keys = getDraftKeys();
+      activeDraftId = keys.id;
+      const draftMeta = { clientName, time: new Date().toLocaleString(), draftId: keys.id };
+      localStorage.setItem(keys.dataKey, JSON.stringify(data));
+      localStorage.setItem(keys.metaKey, JSON.stringify(draftMeta));
+      localStorage.setItem(LAST_DRAFT_ID_KEY, keys.id);
+
+      // Retire the old shared keys after a successful client-specific save.
+      localStorage.removeItem(LEGACY_DRAFT_KEY);
+      localStorage.removeItem(LEGACY_DRAFT_META_KEY);
 
       // Also download a portable JSON draft file
       downloadJSON(collectData(), 'draft');
@@ -1281,37 +1356,55 @@
     return fname;
   }
 
-  // Clear draft from storage
+  // Clear only the active/current client's draft from storage.
   function clearDraft() {
-    localStorage.removeItem('tacoma_onboarding_draft');
-    localStorage.removeItem('tacoma_onboarding_draft_meta');
+    const draftId = activeDraftId || getClientDraftId();
+    if (draftId === 'legacy') {
+      localStorage.removeItem(LEGACY_DRAFT_KEY);
+      localStorage.removeItem(LEGACY_DRAFT_META_KEY);
+    } else {
+      const keys = getDraftKeys(draftId);
+      localStorage.removeItem(keys.dataKey);
+      localStorage.removeItem(keys.metaKey);
+      if (localStorage.getItem(LAST_DRAFT_ID_KEY) === draftId) {
+        localStorage.removeItem(LAST_DRAFT_ID_KEY);
+      }
+    }
+    activeDraftId = null;
     updateDraftIndicator();
   }
 
-  // Show/hide draft indicator
+  // Show/hide the indicator for this client only.
   function updateDraftIndicator() {
-    const meta = localStorage.getItem('tacoma_onboarding_draft_meta');
+    const record = getDraftRecordForCurrentPage();
     const indicator = document.getElementById('draft-indicator');
     if (!indicator) return;
-    if (meta) {
-      const { clientName, time } = JSON.parse(meta);
-      indicator.textContent = `Draft saved: ${clientName} — ${time}`;
-      indicator.style.display = 'block';
-    } else {
-      indicator.style.display = 'none';
+    if (record?.meta) {
+      try {
+        const { clientName, time } = JSON.parse(record.meta);
+        indicator.textContent = `Draft saved: ${clientName} — ${time}`;
+        indicator.style.display = 'block';
+        return;
+      } catch(e) { /* ignore invalid metadata */ }
     }
+    indicator.style.display = 'none';
   }
 
-  // Load Draft on page open
+  // Load only a draft that belongs to the client identified by this URL.
+  // Generated client links never fall back to another client or the legacy shared draft.
   function loadDraft() {
     try {
-      const saved = localStorage.getItem('tacoma_onboarding_draft');
-      const meta = localStorage.getItem('tacoma_onboarding_draft_meta');
-      if (!saved) return;
-      const { clientName, time } = meta ? JSON.parse(meta) : { clientName: 'Unknown Client', time: 'earlier' };
-      const load = confirm(`You have a saved draft for "${clientName}" from ${time}.\n\nLoad it?`);
-      if (!load) { clearDraft(); return; }
-      const data = JSON.parse(saved);
+      const record = getDraftRecordForCurrentPage();
+      if (!record?.saved) return;
+      const { clientName, time } = record.meta
+        ? JSON.parse(record.meta)
+        : { clientName: 'Unknown Client', time: 'earlier' };
+      const load = confirm(`You have a saved draft for "${clientName}" from ${time}.
+
+Load it?`);
+      if (!load) return;
+      activeDraftId = record.id;
+      const data = JSON.parse(record.saved);
       Object.entries(data).forEach(([id, val]) => {
         if (id.startsWith('checked_')) {
           const realId = id.replace('checked_', '');
@@ -1327,7 +1420,8 @@
       });
       updateProgress();
       updateDownstreamOptions();
-    } catch(e) { /* no draft */ }
+      updateDraftIndicator();
+    } catch(e) { /* no usable draft */ }
   }
 
   // Simple same-as helpers for key contacts
@@ -1840,6 +1934,9 @@
     // 3) Trigger print so they can Save as PDF with the matching name
     setTimeout(() => { window.print(); }, 800);
 
+    // Final submission is complete; remove this client's browser draft so it cannot reappear later.
+    clearDraft();
+
     document.getElementById('success-banner').style.display = 'block';
     document.getElementById('success-banner').scrollIntoView({ behavior: 'smooth' });
   }
@@ -1847,7 +1944,7 @@
   // ── Open pre-addressed email draft naming the two files to attach ──
   function openTeamEmailDraft(data, jsonName, pdfName) {
     const TEAM_EMAIL = 'arick@tacomaenergy.org';
-    const CC_EMAILS  = 'corbin@tacomaenergy.org,brooklynn@tacomaenergy.org,nate@tacomaenergy.org,john@tacomaenergy.org,kelly@tacomaenergy.org';
+    const CC_EMAILS  = 'corbin@tacomaenergy.org,Brooklyn.mari@tacomaenergy.org,nate@tacomaenergy.org,john@tacomaenergy.org,kelly@tacomaenergy.org';
     const client = data.companyName || 'New Client';
     const div    = data.divisionCity ? ' - ' + data.divisionCity : '';
     const st     = data.state ? ' (' + data.state + ')' : '';
