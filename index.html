@@ -629,7 +629,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.2 · Updated Jul 17, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.2 · Updated Jul 31, 2026</p>
   </div>
 </div>
 
@@ -1006,7 +1006,7 @@
           <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Compliance Revisions — Complex</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Plan changes such as model, elevation, layout, or HVAC/equipment changes</div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-compliance-revisions-complex" placeholder="0.00" min="0" step="0.01"></div></td></tr>
           <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Repair / Retest Labor — Hourly Rate</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="retest-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-retest" placeholder="250.00" min="0" step="0.01"></div><div style="font-size:10px;color:#8C5E00;text-align:center;margin-top:3px">per hour</div></td></tr>
           <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Trip Charge / Re-inspection Fee</div><div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px"><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-first-free" style="accent-color:#F39C12;width:14px;height:14px"> First trip charge is free</label></div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-trip" placeholder="125.00" min="0" step="0.01"></div></td></tr>
-          <tr style="background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Additional HVAC System Fee</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Per HVAC system over 2</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="hvac-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-hvac-extra" placeholder="200.00" min="0" step="0.01"></div></td></tr>
+          <tr style="background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Additional HVAC System Fee</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Per HVAC system over 1</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="hvac-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-hvac-extra" placeholder="200.00" min="0" step="0.01"></div></td></tr>
 
         </tbody>
       </table>
@@ -1234,75 +1234,7 @@
 
   window.addEventListener('scroll', updateProgress, { passive: true });
 
-  // Draft storage is client-specific so one client's saved contacts cannot appear on another client's form.
-  const DRAFT_KEY_PREFIX = 'tacoma_onboarding_draft_';
-  const DRAFT_META_PREFIX = 'tacoma_onboarding_draft_meta_';
-  const LAST_DRAFT_ID_KEY = 'tacoma_onboarding_last_draft_id';
-  const LEGACY_DRAFT_KEY = 'tacoma_onboarding_draft';
-  const LEGACY_DRAFT_META_KEY = 'tacoma_onboarding_draft_meta';
-  let activeDraftId = null;
-
-  function draftSlug(value) {
-    return String(value || '')
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '_')
-      .replace(/^_+|_+$/g, '')
-      .slice(0, 120);
-  }
-
-  function hasURLPrefill() {
-    return !!(window.location.search && window.location.search.length > 1);
-  }
-
-  function getClientDraftId() {
-    const params = new URLSearchParams(window.location.search || '');
-    const accountId = params.get('accountId') || params.get('accountID') ||
-                      params.get('clientId') || params.get('clientID') || params.get('ClientID');
-    if (accountId) return 'id_' + draftSlug(accountId);
-
-    const company = params.get('companyName') || document.getElementById('company-name')?.value?.trim() || '';
-    const division = params.get('divisionCity') || params.get('companyDivision') || '';
-    const state = params.get('state') || params.get('companyState') || '';
-    const clientLabel = [company, division, state].filter(Boolean).join('_');
-    return clientLabel ? 'client_' + draftSlug(clientLabel) : 'manual';
-  }
-
-  function getDraftKeys(draftId) {
-    const id = draftId || getClientDraftId();
-    return {
-      id,
-      dataKey: DRAFT_KEY_PREFIX + id,
-      metaKey: DRAFT_META_PREFIX + id,
-    };
-  }
-
-  function getDraftRecordForCurrentPage() {
-    const current = getDraftKeys();
-    let saved = localStorage.getItem(current.dataKey);
-    let meta = localStorage.getItem(current.metaKey);
-    if (saved) return { ...current, saved, meta };
-
-    // A generated Excel/client link must never fall back to another client's draft
-    // or to the old shared draft keys.
-    if (hasURLPrefill()) return null;
-
-    // On the plain form page, offer the most recently saved client-specific draft.
-    const lastId = localStorage.getItem(LAST_DRAFT_ID_KEY);
-    if (lastId) {
-      const last = getDraftKeys(lastId);
-      saved = localStorage.getItem(last.dataKey);
-      meta = localStorage.getItem(last.metaKey);
-      if (saved) return { ...last, saved, meta };
-    }
-
-    // Backward compatibility for drafts saved by older versions of the form.
-    saved = localStorage.getItem(LEGACY_DRAFT_KEY);
-    meta = localStorage.getItem(LEGACY_DRAFT_META_KEY);
-    return saved ? { id: 'legacy', dataKey: LEGACY_DRAFT_KEY, metaKey: LEGACY_DRAFT_META_KEY, saved, meta } : null;
-  }
-
-  // Save Draft — collects all fields into client-specific localStorage
+  // Save Draft — collects all fields into localStorage
   function saveDraft() {
     try {
       const data = {};
@@ -1313,16 +1245,9 @@
         data['checked_' + (el.id || el.name + '_' + el.value)] = true;
       });
       const clientName = document.getElementById('company-name')?.value?.trim() || 'Unknown Client';
-      const keys = getDraftKeys();
-      activeDraftId = keys.id;
-      const draftMeta = { clientName, time: new Date().toLocaleString(), draftId: keys.id };
-      localStorage.setItem(keys.dataKey, JSON.stringify(data));
-      localStorage.setItem(keys.metaKey, JSON.stringify(draftMeta));
-      localStorage.setItem(LAST_DRAFT_ID_KEY, keys.id);
-
-      // Retire the old shared keys after a successful client-specific save.
-      localStorage.removeItem(LEGACY_DRAFT_KEY);
-      localStorage.removeItem(LEGACY_DRAFT_META_KEY);
+      const draftMeta = { clientName, time: new Date().toLocaleString() };
+      localStorage.setItem('tacoma_onboarding_draft', JSON.stringify(data));
+      localStorage.setItem('tacoma_onboarding_draft_meta', JSON.stringify(draftMeta));
 
       // Also download a portable JSON draft file
       downloadJSON(collectData(), 'draft');
@@ -1356,55 +1281,37 @@
     return fname;
   }
 
-  // Clear only the active/current client's draft from storage.
+  // Clear draft from storage
   function clearDraft() {
-    const draftId = activeDraftId || getClientDraftId();
-    if (draftId === 'legacy') {
-      localStorage.removeItem(LEGACY_DRAFT_KEY);
-      localStorage.removeItem(LEGACY_DRAFT_META_KEY);
-    } else {
-      const keys = getDraftKeys(draftId);
-      localStorage.removeItem(keys.dataKey);
-      localStorage.removeItem(keys.metaKey);
-      if (localStorage.getItem(LAST_DRAFT_ID_KEY) === draftId) {
-        localStorage.removeItem(LAST_DRAFT_ID_KEY);
-      }
-    }
-    activeDraftId = null;
+    localStorage.removeItem('tacoma_onboarding_draft');
+    localStorage.removeItem('tacoma_onboarding_draft_meta');
     updateDraftIndicator();
   }
 
-  // Show/hide the indicator for this client only.
+  // Show/hide draft indicator
   function updateDraftIndicator() {
-    const record = getDraftRecordForCurrentPage();
+    const meta = localStorage.getItem('tacoma_onboarding_draft_meta');
     const indicator = document.getElementById('draft-indicator');
     if (!indicator) return;
-    if (record?.meta) {
-      try {
-        const { clientName, time } = JSON.parse(record.meta);
-        indicator.textContent = `Draft saved: ${clientName} — ${time}`;
-        indicator.style.display = 'block';
-        return;
-      } catch(e) { /* ignore invalid metadata */ }
+    if (meta) {
+      const { clientName, time } = JSON.parse(meta);
+      indicator.textContent = `Draft saved: ${clientName} — ${time}`;
+      indicator.style.display = 'block';
+    } else {
+      indicator.style.display = 'none';
     }
-    indicator.style.display = 'none';
   }
 
-  // Load only a draft that belongs to the client identified by this URL.
-  // Generated client links never fall back to another client or the legacy shared draft.
+  // Load Draft on page open
   function loadDraft() {
     try {
-      const record = getDraftRecordForCurrentPage();
-      if (!record?.saved) return;
-      const { clientName, time } = record.meta
-        ? JSON.parse(record.meta)
-        : { clientName: 'Unknown Client', time: 'earlier' };
-      const load = confirm(`You have a saved draft for "${clientName}" from ${time}.
-
-Load it?`);
-      if (!load) return;
-      activeDraftId = record.id;
-      const data = JSON.parse(record.saved);
+      const saved = localStorage.getItem('tacoma_onboarding_draft');
+      const meta = localStorage.getItem('tacoma_onboarding_draft_meta');
+      if (!saved) return;
+      const { clientName, time } = meta ? JSON.parse(meta) : { clientName: 'Unknown Client', time: 'earlier' };
+      const load = confirm(`You have a saved draft for "${clientName}" from ${time}.\n\nLoad it?`);
+      if (!load) { clearDraft(); return; }
+      const data = JSON.parse(saved);
       Object.entries(data).forEach(([id, val]) => {
         if (id.startsWith('checked_')) {
           const realId = id.replace('checked_', '');
@@ -1420,8 +1327,7 @@ Load it?`);
       });
       updateProgress();
       updateDownstreamOptions();
-      updateDraftIndicator();
-    } catch(e) { /* no usable draft */ }
+    } catch(e) { /* no draft */ }
   }
 
   // Simple same-as helpers for key contacts
@@ -1670,56 +1576,59 @@ Load it?`);
     return ok;
   }
 
+  let lastMissingFields = [];
   function validate() {
     let valid = true;
+    const missing = [];
+    const flag = (cond, label) => { if (cond) { valid = false; missing.push(label); } };
 
     // Rep
     const rep = document.getElementById('rep');
     const repOk = !!rep.value;
     markField('rep', !repOk); showErr('err-rep', !repOk);
-    if (!repOk) valid = false;
+    flag(!repOk, 'Sales Rep');
 
     // Company name
     const nameOk = !!document.getElementById('company-name').value.trim();
     markField('company-name', !nameOk); showErr('err-company', !nameOk);
-    if (!nameOk) valid = false;
+    flag(!nameOk, 'Company / Builder Name');
 
     // Primary contact name
     const contactOk = !!document.getElementById('primary-contact').value.trim();
     markField('primary-contact', !contactOk); showErr('err-contact', !contactOk);
-    if (!contactOk) valid = false;
+    flag(!contactOk, 'Primary Contact Name');
 
     // Primary phone
     const phoneOk = !!document.getElementById('phone').value.trim();
     markField('phone', !phoneOk);
-    if (!phoneOk) valid = false;
+    flag(!phoneOk, 'Primary Contact Phone');
 
     // Primary email
     const emailOk = !!document.getElementById('email').value.trim();
     markField('email', !emailOk);
-    if (!emailOk) valid = false;
+    flag(!emailOk, 'Primary Contact Email');
 
     // Billing address
     const addrOk = !!document.getElementById('billing-address').value.trim();
     markField('billing-address', !addrOk);
-    if (!addrOk) valid = false;
+    flag(!addrOk, 'Billing Address');
 
     // Key contacts - name filled OR same-as checked
-    if (!validateContact('sched', 'err-sched')) valid = false;
-    if (!validateContact('ap', 'err-ap')) valid = false;
-    if (!validateContact('qa', 'err-qa')) valid = false;
+    if (!validateContact('sched', 'err-sched')) { valid = false; missing.push('Scheduling Contact'); }
+    if (!validateContact('ap', 'err-ap')) { valid = false; missing.push('Accounting / AP Contact'); }
+    if (!validateContact('qa', 'err-qa')) { valid = false; missing.push('Compliance / QA Contact'); }
 
     // Systems - at least one checked
     const sysOk = document.getElementById('sys-sched').checked || document.getElementById('sys-docs').checked || document.getElementById('sys-inv').checked || document.getElementById('sys-none').checked;
     showErr('err-systems', !sysOk);
-    if (!sysOk) valid = false;
+    flag(!sysOk, 'Systems & Requirements (select at least one)');
 
     // System names required if any system checked
     const anySystem = document.getElementById('sys-sched').checked || document.getElementById('sys-docs').checked || document.getElementById('sys-inv').checked;
     if (anySystem) {
       const sysNamesOk = !!document.getElementById('system-names').value.trim();
       markField('system-names', !sysNamesOk); showErr('err-system-names', !sysNamesOk);
-      if (!sysNamesOk) valid = false;
+      flag(!sysNamesOk, 'System Names / Access Details');
     } else {
       markField('system-names', false); showErr('err-system-names', false);
     }
@@ -1727,61 +1636,62 @@ Load it?`);
     // PO required - must select
     const poReqVal = document.querySelector('input[name="po-required"]:checked')?.value;
     showErr('err-po-required', !poReqVal);
-    if (!poReqVal) valid = false;
+    flag(!poReqVal, 'POs Required? (Yes/No)');
 
     // PO sub-fields only if Yes
     if (poReqVal === 'Yes') {
       const poCountOk = !!document.getElementById('po-count')?.value?.trim();
       showErr('err-po-count', !poCountOk);
-      if (!poCountOk) valid = false;
+      flag(!poCountOk, 'PO: How many POs');
 
       const poIncludedOk = !!document.getElementById('po-included')?.value?.trim();
       showErr('err-po-included', !poIncludedOk);
-      if (!poIncludedOk) valid = false;
+      flag(!poIncludedOk, 'PO: What each PO includes');
 
       const poStageOk = !!document.getElementById('po-when')?.value?.trim();
       showErr('err-po-stage', !poStageOk);
-      if (!poStageOk) valid = false;
+      flag(!poStageOk, 'PO: When POs are released');
 
       const poJobsOk = !!document.querySelector('input[name="po-jobs"]:checked');
       showErr('err-po-jobs', !poJobsOk);
-      if (!poJobsOk) valid = false;
+      flag(!poJobsOk, 'PO: Which jobs require POs');
 
       // PO missing contact - same-as checked or name filled
       const poSameChecked = ['primary','sched','ap','qa'].some(s => document.getElementById(`po-same-${s}`)?.checked);
       const poMissingNameVal = document.getElementById('po-missing-name')?.value?.trim();
       const poContactOk = poSameChecked || !!poMissingNameVal;
       showErr('err-po-contact', !poContactOk);
-      if (!poContactOk) valid = false;
+      flag(!poContactOk, 'PO: Missing-PO contact');
     }
 
     // Invoice delivery - at least one checked
     const invOk = document.getElementById('inv-email').checked || document.getElementById('inv-portal').checked || document.getElementById('inv-both').checked;
     showErr('err-invoice', !invOk);
-    if (!invOk) valid = false;
+    flag(!invOk, 'Invoice Delivery Method');
 
     // Past due contact - same-as checked or name filled
     const pdSameChecked = ['primary','sched','ap','qa'].some(s => document.getElementById(`pd-same-${s}`)?.checked);
     const pdName = document.getElementById('pastdue-name')?.value?.trim();
     const pdOk = pdSameChecked || !!pdName;
     showErr('err-pastdue', !pdOk);
-    if (!pdOk) valid = false;
+    flag(!pdOk, 'Past-Due Invoice Contact');
 
     // Notification preference
     const notifOk = !!document.querySelector('input[name="notif-pref"]:checked');
     showErr('err-notif', !notifOk);
-    if (!notifOk) valid = false;
+    flag(!notifOk, 'Notification Preference');
 
     // Aging frequency
     const agingOk = !!document.querySelector('input[name="aging-freq"]:checked');
     showErr('err-aging', !agingOk);
-    if (!agingOk) valid = false;
+    flag(!agingOk, 'Aging Report Frequency');
 
     // Terms checkbox
     const termsOk = document.getElementById('terms-agree').checked;
     showErr('err-terms', !termsOk);
-    if (!termsOk) valid = false;
+    flag(!termsOk, 'Terms & Conditions agreement');
 
+    lastMissingFields = missing;
     return valid;
   }
 
@@ -1912,39 +1822,97 @@ Load it?`);
   }
 
   function submitForm() {
+    // Validate first — if it fails, tell them LOUDLY and save their work
     if (!validate()) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Save a draft so nothing is ever lost
+      let savedName = '';
+      try { savedName = downloadJSON(collectData(), 'draft'); } catch(e) {}
+      try {
+        localStorage.setItem('tacoma_onboarding_draft', JSON.stringify(collectData()));
+      } catch(e) {}
+
+      showSubmitError(lastMissingFields, savedName);
+      // Scroll to the first invalid field
+      const firstErr = document.querySelector('.error, .error-msg[style*="block"]');
+      if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
+    // Valid — proceed
+    hideSubmitError();
     const data = collectData();
 
-    // Build the shared base name so JSON and PDF match
     const clientName = (data.companyName || 'Client').replace(/[^a-z0-9]+/gi, '_');
     const today = new Date().toISOString().slice(0, 10);
     const jsonName = `${clientName}_final_onboarding_${today}.json`;
     const pdfName  = `${clientName}_onboarding_${today}.pdf`;
 
-    // 1) Download the final JSON record
+    // 1) Download the final JSON FIRST and let it complete
     downloadJSON(data, 'final');
 
-    // 2) Open the pre-filled email draft (To, subject, body naming both files)
-    openTeamEmailDraft(data, jsonName, pdfName);
+    // 2) Also keep a localStorage copy as backup
+    try { localStorage.setItem('tacoma_onboarding_last_final', JSON.stringify(data)); } catch(e) {}
 
-    // 3) Trigger print so they can Save as PDF with the matching name
-    setTimeout(() => { window.print(); }, 800);
+    // 3) Show the accurate success panel (files downloaded + what to do next)
+    showSuccessPanel(jsonName, pdfName);
 
-    // Final submission is complete; remove this client's browser draft so it cannot reappear later.
-    clearDraft();
+    // 4) After the download settles, trigger print, then open the email draft.
+    //    (mailto navigation can interrupt a download, so it goes last.)
+    setTimeout(() => { try { window.print(); } catch(e) {} }, 600);
+    setTimeout(() => { openTeamEmailDraft(data, jsonName, pdfName); }, 1200);
+  }
 
-    document.getElementById('success-banner').style.display = 'block';
-    document.getElementById('success-banner').scrollIntoView({ behavior: 'smooth' });
+  // ── Loud validation-failure banner ──
+  function showSubmitError(missing, savedDraftName) {
+    let box = document.getElementById('submit-error-banner');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'submit-error-banner';
+      box.style.cssText = 'background:#FDECEA;border:2px solid #E74C3C;border-radius:10px;padding:18px 22px;margin:0 0 20px;color:#922B21;';
+      const wrap = document.querySelector('.form-wrapper');
+      const identity = document.getElementById('client-identity');
+      if (identity && identity.nextSibling) wrap.insertBefore(box, identity.nextSibling);
+      else wrap.insertBefore(box, wrap.firstChild);
+    }
+    const list = (missing && missing.length)
+      ? '<ul style="margin:8px 0 0;padding-left:20px;font-size:13px;line-height:1.6;">' +
+        missing.map(m => `<li>${m}</li>`).join('') + '</ul>'
+      : '';
+    box.innerHTML =
+      '<div style="font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;">' +
+      '<span style="font-size:18px;">&#9888;</span> Form NOT submitted — some required fields are missing</div>' +
+      '<div style="font-size:13px;margin-top:6px;">Please complete the following, then click <strong>Send to Tacoma Team</strong> again:</div>' +
+      list +
+      (savedDraftName ? `<div style="font-size:12px;margin-top:10px;color:#7B241C;">&#10003; Your progress was saved as a draft (${savedDraftName}) so nothing is lost.</div>` : '');
+    box.style.display = 'block';
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function hideSubmitError() {
+    const box = document.getElementById('submit-error-banner');
+    if (box) box.style.display = 'none';
+  }
+
+  // ── Accurate success panel (replaces the misleading "sent" banner) ──
+  function showSuccessPanel(jsonName, pdfName) {
+    const banner = document.getElementById('success-banner');
+    if (!banner) return;
+    banner.innerHTML =
+      '<h3>&#10003; Files ready — one step left</h3>' +
+      '<p style="margin-bottom:10px;">Two files were downloaded to your <strong>Downloads folder</strong>:</p>' +
+      `<p style="font-size:13px;color:#374151;margin:2px 0;">&#128196; ${jsonName}</p>` +
+      `<p style="font-size:13px;color:#374151;margin:2px 0 12px;">&#128196; ${pdfName} <span style="color:#888;">(from the Print dialog — choose "Save as PDF")</span></p>` +
+      '<p style="font-weight:700;color:#922B21;">An email draft should now be open. Attach BOTH files above, then hit Send.</p>' +
+      '<p style="font-size:12px;color:#888;margin-top:10px;">If no email draft opened, start a new email to arick@tacomaenergy.org, attach both files, and send.</p>';
+    banner.style.display = 'block';
+    banner.scrollIntoView({ behavior: 'smooth' });
   }
 
   // ── Open pre-addressed email draft naming the two files to attach ──
   function openTeamEmailDraft(data, jsonName, pdfName) {
     const TEAM_EMAIL = 'arick@tacomaenergy.org';
-    const CC_EMAILS  = 'corbin@tacomaenergy.org,Brooklyn.mari@tacomaenergy.org,nate@tacomaenergy.org,john@tacomaenergy.org,kelly@tacomaenergy.org';
+    const CC_EMAILS  = 'corbin@tacomaenergy.org,brooklynn@tacomaenergy.org,nate@tacomaenergy.org,john@tacomaenergy.org,kelly@tacomaenergy.org';
     const client = data.companyName || 'New Client';
     const div    = data.divisionCity ? ' - ' + data.divisionCity : '';
     const st     = data.state ? ' (' + data.state + ')' : '';
