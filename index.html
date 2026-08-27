@@ -629,7 +629,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.2 · Updated Jul 31, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.3 · Updated Aug 27, 2026</p>
   </div>
 </div>
 
@@ -2206,7 +2206,17 @@
     const set = (id, val) => {
       if (!val && val !== 0) return;
       const el = document.getElementById(id);
-      if (el) { el.value = val; el.dispatchEvent(new Event('input', { bubbles: true })); }
+      if (!el) return;
+      // Number inputs silently reject anything that isn't a clean number
+      // (e.g. "$250", "250 Per home", "1,250"). Pull the numeric value out
+      // so a stray symbol or word in Excel doesn't wipe the whole field.
+      if (el.type === 'number') {
+        const cleaned = String(val).replace(/[^0-9.]/g, '');
+        el.value = cleaned;
+      } else {
+        el.value = val;
+      }
+      el.dispatchEvent(new Event('input', { bubbles: true }));
     };
     const setChk = (id, val) => {
       const el = document.getElementById(id);
