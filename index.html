@@ -566,11 +566,21 @@
       background: transparent !important;
       padding: 1pt 2pt !important;
       font-size: 9.5pt !important;
-      min-height: 0 !important;
-      height: auto !important;
       color: #14202B !important;
     }
-    textarea { min-height: 24pt !important; }
+    input[type="text"], input[type="tel"], input[type="email"],
+    input[type="number"], input[type="date"], input[type="url"], select {
+      min-height: 0 !important;
+      height: auto !important;
+    }
+    textarea {
+      min-height: 0 !important;
+      height: auto !important;
+      field-sizing: content !important;
+      overflow: visible !important;
+      white-space: pre-wrap !important;
+      word-wrap: break-word !important;
+    }
 
     .row { gap: 8pt !important; margin-bottom: 4pt !important; }
 
@@ -629,7 +639,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.4 · Updated Aug 27, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.5 · Updated Aug 27, 2026</p>
   </div>
 </div>
 
@@ -1948,8 +1958,23 @@
 
   // ── Print / Save as PDF ──
   function printForm() {
+    expandTextareasForPrint();
     window.print();
   }
+
+  // Grow every textarea to fit its full content so nothing clips in the PDF
+  function expandTextareasForPrint() {
+    document.querySelectorAll('textarea').forEach(ta => {
+      if (!ta.value) return;                 // leave empty ones alone
+      ta.style.height = 'auto';              // reset so scrollHeight is accurate
+      // force reflow
+      void ta.offsetHeight;
+      const h = ta.scrollHeight;
+      if (h > 0) ta.style.height = (h + 6) + 'px';
+    });
+  }
+  // Fire on any print trigger (Ctrl+P, submit auto-print, browser menu)
+  window.addEventListener('beforeprint', expandTextareasForPrint);
 
   function resetForm() {
     if (!confirm('Clear all fields and delete the saved draft?')) return;
