@@ -639,7 +639,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.5 · Updated Aug 27, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.6 · Updated Sep 1, 2026</p>
   </div>
 </div>
 
@@ -1858,19 +1858,22 @@
     const jsonName = `${clientName}_final_onboarding_${today}.json`;
     const pdfName  = `${clientName}_onboarding_${today}.pdf`;
 
-    // 1) Download the final JSON FIRST and let it complete
+    // 1) Download the final JSON FIRST
     downloadJSON(data, 'final');
 
-    // 2) Also keep a localStorage copy as backup
+    // 2) Keep localStorage backups too
     try { localStorage.setItem('tacoma_onboarding_last_final', JSON.stringify(data)); } catch(e) {}
 
-    // 3) Show the accurate success panel (files downloaded + what to do next)
+    // 3) Show the accurate success panel
     showSuccessPanel(jsonName, pdfName);
 
-    // 4) After the download settles, trigger print, then open the email draft.
-    //    (mailto navigation can interrupt a download, so it goes last.)
-    setTimeout(() => { try { window.print(); } catch(e) {} }, 600);
-    setTimeout(() => { openTeamEmailDraft(data, jsonName, pdfName); }, 1200);
+    // 4) Open the email draft next (does not freeze the page like print does)
+    setTimeout(() => { openTeamEmailDraft(data, jsonName, pdfName); }, 800);
+
+    // 5) Print LAST, well after the JSON download has committed to disk.
+    //    window.print() opens a blocking modal that can cancel an in-flight
+    //    download, so it must run only once the JSON is safely saved.
+    setTimeout(() => { try { expandTextareasForPrint(); window.print(); } catch(e) {} }, 2500);
   }
 
   // ── Loud validation-failure banner ──
@@ -1914,9 +1917,30 @@
       `<p style="font-size:13px;color:#374151;margin:2px 0;">&#128196; ${jsonName}</p>` +
       `<p style="font-size:13px;color:#374151;margin:2px 0 12px;">&#128196; ${pdfName} <span style="color:#888;">(from the Print dialog — choose "Save as PDF")</span></p>` +
       '<p style="font-weight:700;color:#922B21;">An email draft should now be open. Attach BOTH files above, then hit Send.</p>' +
+      '<div style="margin:14px 0;padding:12px;background:#F0F4F8;border-radius:8px;">' +
+      '<p style="font-size:12px;color:#374151;margin:0 0 8px;font-weight:600;">Can\'t find a file? Download it again here:</p>' +
+      '<button type="button" onclick="redownloadFinalJSON()" style="background:#1B75BC;color:#fff;border:none;border-radius:6px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;margin-right:8px;">&#11015; Download JSON again</button>' +
+      '<button type="button" onclick="reprintPDF()" style="background:#fff;color:#1B75BC;border:1.5px solid #1B75BC;border-radius:6px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;">&#128424; Open Print / PDF again</button>' +
+      '</div>' +
       '<p style="font-size:12px;color:#888;margin-top:10px;">If no email draft opened, start a new email to arick@tacomaenergy.org, attach both files, and send.</p>';
     banner.style.display = 'block';
     banner.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Safety-net re-download of the final JSON (in case the auto-download was missed/interrupted)
+  function redownloadFinalJSON() {
+    try {
+      let data;
+      const cached = localStorage.getItem('tacoma_onboarding_last_final');
+      data = cached ? JSON.parse(cached) : collectData();
+      downloadJSON(data, 'final');
+    } catch(e) {
+      downloadJSON(collectData(), 'final');
+    }
+  }
+  function reprintPDF() {
+    expandTextareasForPrint();
+    window.print();
   }
 
   // ── Open pre-addressed email draft naming the two files to attach ──
