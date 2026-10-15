@@ -508,7 +508,7 @@
     .btn-reset, .btn-draft, .btn-submit,
     .btn-add-service, .btn-remove-service,
     .btn-add-contact, .btn-remove-contact,
-    #draft-indicator, #draft-banner, #success-banner,
+    #draft-indicator, #draft-banner, #success-banner, #submit-modal, #send-overlay,
     #load-file-banner, #load-json-input,
     #progress-bar,
     .hint {
@@ -631,6 +631,8 @@
     .contact-group { padding: 6pt 10pt !important; margin-bottom: 5pt !important; }
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
@@ -639,7 +641,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v3.6 · Updated Sep 1, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v4.2 · Updated Oct 15, 2026</p>
   </div>
 </div>
 
@@ -1031,7 +1033,7 @@
             <tbody>
               <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:9px 16px;font-size:13px;font-weight:600;width:70%">Duct Sealing</td><td style="padding:9px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-duct-sealing" placeholder="0.00" min="0" step="0.01"></div></td></tr>
               <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:9px 16px;font-size:13px;font-weight:600">No Burn</td><td style="padding:9px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-no-burn" placeholder="0.00" min="0" step="0.01"></div></td></tr>
-              <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:9px 16px;font-size:13px;font-weight:600">Certification Fee</td><td style="padding:9px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-cert-fee" placeholder="0.00" min="0" step="0.01"></div></td></tr>
+              <tr style="border-bottom:1px solid var(--gray-border)"><td style="padding:9px 16px;font-size:13px;font-weight:600">Certification Fee</td><td style="padding:9px 16px;text-align:center"><input type="text" id="p-cert-fee" placeholder="e.g. $250 (45L Tax Credit per Home)" style="width:100%;max-width:320px;border:1.5px solid var(--gray-border);border-radius:6px;padding:7px 10px;font-family:inherit;font-size:13px;"></td></tr>
               <tr><td style="padding:9px 16px;font-size:13px;font-weight:600">Street Cleaning</td><td style="padding:9px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-street-cleaning" placeholder="0.00" min="0" step="0.01"></div></td></tr>
             </tbody>
           </table>
@@ -1190,7 +1192,7 @@
     </button>
     <button type="button" class="btn-draft" onclick="printForm()">
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" style="flex-shrink:0;"><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>
-      Print / PDF
+      Download PDF
     </button>
     <input type="file" id="load-json-input" accept=".json" style="display:none" onchange="loadFromFile(this)">
     <button type="button" class="btn-submit" onclick="submitForm()">
@@ -1760,7 +1762,11 @@
     const pdSrc = ['primary','sched','ap','qa'].find(s => document.getElementById(`pd-same-${s}`)?.checked);
     const pdInfo = pdSrc ? getContactInfo(pdSrc) : { name: getVal('pastdue-name'), phone: getVal('pastdue-phone'), email: getVal('pastdue-email') };
 
+    const ident = window.__clientIdentity || {};
     return {
+      accountId: ident.accountId || '',
+      divisionCity: ident.divisionCity || '',
+      state: ident.state || '',
       date: getVal('form-date'),
       rep: getVal('rep'),
       companyName: getVal('company-name'),
@@ -1784,7 +1790,7 @@
       poJobs: getRadio('po-jobs'),
       poJobTypes: getVal('po-job-types'),
       poMissingName: poInfo.name, poMissingPhone: poInfo.phone, poMissingEmail: poInfo.email,
-      projectType: getVal('project-type'),
+      projectType: getVal('project-type') || ident.projectType || '',
       priceComplianceReview: getVal('p-compliance'),
       priceComplianceRevisionsSimple: getVal('p-compliance-revisions-simple'),
       priceComplianceRevisionsComplex: getVal('p-compliance-revisions-complex'),
@@ -1831,7 +1837,7 @@
     };
   }
 
-  function submitForm() {
+  async function submitForm() {
     // Validate first — if it fails, tell them LOUDLY and save their work
     if (!validate()) {
       // Save a draft so nothing is ever lost
@@ -1858,22 +1864,519 @@
     const jsonName = `${clientName}_final_onboarding_${today}.json`;
     const pdfName  = `${clientName}_onboarding_${today}.pdf`;
 
-    // 1) Download the final JSON FIRST
-    downloadJSON(data, 'final');
-
-    // 2) Keep localStorage backups too
+    // Keep a local backup no matter what
     try { localStorage.setItem('tacoma_onboarding_last_final', JSON.stringify(data)); } catch(e) {}
+    window.__scData = { data, jsonName, pdfName };
 
-    // 3) Show the accurate success panel
-    showSuccessPanel(jsonName, pdfName);
+    let pdfDoc = null;
+    if (pdfReady()) { try { pdfDoc = buildOnboardingPDF(data); } catch (e) { console.warn('PDF build failed', e); } }
 
-    // 4) Open the email draft next (does not freeze the page like print does)
-    setTimeout(() => { openTeamEmailDraft(data, jsonName, pdfName); }, 800);
+    // Automatic path: send both files straight to the team via Power Automate
+    let sendFailed = false;
+    if (FLOW_URL && pdfDoc) {
+      const btn = document.querySelector('button.btn-submit');
+      if (btn) btn.disabled = true;
+      showSendingOverlay(true);
+      try {
+        await sendToFlow(data, pdfDoc, jsonName, pdfName);
+        showSendingOverlay(false);
+        if (btn) btn.disabled = false;
+        try { pdfDoc.save(pdfName); } catch (e) {}   // rep keeps a copy of the PDF
+        showSentPanel(jsonName, pdfName);
+        return;
+      } catch (e) {
+        console.warn('Automatic send failed', e);
+        showSendingOverlay(false);
+        if (btn) btn.disabled = false;
+        sendFailed = true;
+      }
+    }
 
-    // 5) Print LAST, well after the JSON download has committed to disk.
-    //    window.print() opens a blocking modal that can cancel an in-flight
-    //    download, so it must run only once the JSON is safely saved.
-    setTimeout(() => { try { expandTextareasForPrint(); window.print(); } catch(e) {} }, 2500);
+    // Manual path: download the data file now, then walk them through PDF + email
+    downloadJSON(data, 'final');
+    showSubmitChecklist(data, jsonName, pdfName, { sendFailed });
+  }
+
+  // ════════ AUTOMATIC SENDING (Power Automate) ════════
+  // Paste the flow's HTTP POST URL between the quotes to turn on automatic sending.
+  // Leave it empty and the form uses the manual download + email checklist.
+  const FLOW_URL = '';
+
+  // ════════ ONBOARDING SUMMARY PDF ════════
+  function numVal(v) { const x = parseFloat(String(v ?? '').replace(/[^0-9.]/g, '')); return isNaN(x) ? 0 : x; }
+  function fmtMoney(v) {
+    const s = String(v ?? '').trim();
+    if (!s) return '';
+    const money = n => { const x = parseFloat(String(n).replace(/[^0-9.]/g, '')); return isNaN(x) ? '' : '$' + x.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+    if (/^\$?\s*[\d,]+(\.\d+)?\s*$/.test(s)) return money(s);
+    const r = s.match(/^\$?\s*([\d,]+(?:\.\d+)?)\s*[-\u2013]\s*\$?\s*([\d,]+(?:\.\d+)?)\s*$/);
+    if (r) return money(r[1]) + ' - ' + money(r[2]);
+    return s; // free text (e.g. certification fee with a description)
+  }
+  function fmtDateLong(iso) {
+    const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return iso || '';
+    return new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  function summaryServices(d) {
+    const list = [['priceComplianceReview','Compliance Review'],['pricePrebatt','Pre-Batt'],['pricePredrywall','Pre-Drywall'],
+      ['priceFinal','Final'],['priceAirSealing','Air Sealing'],['priceTestingCombined','Testing'],['priceBlowerDoor','Blower Door'],
+      ['priceDuctBlaster','Duct Blaster'],['priceMechanicalVentilation','Mechanical Ventilation'],['priceManualsJDS','Manuals'],
+      ['priceManualsJS','Manuals'],['priceManualsJDSRheia','Manuals'],['priceManualsJSRheia','Manuals'],['priceHVACDrawing','HVAC Drawing'],
+      ['priceDuctSealing','Duct Sealing'],['priceNoBurn','No Burn'],['priceCertificationFee','Certification Fee'],['priceStreetCleaning','Street Cleaning']];
+    const out = [];
+    list.forEach(([k, label]) => {
+      const v = String(d[k] || '').trim();
+      const used = k === 'priceCertificationFee' ? v !== '' : numVal(v) > 0;
+      if (used && !out.includes(label)) out.push(label);
+    });
+    return out;
+  }
+  function auditTotal(d) {
+    let t = numVal(d.priceComplianceReview) + numVal(d.pricePrebatt) + numVal(d.pricePredrywall) + numVal(d.priceFinal) + numVal(d.priceAirSealing);
+    const bundled = numVal(d.priceTestingCombined);
+    t += bundled > 0 ? bundled : numVal(d.priceBlowerDoor) + numVal(d.priceDuctBlaster) + numVal(d.priceMechanicalVentilation);
+    return t;
+  }
+
+  function buildOnboardingPDF(d) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+    const W = 612, M = 40, CW = W - M * 2, BOTTOM = 735;
+    const NAVY=[16,66,95], BLUE=[27,117,188], LIGHT=[238,244,248], GRAY=[90,113,132], DARK=[20,32,43],
+          AMBER=[140,94,0], AMBERBG=[255,248,236], RULE=[214,224,232];
+    const TM = { left: M, right: M, top: 76, bottom: 60 };
+    const TOP = 62;  // content start on pages 2+
+    const client = d.companyName || 'New Client';
+    const loc = [d.divisionCity, d.state].filter(Boolean).join(', ');
+    doc.setProperties({ title: client + ' - Onboarding Summary', author: 'Tacoma Energy' });
+
+    // Header band
+    doc.setFillColor(...NAVY); doc.rect(0, 0, W, 76, 'F');
+    doc.setFillColor(91,184,245); doc.roundedRect(M, 16, 44, 44, 6, 6, 'F');
+    const logo = document.querySelector('.logo-mark img')?.src;
+    if (logo) { try { doc.addImage(logo, 'PNG', M + 5, 21, 34, 34); } catch (e) {} }
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(18);
+    doc.text('Client Onboarding Summary', M + 58, 38);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(190,210,225);
+    doc.text('Tacoma Energy  |  Internal', M + 58, 54);
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(160,190,212);
+    doc.text('ONBOARDING DATE', W - M, 28, { align: 'right' });
+    doc.text('SALES REP', W - M, 51, { align: 'right' });
+    doc.setFontSize(10); doc.setTextColor(255,255,255);
+    doc.text(fmtDateLong(d.date) || '-', W - M, 40, { align: 'right' });
+    doc.text(d.rep || '-', W - M, 63, { align: 'right' });
+
+    // Client card
+    let y = 92;
+    const services = summaryServices(d);
+    const total = auditTotal(d);
+    doc.setFont('helvetica','bold'); doc.setFontSize(20);
+    const nameLines = doc.splitTextToSize(client, CW - 36);
+    doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    const svcLines = services.length ? doc.splitTextToSize(services.join('  \u00B7  '), CW - 36) : [];
+    const nameExtra = (nameLines.length - 1) * 22;
+    const cardH = (svcLines.length ? 112 + (svcLines.length - 1) * 13 : 78) + nameExtra;
+    doc.setFillColor(...LIGHT); doc.roundedRect(M, y, CW, cardH, 6, 6, 'F');
+    doc.setFillColor(...BLUE); doc.rect(M, y, 4, cardH, 'F');
+    let cy = y + 30;
+    doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(...NAVY);
+    doc.text(nameLines, M + 18, cy); cy += nameExtra;
+    const cols = [['SERVICE LOCATION', loc || '-']];
+    if (d.projectType) cols.push(['PROJECT TYPE', d.projectType]);
+    cols.push(['TOTAL AUDIT FEE', total > 0 ? fmtMoney(total) + ' / house' : '-']);
+    const colW = (CW - 36) / 3;
+    cols.forEach(([lab, val], i) => {
+      const x = M + 18 + i * colW;
+      doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...GRAY);
+      doc.text(lab, x, cy + 20);
+      doc.setFontSize(11); doc.setTextColor(...DARK);
+      doc.text(doc.splitTextToSize(String(val), colW - 8)[0], x, cy + 34);
+    });
+    if (svcLines.length) {
+      doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...GRAY);
+      doc.text('SERVICES', M + 18, cy + 58);
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...DARK);
+      doc.text(svcLines, M + 18, cy + 71);
+    }
+    y += cardH + 16;
+    const guideY = y, guideH = 58;   // "where to find it" tiles, drawn at the end once page numbers are known
+    y += guideH + 22;
+
+    const newPage = () => { doc.addPage(); y = TOP; };
+    const ensure = need => { if (y + need > BOTTOM) newPage(); };
+    const cont = title => data => {
+      if (data.pageNumber > 1) {
+        doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...NAVY);
+        doc.text(title.toUpperCase() + '  (CONTINUED)', M, TOP);
+      }
+    };
+    const section = title => {
+      ensure(70);
+      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...NAVY);
+      doc.text(title.toUpperCase(), M, y);
+      doc.setDrawColor(...BLUE); doc.setLineWidth(1.2); doc.line(M, y + 5, M + CW, y + 5);
+      y += 12;
+    };
+    const after = () => { y = doc.lastAutoTable.finalY + 22; };
+    const kv = (title, rows) => {
+      rows = rows.filter(r => r && String(r[1] ?? '').trim() !== '');
+      if (!rows.length) return;
+      section(title);
+      doc.autoTable({ startY: y, margin: TM, theme: 'plain', body: rows.map(r => [r[0], String(r[1])]), didDrawPage: cont(title),
+        styles: { font: 'helvetica', fontSize: 9.5, textColor: DARK, cellPadding: { top: 5, bottom: 5, left: 0, right: 8 }, lineColor: RULE, lineWidth: { bottom: 0.5 } },
+        columnStyles: { 0: { cellWidth: 150, fontStyle: 'bold', fontSize: 8.5, textColor: GRAY } } });
+      after();
+    };
+
+    // Company & billing
+    kv('Company & Billing', [['Legal Company Name', d.companyName], ['Billing Address', d.billingAddress], ['Account ID', d.accountId]]);
+
+    // Contacts
+    const cRows = [];
+    const addC = (role, n, p, e) => { if (String(n || '').trim() || String(e || '').trim()) cRows.push([role, n || '', p || '', e || '']); };
+    addC('Primary', d.primaryContact, d.primaryPhone, d.primaryEmail);
+    addC('Scheduling', d.schedName, d.schedPhone, d.schedEmail);
+    addC('Accounting / AP', d.apName, d.apPhone, d.apEmail);
+    addC('Compliance / QA', d.qaName, d.qaPhone, d.qaEmail);
+    (d.additionalContacts || []).forEach(c => addC(c.note ? 'Other - ' + c.note : 'Other', c.name, c.phone, c.email));
+    if (d.poRequired !== 'No') addC('PO Issues', d.poMissingName, d.poMissingPhone, d.poMissingEmail);
+    addC('Past-Due Invoices', d.pastdueName, d.pastduePhone, d.pastdueEmail);
+    if (cRows.length) {
+      section('Contacts');
+      doc.autoTable({ startY: y, margin: TM, theme: 'plain', head: [['Role', 'Name', 'Phone', 'Email']], body: cRows, didDrawPage: cont('Contacts'),
+        headStyles: { fillColor: LIGHT, textColor: NAVY, fontStyle: 'bold', fontSize: 7.5 },
+        styles: { fontSize: 9, textColor: DARK, cellPadding: 5, lineColor: RULE, lineWidth: { bottom: 0.5 } },
+        columnStyles: { 0: { cellWidth: 105, fontStyle: 'bold', textColor: GRAY, fontSize: 8.5 }, 2: { cellWidth: 88 } } });
+      after();
+    }
+
+    // Pricing
+    const pr = [];
+    const head = (label, amber) => pr.push([{ content: label.toUpperCase(), colSpan: 2, styles: {
+      fillColor: amber ? AMBERBG : LIGHT, textColor: amber ? AMBER : NAVY, fontStyle: 'bold', fontSize: 7.5, lineWidth: 0 } }]);
+    // Descriptions are drawn INSIDE their row (didDrawCell) so they can never split from it
+    const DESC_W = CW - 180 - 26;
+    const row = (label, price, o = {}) => {
+      const tc = o.amber ? AMBER : DARK;
+      let pad;
+      if (o.desc) {
+        doc.setFont('helvetica','italic'); doc.setFontSize(7.5);
+        const lines = doc.splitTextToSize(String(o.desc), DESC_W);
+        pad = { top: 4, bottom: 5 + lines.length * 9, left: 8, right: 8 };
+        o.descLines = lines;
+      }
+      pr.push([{ content: label, desc: o.descLines, descAmber: o.amber, styles: { textColor: tc, ...(pad ? { cellPadding: pad } : {}) } },
+               { content: price, styles: { halign: 'right', fontStyle: 'bold', textColor: tc, ...(pad ? { cellPadding: pad } : {}) } }]);
+    };
+    const drawDesc = data => {
+      const raw = data.cell.raw;
+      if (data.section !== 'body' || !raw || !raw.desc) return;
+      doc.setFont('helvetica','italic'); doc.setFontSize(7.5);
+      doc.setTextColor(...(raw.descAmber ? AMBER : GRAY));
+      const n = raw.desc.length;
+      doc.text(raw.desc, data.cell.x + 18, data.cell.y + data.cell.height - 6 - (n - 1) * 9);
+    };
+
+    const core = [];
+    [['priceComplianceReview','Compliance Review'],['pricePrebatt','Pre-Batt Inspection'],['pricePredrywall','Pre-Drywall Inspection'],
+     ['priceFinal','Final Inspection'],['priceAirSealing','Air Sealing']].forEach(([k, l]) => { if (numVal(d[k]) > 0) core.push([l, fmtMoney(d[k])]); });
+    if (numVal(d.priceTestingCombined) > 0) {
+      const parts = [];
+      if (document.getElementById('tc-blowerdoor')?.checked) parts.push('Blower Door');
+      if (document.getElementById('tc-ductblaster')?.checked) parts.push('Duct Blaster');
+      if (document.getElementById('tc-mechvent')?.checked) parts.push('Mechanical Ventilation');
+      core.push([(parts.length ? parts.join(' / ') : 'Testing') + ' (combined)', fmtMoney(d.priceTestingCombined)]);
+    } else {
+      [['priceBlowerDoor','Blower Door Testing'],['priceDuctBlaster','Duct Blaster Testing'],['priceMechanicalVentilation','Mechanical Ventilation Testing']]
+        .forEach(([k, l]) => { if (numVal(d[k]) > 0) core.push([l, fmtMoney(d[k])]); });
+    }
+    if (core.length) {
+      head('Core Services - included in Total Audit Fee');
+      core.forEach(r => row(r[0], r[1]));
+      if (total > 0) {
+        const ts = { fontStyle: 'bold', textColor: NAVY, fontSize: 10.5, lineColor: BLUE, lineWidth: { top: 1.2 }, cellPadding: { top: 7, bottom: 9, left: 8, right: 8 } };
+        pr.push([{ content: 'Total Audit Fee (per house / unit)', styles: ts }, { content: fmtMoney(total), styles: { ...ts, halign: 'right' } }]);
+      }
+    }
+
+    const addl = [];
+    const hasRheia = ['priceManualsJDSRheia','priceManualsJSRheia','priceManualsOptionRheia'].some(k => numVal(d[k]) > 0);
+    const conv = hasRheia ? ' - Conventional' : '';
+    [['priceManualsJDS','Manuals (J, D & S)' + conv], ['priceManualsJS','Manuals (J & S)' + conv], ['priceManualsOption','Manuals - Per Option' + conv],
+     ['priceManualsJDSRheia','Manuals (J, D & S) - Rheia'], ['priceManualsJSRheia','Manuals (J & S) - Rheia'], ['priceManualsOptionRheia','Manuals - Per Option - Rheia']]
+      .forEach(([k, l]) => { if (numVal(d[k]) > 0) addl.push({ l, p: fmtMoney(d[k]) }); });
+    if (addl.length && d.manualsNotes) addl[addl.length - 1].desc = d.manualsNotes;
+    [['priceHVACDrawing','HVAC Drawing'],['priceDuctSealing','Duct Sealing'],['priceNoBurn','No Burn'],['priceStreetCleaning','Street Cleaning']]
+      .forEach(([k, l]) => { if (numVal(d[k]) > 0) addl.push({ l, p: fmtMoney(d[k]) }); });
+    if (String(d.priceCertificationFee || '').trim()) addl.push({ l: 'Certification Fee', p: fmtMoney(d.priceCertificationFee) });
+    (d.otherServices || []).forEach(o => { if (o.service || o.price) addl.push({ l: o.service || 'Other Service', p: fmtMoney(o.price) || '-' }); });
+    if (addl.length) {
+      head('Additional Services - not included in Total Audit Fee');
+      addl.forEach(a => row(a.l, a.p, { desc: a.desc }));
+    }
+
+    const ch = [];
+    if (numVal(d.priceComplianceRevisionsSimple) > 0) ch.push({ l: 'Compliance Revisions - Simple', p: fmtMoney(d.priceComplianceRevisionsSimple), desc: 'Administrative updates such as address, lot, or minor corrections' });
+    if (numVal(d.priceComplianceRevisionsComplex) > 0) ch.push({ l: 'Compliance Revisions - Complex', p: fmtMoney(d.priceComplianceRevisionsComplex), desc: 'Plan changes such as model, elevation, layout, or HVAC/equipment changes' });
+    if (d.retestWaived) ch.push({ l: 'Repair / Retest Labor', p: 'Waived' });
+    else if (numVal(d.priceRetest) > 0) ch.push({ l: 'Repair / Retest Labor', p: fmtMoney(d.priceRetest) + ' / hr' });
+    if (d.tripWaived) ch.push({ l: 'Trip Charge / Re-inspection Fee', p: 'Waived' });
+    else if (numVal(d.priceTrip) > 0) ch.push({ l: 'Trip Charge / Re-inspection Fee', p: fmtMoney(d.priceTrip), desc: d.tripFirstFree ? 'First trip charge is free per home' : '' });
+    if (d.hvacWaived) ch.push({ l: 'Additional HVAC System Fee', p: 'Waived' });
+    else if (numVal(d.priceHVACExtra) > 0) ch.push({ l: 'Additional HVAC System Fee', p: fmtMoney(d.priceHVACExtra), desc: 'Per HVAC system over 1' });
+    if (ch.length) {
+      head('Additional Charges - not included in Total Audit Fee', true);
+      ch.forEach(c => row(c.l, c.p, { amber: true, desc: c.desc }));
+    }
+
+    // PAGE 2 — pricing always starts on its own page
+    newPage();
+    const pricingPage = doc.getNumberOfPages();
+    section('Pricing Agreement');
+    if (!pr.length) {
+      doc.setFont('helvetica','italic'); doc.setFontSize(9.5); doc.setTextColor(...GRAY);
+      doc.text('No pricing entered.', M, y + 10); y += 30;
+    } else {
+      doc.autoTable({ startY: y, margin: TM, theme: 'plain', body: pr, rowPageBreak: 'avoid', didDrawPage: cont('Pricing Agreement'),
+        didDrawCell: drawDesc,
+        styles: { fontSize: 9.5, textColor: DARK, cellPadding: { top: 4, bottom: 4, left: 8, right: 8 }, lineColor: RULE, lineWidth: { bottom: 0.5 } },
+        columnStyles: { 1: { cellWidth: 180, halign: 'right' } } });
+      after();
+    }
+
+    // PAGE 3 — operations always start on a new page
+    const hasOps = [d.systemsRequired, d.systemNames, d.requiredForms, d.poRequired, d.invoiceDelivery, d.invoiceAdditional,
+      d.notifPref, d.agingFreq, d.specialNotes].some(v => String(v || '').trim()) || document.getElementById('terms-agree')?.checked;
+    if (hasOps) newPage();
+    const opsPage = hasOps ? doc.getNumberOfPages() : null;
+
+
+    const poRows = [['POs Required', d.poRequired]];
+    if (d.poRequired === 'Yes') poRows.push(['Number of POs', d.poCount], ['Included on Each PO', d.poIncluded],
+      ['When POs Are Released', d.poWhen], ['Jobs Requiring POs', [d.poJobs, d.poJobTypes].filter(Boolean).join(': ')]);
+    kv('Purchase Orders', poRows);
+
+    kv('Invoicing & Payment', [['Invoice Delivery', d.invoiceDelivery], ['Additional Invoice Info', d.invoiceAdditional],
+      ['Payment Terms', d.poPaymentTerms], ['Past-Due Notification', d.notifPref], ['Aging Report Frequency', d.agingFreq],
+      ['Monthly Report Date', d.agingDate], ['Aging Report Email', d.agingEmail], ['Aging Report Notes', d.agingNotes]]);
+
+    kv('Systems & Requirements', [['Systems Required', d.systemsRequired], ['System Names / Access', d.systemNames],
+      ['System URL', d.systemURL], ['Required Forms / Templates', d.requiredForms], ['Forms URL', d.requiredFormsURL]]);
+
+    if (String(d.specialNotes || '').trim()) {
+      section('Special Instructions');
+      doc.autoTable({ startY: y + 4, margin: TM, theme: 'plain', body: [[d.specialNotes]], didDrawPage: cont('Special Instructions'),
+        styles: { fontSize: 9.5, textColor: DARK, fillColor: AMBERBG, cellPadding: 10 } });
+      after();
+    }
+
+    if (document.getElementById('terms-agree')?.checked) {
+      ensure(30);
+      doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(...GRAY);
+      doc.text(doc.splitTextToSize('Terms & Conditions (Aging & Delinquency Policy) acknowledged by ' + (d.rep || 'the sales rep') +
+        (d.date ? ' on ' + fmtDateLong(d.date) : '') + '.', CW), M, y);
+    }
+
+    // Page-1 guide tiles: tell the reader where pricing and accounting details live
+    doc.setPage(1);
+    const tiles = [['PRICING AGREEMENT', 'Services, audit fee & charges', pricingPage]];
+    if (opsPage) tiles.push(['ACCOUNTING DETAILS', 'POs, invoicing, payment & notes', opsPage]);
+    const gap = 12, tw = (CW - gap * (tiles.length - 1)) / tiles.length;
+    tiles.forEach(([lab, sub, pg], i) => {
+      const x = M + i * (tw + gap);
+      doc.setFillColor(255,255,255); doc.setDrawColor(...BLUE); doc.setLineWidth(1.2);
+      doc.roundedRect(x, guideY, tw, guideH, 6, 6, 'FD');
+      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...NAVY);
+      doc.text(lab, x + 14, guideY + 22);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...GRAY);
+      doc.text(sub, x + 14, guideY + 39);
+      doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(...BLUE);
+      doc.text('Page ' + pg, x + tw - 14, guideY + 37, { align: 'right' });
+      doc.link(x, guideY, tw, guideH, { pageNumber: pg });
+    });
+
+    // Footer on every page
+    const pages = doc.getNumberOfPages();
+    for (let i = 1; i <= pages; i++) {
+      doc.setPage(i);
+      if (i > 1) {
+        doc.setFillColor(...NAVY); doc.rect(0, 0, W, 34, 'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(255,255,255);
+        doc.text(client + (loc ? '  -  ' + loc : ''), M, 21);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(190,210,225);
+        doc.text('Client Onboarding Summary', W - M, 21, { align: 'right' });
+      }
+      doc.setDrawColor(...RULE); doc.setLineWidth(0.5); doc.line(M, 758, W - M, 758);
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+      doc.text('Tacoma Energy  |  Client Onboarding Summary  |  ' + client + (loc ? ' - ' + loc : ''), M, 770);
+      doc.text('Page ' + i + ' of ' + pages, W - M, 770, { align: 'right' });
+    }
+    return doc;
+  }
+
+  function pdfReady() { return !!(window.jspdf && window.jspdf.jsPDF && window.jspdf.jsPDF.API && window.jspdf.jsPDF.API.autoTable); }
+
+  async function sendToFlow(data, pdfDoc, jsonName, pdfName) {
+    const esc = s => String(s || '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    const client = data.companyName || 'New Client';
+    const loc = [data.divisionCity, data.state].filter(Boolean).join(', ');
+    const services = summaryServices(data), total = auditTotal(data);
+    const payload = {
+      subject: `New Onboarding Submission: ${client}${loc ? ' - ' + loc : ''}`,
+      body: `<p>A new client onboarding has been completed${data.rep ? ' by <b>' + esc(data.rep) + '</b>' : ''}.</p>` +
+            `<p><b>Client:</b> ${esc(client)}${loc ? ' &mdash; ' + esc(loc) : ''}<br>` +
+            (services.length ? `<b>Services:</b> ${esc(services.join(' \u00B7 '))}<br>` : '') +
+            (total > 0 ? `<b>Total Audit Fee:</b> ${fmtMoney(total)} per house / unit` : '') + `</p>` +
+            `<p>The onboarding summary (PDF) and data file (JSON) are attached.</p>`,
+      client, rep: data.rep || '', pdfName,
+      pdfBase64: pdfDoc.output('datauristring').split(',')[1],
+      jsonName,
+      jsonContent: JSON.stringify({ ...data, _fileType: 'Tacoma Final Onboarding', _savedAt: new Date().toISOString() }, null, 2)
+    };
+    const res = await fetch(FLOW_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    if (!res.ok) throw new Error('Flow returned ' + res.status);
+  }
+
+  function showSendingOverlay(on) {
+    let o = document.getElementById('send-overlay');
+    if (!on) { if (o) o.remove(); return; }
+    if (!o) {
+      o = document.createElement('div'); o.id = 'send-overlay';
+      o.style.cssText = 'position:fixed;inset:0;background:rgba(16,32,48,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;';
+      o.innerHTML = '<div style="background:#fff;border-radius:12px;padding:26px 34px;font-size:16px;font-weight:700;color:#10425F;box-shadow:0 10px 40px rgba(0,0,0,0.3);">Sending to the Tacoma team&hellip;</div>';
+      document.body.appendChild(o);
+    }
+  }
+
+  function showSentPanel(jsonName, pdfName) {
+    const b = document.getElementById('success-banner');
+    if (!b) return;
+    b.innerHTML =
+      '<h3>&#10003; Submitted to the Tacoma Team</h3>' +
+      '<p>The onboarding summary (PDF) and data file were emailed to the Tacoma team automatically. <strong>Nothing else to do.</strong></p>' +
+      `<p style="font-size:13px;color:#374151;margin-top:8px;">A copy of the PDF was saved to your Downloads folder: <strong>${pdfName}</strong></p>` +
+      '<div style="margin-top:12px;">' +
+      '<button type="button" onclick="downloadSummaryPDF()" style="background:#fff;color:#1B75BC;border:1.5px solid #1B75BC;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;margin-right:8px;">Download PDF again</button>' +
+      '<button type="button" onclick="redownloadFinalJSON()" style="background:#fff;color:#1B75BC;border:1.5px solid #1B75BC;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;">Download a copy (JSON)</button>' +
+      '</div>';
+    b.style.display = 'block';
+    b.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function summaryPdfName(d) {
+    const clientName = (d.companyName || 'Client').replace(/[^a-z0-9]+/gi, '_');
+    return `${clientName}_onboarding_${new Date().toISOString().slice(0, 10)}.pdf`;
+  }
+  function downloadSummaryPDF() {
+    if (!pdfReady()) { expandTextareasForPrint(); window.print(); return; }
+    const d = collectData();
+    buildOnboardingPDF(d).save(window.__scData?.pdfName || summaryPdfName(d));
+  }
+
+  // ── Guided submit checklist (modal) ──
+  function showSubmitChecklist(data, jsonName, pdfName, opts = {}) {
+    const direct = pdfReady();
+    let m = document.getElementById('submit-modal');
+    if (m) m.remove();
+    m = document.createElement('div');
+    m.id = 'submit-modal';
+    m.style.cssText = 'position:fixed;inset:0;background:rgba(16,32,48,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+
+    const step = (n, id, title, body) => `
+      <div id="${id}" class="sc-step" style="display:flex;gap:14px;padding:14px 0;border-bottom:1px solid #E5EBF0;">
+        <div class="sc-num" style="flex:0 0 32px;height:32px;border-radius:50%;background:#1B75BC;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px;">${n}</div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:700;color:#10425F;margin-bottom:4px;">${title}</div>
+          ${body}
+        </div>
+      </div>`;
+
+    const btn = (id, label, onclick, disabled) =>
+      `<button type="button" id="${id}" onclick="${onclick}" ${disabled ? 'disabled' : ''}
+        style="background:#1B75BC;color:#fff;border:none;border-radius:6px;padding:9px 16px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;${disabled ? 'opacity:0.4;cursor:not-allowed;' : ''}">${label}</button>`;
+
+    m.innerHTML = `
+      <div style="background:#fff;border-radius:12px;max-width:560px;width:100%;max-height:92vh;overflow-y:auto;padding:24px 26px;box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+        <div style="font-size:20px;font-weight:800;color:#10425F;">Almost done — 3 quick steps</div>
+        ${opts.sendFailed ? '<div style="background:#FDECEA;border:1.5px solid #E74C3C;border-radius:8px;padding:10px 12px;margin:10px 0 4px;font-size:13px;color:#922B21;font-weight:600;">Automatic sending didn\'t go through. Please send it manually using the steps below.</div>' : ''}
+        <div style="font-size:13px;color:#5A7184;margin:4px 0 6px;">The form is <strong>not submitted</strong> until the email with BOTH files is sent.</div>
+
+        ${step(1, 'sc-1', '&#10003; Data file downloaded',
+          `<div style="font-size:13px;color:#374151;">Saved to your Downloads folder:<br><strong>${jsonName}</strong></div>
+           <a href="#" onclick="redownloadFinalJSON();return false;" style="font-size:12px;color:#1B75BC;">Don't see it? Download again</a>`)}
+
+        ${step(2, 'sc-2', 'Save the PDF',
+          `<div style="font-size:13px;color:#374151;">${direct
+              ? 'Click the button to download the onboarding summary PDF.'
+              : 'Click the button. In the print window, set <strong>Destination</strong> to <strong>"Save as PDF"</strong>, then click <strong>Save</strong>.'}</div>
+           ${btn('sc-pdf-btn', direct ? '&#11015; Download PDF' : '&#128424; Save PDF', 'scSavePDF()', false)}
+           <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;font-weight:600;color:#10425F;text-transform:none;letter-spacing:0;cursor:pointer;">
+             <input type="checkbox" id="sc-pdf-done" onchange="scUpdate()" style="width:17px;height:17px;"> I saved the PDF (<span style="font-weight:400;">${pdfName}</span>)
+           </label>`)}
+
+        ${step(3, 'sc-3', 'Email both files to the Tacoma team',
+          `<div style="font-size:13px;color:#374151;">Opens a pre-addressed email. <strong style="color:#922B21;">Attach BOTH files</strong> from your Downloads folder before sending:</div>
+           <div style="font-size:13px;margin:6px 0 2px;">&#128206; ${jsonName}<br>&#128206; ${pdfName}</div>
+           <div style="font-size:12px;color:#5A7184;">Outlook: <em>Attach File &rarr; Browse This PC &rarr; Downloads</em></div>
+           ${btn('sc-email-btn', '&#9993; Open Email', 'scOpenEmail()', true)}
+           <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;font-weight:600;color:#10425F;text-transform:none;letter-spacing:0;cursor:pointer;">
+             <input type="checkbox" id="sc-sent" onchange="scUpdate()" disabled style="width:17px;height:17px;"> I attached both files and sent the email
+           </label>`)}
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;">
+          <a href="#" onclick="document.getElementById('submit-modal').remove();return false;" style="font-size:12px;color:#888;">Close and finish later</a>
+          ${btn('sc-done-btn', 'Done', 'scFinish()', true)}
+        </div>
+      </div>`;
+
+    document.body.appendChild(m);
+    window.__scData = { data, jsonName, pdfName };
+    const n1 = m.querySelector('#sc-1 .sc-num'); if (n1) n1.style.background = '#1E8E4E';
+  }
+
+  function scSavePDF() {
+    if (pdfReady()) {
+      const s = window.__scData;
+      buildOnboardingPDF(s ? s.data : collectData()).save(s ? s.pdfName : summaryPdfName(collectData()));
+      const c = document.getElementById('sc-pdf-done');
+      if (c) { c.checked = true; scUpdate(); }
+      return;
+    }
+    const pdfBase = (window.__scData?.pdfName || 'Onboarding.pdf').replace(/\.pdf$/i, '');
+    const oldTitle = document.title;
+    document.title = pdfBase;               // becomes the default "Save as PDF" file name
+    expandTextareasForPrint();
+    window.print();
+    setTimeout(() => { document.title = oldTitle; }, 1000);
+  }
+
+  function scOpenEmail() {
+    const s = window.__scData; if (!s) return;
+    openTeamEmailDraft(s.data, s.jsonName, s.pdfName);
+    document.getElementById('sc-sent').disabled = false;
+  }
+
+  function scUpdate() {
+    const pdfDone = document.getElementById('sc-pdf-done')?.checked;
+    const sent = document.getElementById('sc-sent')?.checked;
+    const setBtn = (id, on) => { const b = document.getElementById(id); if (!b) return; b.disabled = !on; b.style.opacity = on ? '1' : '0.4'; b.style.cursor = on ? 'pointer' : 'not-allowed'; };
+    setBtn('sc-email-btn', pdfDone);
+    if (!pdfDone) { const c = document.getElementById('sc-sent'); c.checked = false; c.disabled = true; }
+    setBtn('sc-done-btn', pdfDone && sent);
+    const green = (id, on) => { const n = document.querySelector('#' + id + ' .sc-num'); if (n) n.style.background = on ? '#1E8E4E' : '#1B75BC'; };
+    green('sc-2', pdfDone); green('sc-3', pdfDone && sent);
+  }
+
+  function scFinish() {
+    const s = window.__scData;
+    document.getElementById('submit-modal')?.remove();
+    if (s) showSuccessPanel(s.jsonName, s.pdfName);
+    const b = document.getElementById('success-banner');
+    if (b) {
+      b.querySelector('h3').innerHTML = '&#10003; Submitted to the Tacoma Team';
+      b.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   // ── Loud validation-failure banner ──
@@ -1939,8 +2442,7 @@
     }
   }
   function reprintPDF() {
-    expandTextareasForPrint();
-    window.print();
+    downloadSummaryPDF();
   }
 
   // ── Open pre-addressed email draft naming the two files to attach ──
@@ -1952,21 +2454,15 @@
     const st     = data.state ? ' (' + data.state + ')' : '';
     const rep    = data.rep || '';
 
-    const subject = `New Onboarding Submission: ${client}${div}${st}`;
+    const subject = `New Onboarding Submission: ${client}${div}${st} [PDF + JSON attached]`;
 
     const bodyLines = [
+      `>>> ATTACH BOTH FILES BEFORE SENDING (from your Downloads folder) <<<`,
+      `  1. ${pdfName}`,
+      `  2. ${jsonName}`,
+      ``,
       `A new client onboarding form has been completed${rep ? ' by ' + rep : ''}.`,
-      ``,
       `Client: ${client}${div}${st}`,
-      ``,
-      `PLEASE ATTACH THE FOLLOWING TWO FILES BEFORE SENDING:`,
-      `  1. ${jsonName}`,
-      `  2. ${pdfName}`,
-      ``,
-      `Both files were just saved to your Downloads folder`,
-      `(the JSON downloaded automatically; the PDF is created from the`,
-      `Print dialog that just opened — choose "Save as PDF" and keep the`,
-      `suggested file name so it matches the one above).`,
       ``,
       `— Sent from the Tacoma Energy Onboarding Form`
     ];
@@ -1982,8 +2478,7 @@
 
   // ── Print / Save as PDF ──
   function printForm() {
-    expandTextareasForPrint();
-    window.print();
+    downloadSummaryPDF();
   }
 
   // Grow every textarea to fit its full content so nothing clips in the PDF
@@ -2067,6 +2562,7 @@
   const KEY_MAP = {
     // Identity
     date:                          'form-date',
+    formDate:                      'form-date',
     rep:                           'rep',
     companyName:                   'company-name',
     billingAddress:                'billing-address',
@@ -2343,7 +2839,14 @@
 
     // Auto-open specialty panel if any specialty values present
     const specialtyVals = ['p-duct-sealing','p-no-burn','p-cert-fee','p-street-cleaning'];
-    if (specialtyVals.some(id => parseFloat(document.getElementById(id)?.value || 0) > 0)) {
+    const specialtyUsed = specialtyVals.some(id => {
+      const el = document.getElementById(id);
+      if (!el) return false;
+      // cert-fee is a free-text field; any non-empty text counts as used
+      if (id === 'p-cert-fee') return el.value.trim() !== '';
+      return parseFloat(el.value || 0) > 0;
+    });
+    if (specialtyUsed) {
       const panel = document.getElementById('ob-specialty-panel');
       const icon = document.getElementById('ob-specialty-icon');
       if (panel) { panel.style.display = 'block'; if (icon) icon.style.transform = 'rotate(180deg)'; }
@@ -2404,6 +2907,13 @@
 
   // ── CLIENT IDENTITY SNAPSHOT (read-only top block) ──
   function populateClientIdentity(d) {
+    const prev = window.__clientIdentity || {};
+    window.__clientIdentity = {
+      accountId: d.accountId || prev.accountId || '',
+      divisionCity: d.divisionCity || prev.divisionCity || '',
+      state: d.state || prev.state || '',
+      projectType: d.projectType || prev.projectType || ''
+    };
     const builder = d.companyName || '';
     const city = d.divisionCity || '';
     const st = d.state || '';
@@ -2438,8 +2948,11 @@
     const services = [];
     Object.entries(SERVICE_LABELS).forEach(([id, label]) => {
       const el = document.getElementById(id);
-      const v = el ? parseFloat(String(el.value||'').replace(/[^0-9.]/g,'')) : 0;
-      if (v > 0) services.push(label);
+      if (!el) return;
+      let used;
+      if (id === 'p-cert-fee') used = el.value.trim() !== '';  // free-text field
+      else used = parseFloat(String(el.value||'').replace(/[^0-9.]/g,'')) > 0;
+      if (used) services.push(label);
     });
 
     const wrap = document.getElementById('ci-services-wrap');
@@ -2496,8 +3009,10 @@
       const inp = document.getElementById(id);
       if (!inp) return;
       const row = inp.closest('tr');
-      const v = parseFloat(String(inp.value||'').replace(/[^0-9.]/g,''));
-      if (row && !(v > 0)) { row.dataset.pricingHidden = '1'; row.style.display = 'none'; hiddenCount++; }
+      let empty;
+      if (id === 'p-cert-fee') empty = inp.value.trim() === '';   // free-text field
+      else empty = !(parseFloat(String(inp.value||'').replace(/[^0-9.]/g,'')) > 0);
+      if (row && empty) { row.dataset.pricingHidden = '1'; row.style.display = 'none'; hiddenCount++; }
     });
 
     // Special control rows: hide the testing checkbox row if no testing prices,
