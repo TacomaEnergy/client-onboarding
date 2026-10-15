@@ -508,7 +508,7 @@
     .btn-reset, .btn-draft, .btn-submit,
     .btn-add-service, .btn-remove-service,
     .btn-add-contact, .btn-remove-contact,
-    #draft-indicator, #draft-banner, #success-banner, #submit-modal, #send-overlay,
+    #draft-indicator, #draft-banner, #success-banner, #submit-modal, #send-overlay, #submit-explainer,
     #load-file-banner, #load-json-input,
     #progress-bar,
     .hint {
@@ -641,7 +641,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v4.3 · Updated Oct 15, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v4.4 · Updated Oct 15, 2026</p>
   </div>
 </div>
 
@@ -1200,6 +1200,7 @@
       Send to Tacoma Team
     </button>
   </div>
+  <p id="submit-explainer" style="text-align:right;font-size:12px;color:#5A7184;margin:8px 4px 0;"></p>
 
   <div class="success-banner" id="success-banner">
     <h3>✓ Form Submitted</h3>
@@ -1868,28 +1869,34 @@
     try { localStorage.setItem('tacoma_onboarding_last_final', JSON.stringify(data)); } catch(e) {}
     window.__scData = { data, jsonName, pdfName };
 
-    let pdfDoc = null;
-    if (pdfReady()) { try { pdfDoc = buildOnboardingPDF(data); } catch (e) { console.warn('PDF build failed', e); } }
-
     // Automatic path: send both files straight to the team via Power Automate
     let sendFailed = false;
-    if (FLOW_URL && pdfDoc) {
+    if (FLOW_URL && pdfReady()) {
       const btn = document.querySelector('button.btn-submit');
       if (btn) btn.disabled = true;
+      const pause = ms => new Promise(r => setTimeout(r, ms));
       showSendingOverlay(true);
-      try {
-        await sendToFlow(data, pdfDoc, jsonName, pdfName);
-        showSendingOverlay(false);
-        if (btn) btn.disabled = false;
-        try { pdfDoc.save(pdfName); } catch (e) {}   // rep keeps a copy of the PDF
-        showSentPanel(jsonName, pdfName);
-        return;
-      } catch (e) {
-        console.warn('Automatic send failed', e);
-        showSendingOverlay(false);
-        if (btn) btn.disabled = false;
-        sendFailed = true;
+      setSendStep(1, 'done'); setSendStep(2, 'active');
+      await pause(80);                       // let the popup paint before the PDF build
+      let pdfDoc = null;
+      try { pdfDoc = buildOnboardingPDF(data); } catch (e) { console.warn('PDF build failed', e); }
+      if (pdfDoc) {
+        setSendStep(2, 'done'); setSendStep(3, 'active');
+        try {
+          await sendToFlow(data, pdfDoc, jsonName, pdfName);
+          setSendStep(3, 'done'); setSendStep(4, 'active');
+          try { pdfDoc.save(pdfName); } catch (e) {}   // rep keeps a copy of the PDF
+          setSendStep(4, 'done');
+          await pause(900);
+          showSendingOverlay(false);
+          if (btn) btn.disabled = false;
+          showSentPanel(jsonName, pdfName);
+          return;
+        } catch (e) { console.warn('Automatic send failed', e); }
       }
+      showSendingOverlay(false);
+      if (btn) btn.disabled = false;
+      sendFailed = true;
     }
 
     // Manual path: download the data file now, then walk them through PDF + email
@@ -2241,25 +2248,36 @@
   function showSendingOverlay(on) {
     let o = document.getElementById('send-overlay');
     if (!on) { if (o) o.remove(); return; }
-    if (!o) {
-      o = document.createElement('div'); o.id = 'send-overlay';
-      o.style.cssText = 'position:fixed;inset:0;background:rgba(16,32,48,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;';
-      o.innerHTML = '<div style="background:#fff;border-radius:12px;padding:26px 34px;font-size:16px;font-weight:700;color:#10425F;box-shadow:0 10px 40px rgba(0,0,0,0.3);">Sending to the Tacoma team&hellip;</div>';
-      document.body.appendChild(o);
-    }
+    if (o) o.remove();
+    o = document.createElement('div'); o.id = 'send-overlay';
+    o.style.cssText = 'position:fixed;inset:0;background:rgba(16,32,48,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px;';
+    const steps = ['Checking the form', 'Building the PDF', 'Emailing the Tacoma team', 'Saving a copy of the PDF to your Downloads'];
+    o.innerHTML = '<div style="background:#fff;border-radius:12px;padding:24px 28px;min-width:320px;max-width:420px;box-shadow:0 10px 40px rgba(0,0,0,0.3);">' +
+      '<div style="font-size:17px;font-weight:800;color:#10425F;margin-bottom:14px;">Sending to the Tacoma team&hellip;</div>' +
+      steps.map((t, i) => `<div id="send-step-${i + 1}" style="display:flex;align-items:center;gap:10px;padding:5px 0;font-size:14px;color:#9AA9B5;">` +
+        `<span class="ss-icon" style="width:20px;text-align:center;font-weight:800;">&#9675;</span><span>${t}</span></div>`).join('') +
+      '<div style="font-size:12px;color:#5A7184;margin-top:12px;">Please don\'t close this page.</div></div>';
+    document.body.appendChild(o);
+  }
+  function setSendStep(n, state) {
+    const row = document.getElementById('send-step-' + n);
+    if (!row) return;
+    const icon = row.querySelector('.ss-icon');
+    if (state === 'done')   { row.style.color = '#14202B'; icon.innerHTML = '&#10003;'; icon.style.color = '#1E8E4E'; }
+    if (state === 'active') { row.style.color = '#1B75BC'; row.style.fontWeight = '700'; icon.innerHTML = '&#8226;'; icon.style.color = '#1B75BC'; }
+    if (state === 'done') row.style.fontWeight = '400';
   }
 
   function showSentPanel(jsonName, pdfName) {
     const b = document.getElementById('success-banner');
     if (!b) return;
+    const btn = (fn, label) => `<button type="button" onclick="${fn}()" style="background:#fff;color:#1B75BC;border:1.5px solid #1B75BC;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;margin:0 4px;">${label}</button>`;
     b.innerHTML =
       '<h3>&#10003; Submitted to the Tacoma Team</h3>' +
-      '<p>The onboarding summary (PDF) and data file were emailed to the Tacoma team automatically. <strong>Nothing else to do.</strong></p>' +
-      `<p style="font-size:13px;color:#374151;margin-top:8px;">A copy of the PDF was saved to your Downloads folder: <strong>${pdfName}</strong></p>` +
-      '<div style="margin-top:12px;">' +
-      '<button type="button" onclick="downloadSummaryPDF()" style="background:#fff;color:#1B75BC;border:1.5px solid #1B75BC;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;margin-right:8px;">Download PDF again</button>' +
-      '<button type="button" onclick="redownloadFinalJSON()" style="background:#fff;color:#1B75BC;border:1.5px solid #1B75BC;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;">Download a copy (JSON)</button>' +
-      '</div>';
+      '<p style="margin:8px 0 4px;">&#10003; Emailed to the team with the PDF and data file attached. <strong>You\'re done.</strong></p>' +
+      `<p style="margin:0 0 12px;">&#10003; A copy of the PDF is in your Downloads folder: <strong>${pdfName}</strong></p>` +
+      btn('downloadSummaryPDF', 'Download PDF again') + btn('redownloadFinalJSON', 'Download data file') +
+      '<p style="font-size:12px;color:#5A7184;margin-top:12px;">Need to fix something? Update the form and click Send to Tacoma Team again.</p>';
     b.style.display = 'block';
     b.scrollIntoView({ behavior: 'smooth' });
   }
@@ -3102,6 +3120,14 @@
     }
   }
   loadFromURL();
+
+  (function setSubmitExplainer() {
+    const el = document.getElementById('submit-explainer');
+    if (!el) return;
+    el.textContent = FLOW_URL
+      ? 'Send to Tacoma Team emails the PDF and data file to the team for you. A copy of the PDF saves to your Downloads.'
+      : 'Send to Tacoma Team downloads the PDF and data file, then walks you through emailing them to the team.';
+  })();
 </script>
 </body>
 </html>
