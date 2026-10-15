@@ -641,7 +641,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v4.4 · Updated Oct 15, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v4.5 · Updated Oct 15, 2026</p>
   </div>
 </div>
 
@@ -673,7 +673,6 @@
         <option>C. Gaston</option>
         <option>N. Reynolds</option>
         <option>A. Palumbo</option>
-        <option>A. Choez</option>
       </select>
       <div class="error-msg" id="err-rep">Please select a sales rep.</div>
     </div>
@@ -1907,6 +1906,8 @@
   // ════════ AUTOMATIC SENDING (Power Automate) ════════
   // Paste the flow's HTTP POST URL between the quotes to turn on automatic sending.
   // Leave it empty and the form uses the manual download + email checklist.
+  // Who the flow emails. Keep this matching the To + CC on the Power Automate flow.
+  const RECIPIENT_NAMES = 'Arick Forrest, Corbin Johnson, Brooklynn Mari, Nate Reynolds, John Johnson and Kelly Cararo';
   const FLOW_URL = 'https://defaultc615167624d04d2fb49004a6e772e0.7b.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/10/workflows/e9269c6a270c4d97ab912c5e63187b33/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=KZU9Z-TQ5gLbH7PlsE0EEeRmCcvhY4xK_G904JUNdhw';
 
   // ════════ ONBOARDING SUMMARY PDF ════════
@@ -2274,7 +2275,7 @@
     const btn = (fn, label) => `<button type="button" onclick="${fn}()" style="background:#fff;color:#1B75BC;border:1.5px solid #1B75BC;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;margin:0 4px;">${label}</button>`;
     b.innerHTML =
       '<h3>&#10003; Submitted to the Tacoma Team</h3>' +
-      '<p style="margin:8px 0 4px;">&#10003; Emailed to the team with the PDF and data file attached. <strong>You\'re done.</strong></p>' +
+      `<p style="margin:8px 0 4px;">&#10003; Submitted by <strong>${(window.__scData && window.__scData.data.rep) || 'you'}</strong> to ${RECIPIENT_NAMES}, with the PDF and data file attached. <strong>You're done.</strong></p>` +
       `<p style="margin:0 0 12px;">&#10003; A copy of the PDF is in your Downloads folder: <strong>${pdfName}</strong></p>` +
       btn('downloadSummaryPDF', 'Download PDF again') + btn('redownloadFinalJSON', 'Download data file') +
       '<p style="font-size:12px;color:#5A7184;margin-top:12px;">Need to fix something? Update the form and click Send to Tacoma Team again.</p>';
@@ -3124,9 +3125,9 @@
   (function setSubmitExplainer() {
     const el = document.getElementById('submit-explainer');
     if (!el) return;
-    el.textContent = FLOW_URL
-      ? 'Send to Tacoma Team emails the PDF and data file to the team for you. A copy of the PDF saves to your Downloads.'
-      : 'Send to Tacoma Team downloads the PDF and data file, then walks you through emailing them to the team.';
+    el.innerHTML = FLOW_URL
+      ? '<strong>Send to Tacoma Team</strong> emails the PDF and data file to: <strong>' + RECIPIENT_NAMES + '</strong>.<br>A copy of the PDF saves to your Downloads.'
+      : '<strong>Send to Tacoma Team</strong> downloads the PDF and data file, then walks you through emailing them to: <strong>' + RECIPIENT_NAMES + '</strong>.';
   })();
 </script>
 </body>
