@@ -641,7 +641,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v4.2 · Updated Oct 15, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v4.3 · Updated Oct 15, 2026</p>
   </div>
 </div>
 
@@ -1900,7 +1900,7 @@
   // ════════ AUTOMATIC SENDING (Power Automate) ════════
   // Paste the flow's HTTP POST URL between the quotes to turn on automatic sending.
   // Leave it empty and the form uses the manual download + email checklist.
-  const FLOW_URL = '';
+  const FLOW_URL = 'https://defaultc615167624d04d2fb49004a6e772e0.7b.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/10/workflows/e9269c6a270c4d97ab912c5e63187b33/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=KZU9Z-TQ5gLbH7PlsE0EEeRmCcvhY4xK_G904JUNdhw';
 
   // ════════ ONBOARDING SUMMARY PDF ════════
   function numVal(v) { const x = parseFloat(String(v ?? '').replace(/[^0-9.]/g, '')); return isNaN(x) ? 0 : x; }
