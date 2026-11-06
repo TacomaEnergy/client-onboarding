@@ -641,7 +641,7 @@
   <div>
     <h1>New Customer Onboarding</h1>
     <p>Tacoma Energy — Internal Use Only. Complete all sections before sending to client.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v4.5 · Updated Oct 15, 2026</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;letter-spacing:0.03em;">v4.6 · Updated Nov 6, 2026</p>
   </div>
 </div>
 
@@ -655,6 +655,10 @@
       <div>
         <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.55);">Service Location</span>
         <div id="ci-location" style="font-size:15px;font-weight:600;margin-top:1px;">—</div>
+      </div>
+      <div id="ci-ptype-wrap" style="display:none;">
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.55);">Project Type</span>
+        <div id="ci-ptype" style="font-size:15px;font-weight:600;margin-top:1px;">—</div>
       </div>
     </div>
     <div id="ci-services-wrap" style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.2);display:none;">
@@ -672,6 +676,7 @@
         <option>Admin</option>
         <option>C. Gaston</option>
         <option>N. Reynolds</option>
+        <option>B. Sebastian</option>
         <option>A. Palumbo</option>
       </select>
       <div class="error-msg" id="err-rep">Please select a sales rep.</div>
@@ -1017,7 +1022,7 @@
           <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Compliance Revisions — Complex</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Plan changes such as model, elevation, layout, or HVAC/equipment changes</div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-compliance-revisions-complex" placeholder="0.00" min="0" step="0.01"></div></td></tr>
           <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Repair / Retest Labor — Hourly Rate</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="retest-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-retest" placeholder="250.00" min="0" step="0.01"></div><div style="font-size:10px;color:#8C5E00;text-align:center;margin-top:3px">per hour</div></td></tr>
           <tr style="border-bottom:1px solid #F5CBA7;background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Trip Charge / Re-inspection Fee</div><div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px"><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="trip-first-free" style="accent-color:#F39C12;width:14px;height:14px"> First trip charge is free</label></div></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-trip" placeholder="125.00" min="0" step="0.01"></div></td></tr>
-          <tr style="background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Additional HVAC System Fee</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Per HVAC system over 1</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="hvac-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-hvac-extra" placeholder="200.00" min="0" step="0.01"></div></td></tr>
+          <tr style="background:#FFFDF8"><td style="padding:10px 16px"><div style="font-size:13px;font-weight:600;color:#8C5E00">Additional HVAC System Fee</div><div style="font-size:11px;color:#8C5E00;margin-top:2px">Per HVAC system over 2</div><label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8C5E00;margin-top:6px;text-transform:none;letter-spacing:0;cursor:pointer"><input type="checkbox" id="hvac-waived" style="accent-color:#F39C12;width:14px;height:14px"> Waived</label></td><td style="padding:10px 16px;text-align:center"><div class="dollar-wrap" style="max-width:130px;margin:0 auto"><input type="number" id="p-hvac-extra" placeholder="200.00" min="0" step="0.01"></div></td></tr>
 
         </tbody>
       </table>
@@ -2132,7 +2137,7 @@
     if (d.tripWaived) ch.push({ l: 'Trip Charge / Re-inspection Fee', p: 'Waived' });
     else if (numVal(d.priceTrip) > 0) ch.push({ l: 'Trip Charge / Re-inspection Fee', p: fmtMoney(d.priceTrip), desc: d.tripFirstFree ? 'First trip charge is free per home' : '' });
     if (d.hvacWaived) ch.push({ l: 'Additional HVAC System Fee', p: 'Waived' });
-    else if (numVal(d.priceHVACExtra) > 0) ch.push({ l: 'Additional HVAC System Fee', p: fmtMoney(d.priceHVACExtra), desc: 'Per HVAC system over 1' });
+    else if (numVal(d.priceHVACExtra) > 0) ch.push({ l: 'Additional HVAC System Fee', p: fmtMoney(d.priceHVACExtra), desc: 'Per HVAC system over 2' });
     if (ch.length) {
       head('Additional Charges - not included in Total Audit Fee', true);
       ch.forEach(c => row(c.l, c.p, { amber: true, desc: c.desc }));
@@ -2942,6 +2947,9 @@
     document.getElementById('ci-builder').textContent = builder || '(Builder not specified)';
     const loc = [city, st].filter(Boolean).join(', ');
     document.getElementById('ci-location').textContent = loc || '—';
+    const ptype = window.__clientIdentity.projectType || '';
+    document.getElementById('ci-ptype').textContent = ptype || '—';
+    document.getElementById('ci-ptype-wrap').style.display = ptype ? '' : 'none';
 
     // Build services list — only actual services (not charges), only those priced
     const SERVICE_LABELS = {
